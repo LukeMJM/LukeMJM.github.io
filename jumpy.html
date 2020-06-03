@@ -10,350 +10,426 @@
                 
         function sketchProc(processing) {
        
-        // *****************************************************
-        //                  GLOBAL VARIABLES
-        // *****************************************************
-        var windowH, windowW;
-        var centerY = 200, centerX = 200;
-        var accFactor = 1.0
-        var heightOfWindow = processing.height;
-        var keyBeingPressed;
+            // *****************************************************
+            //                  GLOBAL VARIABLES
+            // *****************************************************
+            var windowH, windowW;
+            var centerY = 200, centerX = 200;
+            var accFactor = 1.0
+            var heightOfWindow = processing.height;
+            var keyBeingPressed;
+            var scene = 0;
+            var score = 0;
+            var randA = processing.random(0.5, 2);
+            var randB = processing.random(0.5, 2);
 
-        var check = false;
 
+            // *****************************************************
+            //                     GAME OBJECTS
+            // *****************************************************
 
-        // *****************************************************
-        //                     GAME OBJECTS
-        // *****************************************************
+            // *****************************************************
+            //                  PLAYER CHARACTER
+            // *****************************************************
 
-        // *****************************************************
-        //                  PLAYER CHARACTER
-        // *****************************************************
-
-        var Player = function() {
-           
-            this.onGround = true;
-            this.isJumping = false;
-            this.chamberedJump = false;
-            this.goingUp = true;
-            this.scrollSpeed = 100;
-            this.playerHeight = 40;
-            this.playerWidth = 10;
-            this.jumpHeight = 0;
-            this.positionX = centerX;
-            this.positionY = centerY;
-            this.jumpAcceleration = 1.05; // legacy
-            this.jumpVel = -10; // unused
-            this.gravity = 0.5;
-            this.velocityX; // unused
-            this.velocityY;
-            this.impulseForce = -12;
-            this.isColliding = false;
-            this.immunity = 0;
-            this.lives = 3;
-            this.movingLeft = false;
-            this.movingRight = false;
-            this.moveSpeed = 5;
-
-        };
-
-        Player.prototype.draw = function() {
+            var Player = function() {
             
-            processing.fill(245, 245, 245);
-            processing.rect(this.positionX, this.positionY - this.playerHeight, this.playerWidth, this.playerHeight)
+                this.onGround = true;
+                this.isJumping = false;
+                this.chamberedJump = false;
+                this.goingUp = true;
+                this.scrollSpeed = 100;
+                this.playerHeight = 40;
+                this.playerWidth = 10;
+                this.jumpHeight = 0;
+                this.positionX = centerX;
+                this.positionY = centerY;
+                this.jumpAcceleration = 1.05; // legacy
+                this.jumpVel = -10; // unused
+                this.gravity = 0.25;
+                this.velocityX; // unused
+                this.velocityY;
+                this.impulseY = -12;
+                this.isColliding = false;
+                this.immunity = 0;
+                this.lives = 3;
+                this.movingLeft = false;
+                this.movingRight = false;
+                this.moveSpeed = 5;
 
-        };
+            };
 
-        // Player.prototype.doAJump = function() {
-        
-        //     this.isJumping = true;
-        //     if (this.goingUp){
-
-        //         // 160 GREATER THAN 200 - 100 = 100
-        //         if (this.positionY > centerY - this.jumpHeight) {
-        //             this.positionY /= this.jumpAcceleration;
-
-        //         } else if (this.positionY <= centerY - this.jumpHeight) {
-        //             this.goingUp = false;
-        //         }
-        //         // on the way down
-        //     } else if (this.goingUp == false){
-
-        //         if (this.positionY < centerY - this.playerHeight) {
-        //             this.positionY *= this.jumpAcceleration;
-
-        //             // if almost 1 more frame would put below ground
-        //         } else if (this.positionY >= centerY - this.playerHeight) {
-        //             this.positionY = centerY;
-        //             this.goingUp = true;
-        //             this.jump = false;
-        //             this.isJumping = false;
-
-        //             if (this.chamberedJump){
-        //                 this.jump = true;
-        //                 this.chamberedJump = false;
-        //                 this.isJumping = true;
-        //             }
-        //         }
-        //     }
-        // }
-
-        Player.prototype.jumpTwo = function() {
-            
-            this.velocityY = this.impulseForce;
-            this.onGround = false;
+            Player.prototype.draw = function() {
                 
-        }
+                processing.fill(245, 245, 245);
+                processing.rect(this.positionX, this.positionY - this.playerHeight, this.playerWidth, this.playerHeight)
 
-        Player.prototype.limitJump = function() {
-            if (this.velocityY < -10) {
-                this.velocityY = -10;
-            } 
-        }
-
-        Player.prototype.updatePosition = function() {
+            };
+            // old jumping code - will delete when new jump c is implemented
+            // Player.prototype.doAJump = function() {
             
-            if (jumpy.onGround == false) {
-                this.velocityY += 0.5;
-                this.positionY += this.velocityY;
+            //     this.isJumping = true;
+            //     if (this.goingUp){
 
-                if (this.positionY >= centerY) {
-                    this.positionY = centerY;
-                    this.velocityY = 0;
-                    this.onGround = true;
-                    this.isJumping = false;
+            //         // 160 GREATER THAN 200 - 100 = 100
+            //         if (this.positionY > centerY - this.jumpHeight) {
+            //             this.positionY /= this.jumpAcceleration;
 
-                    if (this.chamberedJump) {
+            //         } else if (this.positionY <= centerY - this.jumpHeight) {
+            //             this.goingUp = false;
+            //         }
+            //         // on the way down
+            //     } else if (this.goingUp == false){
 
-                        check = true;
-                        this.velocityY = this.impulseForce;
-                        this.onGround = false;
-                        this.chamberedJump = false;
-                        this.isJumping = true;
-                    }
+            //         if (this.positionY < centerY - this.playerHeight) {
+            //             this.positionY *= this.jumpAcceleration;
+
+            //             // if almost 1 more frame would put below ground
+            //         } else if (this.positionY >= centerY - this.playerHeight) {
+            //             this.positionY = centerY;
+            //             this.goingUp = true;
+            //             this.jump = false;
+            //             this.isJumping = false;
+
+            //             if (this.chamberedJump){
+            //                 this.jump = true;
+            //                 this.chamberedJump = false;
+            //                 this.isJumping = true;
+            //             }
+            //         }
+            //     }
+            // }
+
+            Player.prototype.jumpTwo = function() {
+                
+                this.velocityY = this.impulseY;
+                this.onGround = false;
+                    
+            }
+
+            Player.prototype.limitJump = function() {
+                if (this.velocityY < -12) {
+                    this.velocityY = -12;
                 } 
             }
-        }
 
-        Player.prototype.checkCollision = function(obstacleArray) {
+            Player.prototype.updatePosition = function() {
+                
+                if (jumpy.onGround == false) {
+                    this.velocityY += 0.5;
+                    this.positionY += this.velocityY;
 
-            if (this.immunity == 0) {
-                left = this.positionX;
-                right = this.positionX + this.playerWidth;
-                bottom = this.positionY;
-                top = this.positionY - this.playerHeight;
+                    if (this.positionY >= centerY) {
+                        this.positionY = centerY;
+                        this.velocityY = 0;
+                        this.onGround = true;
+                        this.isJumping = false;
 
-                for (i =0; i < obstacleArray.length; i++) {
-                    // checking if x coordintes are intersecting
-                    if (right >= obstacleArray[i].x && left <= obstacleArray[i].x + obstacleArray[i].width) {
-                       
-                        if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
-                            this.isColliding = true;
-                            this.lives--;
-                            this.immunity = 60;
+                        if (this.chamberedJump) {
+
+                            check = true;
+                            this.velocityY = this.impulseY;
+                            this.onGround = false;
+                            this.chamberedJump = false;
+                            this.isJumping = true;
                         }
+                    } 
+                }
+            }
 
-                    } else {
-                        this.isColliding = false;
+            Player.prototype.checkCollision = function(obstacleArray) {
+
+                if (this.immunity == 0) {
+                    left = this.positionX;
+                    right = this.positionX + this.playerWidth;
+                    bottom = this.positionY;
+                    top = this.positionY - this.playerHeight;
+
+                    for (i =0; i < obstacleArray.length; i++) {
+                        // checking if x coordintes are intersecting
+                        if (right >= obstacleArray[i].x && left <= obstacleArray[i].x + obstacleArray[i].width) {
+                        
+                            if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
+                                this.isColliding = true;
+                                this.lives--;
+                                this.immunity = 60;
+                            }
+
+                        } else {
+                            this.isColliding = false;
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        // Creating an instance of the player object
+            // Creating an instance of the player object
 
-        var jumpy = new Player();
+            var jumpy = new Player();
 
-        // *****************************************************
-        //                       OBSTACLES
-        // *****************************************************
+            // *****************************************************
+            //                       OBSTACLES
+            // *****************************************************
 
 
-        var Obstacle = function(x, y, width, height, speed) {
+            var Obstacle = function(x, y, width, height, speed) {
 
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.speed = speed;
-        };
+                this.x = x;
+                this.y = y;
+                this.initialWidth = width;
+                this.initialHeight = height;
+                this.width = width;
+                this.height = height;
+                this.speed = speed;
+            };
 
-        Obstacle.prototype.draw = function() {
-            processing.fill(220, 220, 220);
-            processing.rect(this.x, this.y - this.height, this.width, this.height);
-        };
+            Obstacle.prototype.draw = function() {
+                processing.fill(220, 220, 220);
+                processing.rect(this.x, this.y - this.height, this.width, this.height);
+            };
 
-        Obstacle.prototype.move = function() {
-            this.x -= this.speed * accFactor;
+            Obstacle.prototype.move = function() {
+                this.x -= this.speed * accFactor;
 
-            if (this.x <= 0) {
-                this.x = 400;
-            }
-
-        };
-
-        processing.setup = function(){
-            processing.frameRate (60);
-            processing.size(400,400);
-            windowH = processing.height;
-            windowW = processing.width;
-            processing.background(200,200,200);
-        }
-
-        // Creating obstacles and putting into an array to keep them 
-        
-        var ob1 = new Obstacle(340, centerY, 20, 40, 5);
-        var obstacleArray = [ob1];
-
-        var heightestPoint = 200;
-
-        // *******************************************************
-        //                      GAME LOOP
-        // *******************************************************
-        processing.draw = function() {
-            
-            var centerX = windowW/2;
-            var centerY = windowH/2;
-            var groundLevel = centerY;            
-
-            function drawGround(){
-                processing.rect(-1, centerY, windowW + 2, windowH);
-            }
-
-            function drawWall(height, width){ 
-                var xPosWall = 300;
-                processing.fill(245,245,245);
-                processing.rect(xPosWall, centerY-height, width, height);
-            }
-
-            // clear background
-            processing.background(200,200,200);
-
-            // ****************************************************
-            //              CHECKING FOR PLAYER INPUT
-            // ****************************************************
-
-            processing.mousePressed = function() {
-                jumpy.isJumping = true;
-                // allows player to chamber a jump if they are almost on the ground
-                // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
-                // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseForce*-1)/2))) {
-                    jumpy.chamberedJump = true;
+                // reseting the obstacle if it clears the screen 
+                // also adding to score as obstacle has been cleared by player
+                if (this.x + this.width <= 0) {
+                    this.x = 400;
+                    this.speed += 0.25;
+                    this.width = this.initialWidth * randA;
+                    this.height = this.initialHeight * randB;
+                    if (jumpy.immunity == 0) {
+                        score++;
+                    }
                 }
+
+            };
+
+            processing.setup = function(){
+                processing.frameRate (60);
+                processing.size(400,400);
+                windowH = processing.height;
+                windowW = processing.width;
+                processing.background(200,200,200);
             }
 
-            processing.keyPressed = function() {
-                keyBeingPressed = processing.key;
+            // Creating obstacles and putting into an array to keep them 
+            
+            var ob1 = new Obstacle(340, centerY, 20, 40, 2);
+            var obstacleArray = [ob1];
 
-                    // a = 97
-                    if (keyBeingPressed == 97 && jumpy.movingRight == false) {
-                        jumpy.movingLeft = true;
-                    // d = 100
-                    } else if (keyBeingPressed == 100 && jumpy.movingLeft == false) {
-                        jumpy.movingRight = true;
-                    } else if (keyBeingPressed == 32) {
+            var heightestPoint = 200;
+
+            // *******************************************************
+            //                      GAME LOOP
+            // *******************************************************
+            processing.draw = function() {
+
+                randA = processing.random(0.5, 2);
+                randB = processing.random(0.5, 2);
+                
+                var centerX = windowW/2;
+                var centerY = windowH/2;
+                var groundLevel = centerY; 
+                
+                // getting the coordinates of the current mouse position
+                var currentY = processing.mouseY;
+                var currentX = processing.mouseX;           
+
+                function drawGround(){
+                    processing.rect(-1, centerY, windowW + 2, windowH);
+                }
+
+                function drawWall(height, width){ 
+                    var xPosWall = 300;
+                    processing.fill(245,245,245);
+                    processing.rect(xPosWall, centerY-height, width, height);
+                }
+
+                // clear background
+                processing.background(200,200,200);
+
+                // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+                //                       START SCENE
+                // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
+                if (scene == 0) {
+                    processing.fill(81, 166, 31);
+                    processing.rect(centerX - 40, centerY - 20, 80, 40);
+                    processing.fill(255, 255, 255);
+                    processing.textSize(18);
+                    processing.text("START",centerX -25, centerY + 6);
+
+                    processing.text("Controls",centerX -35, 50);
+                    processing.textSize(16);
+                    processing.text("Jump - click",centerX -45, 75);
+                    processing.text("Move left - a",centerX -47, 90);
+                    processing.text("Move right - d",centerX -50, 105);
+
+                    processing.textSize(16);
+                    processing.text("Jump over obstacles to increase your score",centerX -150, 145);
+
+                    processing.mouseClicked = function() {
+                        if (currentX >= 160 && currentX <= 240 &&
+                            currentY >= 180 && currentY <= 220) {
+                            
+                            scene = 1;
+                        }
+                    };
+                }
+
+                // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+                //                      MAIN GAME SCENE
+                // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
+                // ****************************************************
+                //              CHECKING FOR PLAYER INPUT
+                // ****************************************************
+
+                if (scene == 1) {
+                    processing.mousePressed = function() {
                         jumpy.isJumping = true;
                         // allows player to chamber a jump if they are almost on the ground
                         // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
                         // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseForce*-1)/2))) {
+                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
                             jumpy.chamberedJump = true;
                         }
                     }
-            }
 
-            processing.keyReleased = function() {
-                if (jumpy.movingLeft || jumpy.movingRight) {
-                    jumpy.movingLeft = false;
-                    jumpy.movingRight = false;
+                    processing.keyPressed = function() {
+                        keyBeingPressed = processing.key;
+
+                            // a = 97
+                            if (keyBeingPressed == 97) {
+                                jumpy.movingRight = false
+                                jumpy.movingLeft = true;
+                            // d = 100
+                            } else if (keyBeingPressed == 100) {
+                                jumpy.movingLeft = false
+                                jumpy.movingRight = true;
+                            } else if (keyBeingPressed == 32) {
+                                jumpy.isJumping = true;
+                                // allows player to chamber a jump if they are almost on the ground
+                                // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                                // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                                if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
+                                    jumpy.chamberedJump = true;
+                                }
+                            }
+                    }
+
+                    processing.keyReleased = function() {
+                        if (jumpy.movingLeft || jumpy.movingRight) {
+                            jumpy.movingLeft = false;
+                            jumpy.movingRight = false;
+                        }
+                    }
+
+                    // ****************************************************
+                    //                     MOVEMENT
+                    // ****************************************************            
+
+                    if (jumpy.movingLeft && jumpy.positionX > 0) {
+                        jumpy.positionX -= jumpy.moveSpeed;
+
+                    } else if (jumpy.movingRight && jumpy.positionX < 400 - jumpy.playerWidth ) {
+                        jumpy.positionX += jumpy.moveSpeed;
+                    }
+
+                    // ****************************************************
+                    //                     JUMPING
+                    // **************************************************** 
+
+                    if (jumpy.onGround && jumpy.isJumping){
+                        jumpy.jumpTwo();
+                    }
+
+                    if (jumpy.isJumping) {
+                        jumpy.updatePosition();
+                        jumpy.limitJump();
+                    }
+
+                    
+                    // ****************************************************
+                    //                     DRAW GAME
+                    // ****************************************************
+                    
+                    // Drawing the ground
+                    drawGround();
+
+                    // Drawing obstacles
+                    for (i =0; i < obstacleArray.length; i++) {
+                        obstacleArray[i].draw();
+                    }
+
+                    for (i =0; i < obstacleArray.length; i++) {
+                        obstacleArray[i].move();
+                    }
+
+                    // Drawing player
+                    jumpy.draw();
+
+
+                    // *******************************************************
+                    //                   CHECK COLLISIONS
+                    // *******************************************************
+
+                    jumpy.checkCollision(obstacleArray);
+
+                    // removing immunity to collision if it exists
+                    if (jumpy.immunity > 0) {
+                        jumpy.immunity--;
+                    }
+
+                    
+                    // *******************************************************
+                    //                CHECK PLAYER's LIVES
+                    // *******************************************************
+
+                    if (jumpy.lives == 0) {
+                        scene = 2;
+                    }
+
+                    // ********************************************************
+                    //                      DEBUGGING
+                    //*********************************************************
+
+                    
+
+                    if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
+                        jumpy.jumpHeight = (200 - jumpy.positionY);
+                    }
+
+                    // processing.text("Ob1 X   " +ob1.x, 15,80);
+                    // processing.text("Ob1 Y   " +ob1.y, 15,90);
+
+                    processing.text("Lives   " + jumpy.lives, 10,20);
+                    processing.text("Score   " + score, 330, 20);
+                    // processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
+
+
+                    // processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
+                    // processing.text("   ", 15,120);
+                    // processing.text("isJumping   " + jumpy.isJumping, 15,130);
+                    // processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
+                    // processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
+                    // processing.text("Gravity   " + jumpy.gravity, 15,160);
+                    // processing.text("Jump Height   " + (200 - jumpy.jumpHeight), 15,170);
+                    // processing.text("colliding   " + jumpy.isColliding, 15,180);
+                    // processing.text("immunity   " + jumpy.immunity, 15,190);
+
+                };
+
+                // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+                //                         END SCENE
+                // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
+                if (scene == 2) {
+                    processing.textSize(22);
+                    processing.text(" Final Score:   " + score, 110, centerY);
                 }
             }
-
-            // ****************************************************
-            //                     MOVEMENT
-            // ****************************************************            
-
-            if (jumpy.movingLeft) {
-                jumpy.positionX -= jumpy.moveSpeed;
-            } else if (jumpy.movingRight) {
-                jumpy.positionX += jumpy.moveSpeed;
-            }
-
-            if (jumpy.onGround && jumpy.isJumping){
-                jumpy.jumpTwo();
-            }
-
-            if (jumpy.isJumping) {
-                jumpy.updatePosition();
-                jumpy.limitJump();
-            }
-
             
-
-            
-
-            // ****************************************************
-            //                     DRAW GAME
-            // ****************************************************
-            
-            // Drawing the ground
-            drawGround();
-
-            // Drawing obstacles
-            for (i =0; i < obstacleArray.length; i++) {
-                obstacleArray[i].draw();
-            }
-
-            for (i =0; i < obstacleArray.length; i++) {
-                obstacleArray[i].move();
-            }
-
-            // Drawing player
-            jumpy.draw();
-
-
-            // *******************************************************
-            //                   CHECK COLLISIONS
-            // *******************************************************
-
-            jumpy.checkCollision(obstacleArray);
-
-            // removing immunity to collision if it exists
-            if (jumpy.immunity > 0) {
-                jumpy.immunity--;
-            }
-
-            // ********************************************************
-            //                      DEBUGGING
-            //*********************************************************
-
-            
-
-            if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
-                jumpy.jumpHeight = (200 - jumpy.positionY);
-            }
-
-            processing.text("Ob1 X   " +ob1.x, 15,80);
-            processing.text("Ob1 Y   " +ob1.y, 15,90);
-
-            processing.text("lives   " + jumpy.lives, 15,20);
-            processing.text("Key being pressed   " + keyBeingPressed, 15,30);
-            processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
-
-
-            processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
-            processing.text("Check   " + check, 15,120);
-            processing.text("isJumping   " + jumpy.isJumping, 15,130);
-            processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
-            processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
-            processing.text("Gravity   " + jumpy.gravity, 15,160);
-            processing.text("Jump Height   " + (200 - jumpy.jumpHeight), 15,170);
-            processing.text("colliding   " + jumpy.isColliding, 15,180);
-            processing.text("immunity   " + jumpy.immunity, 15,190);
-
-
-        };
         }
 
         var canvas = document.getElementById("canvas");
