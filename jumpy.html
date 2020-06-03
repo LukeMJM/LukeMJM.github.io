@@ -52,7 +52,9 @@
                 this.impulseY = -12;
                 this.isColliding = false;
                 this.immunity = 0;
-                this.lives = 3;
+                this.lives = 5;
+                this.damaged = false;
+                this.damgageTimer = 0;
                 this.movingLeft = false;
                 this.movingRight = false;
                 this.moveSpeed = 5;
@@ -61,44 +63,15 @@
 
             Player.prototype.draw = function() {
                 
-                processing.fill(245, 245, 245);
+                if (this.damaged && ((this.damgageTimer >= 20 && this.damgageTimer <= 30) || (this.damgageTimer > 0 && this.damgageTimer < 11)) ) {
+                    processing.fill(255, 100, 100);
+
+                } else {
+                    processing.fill(245, 245, 245);
+                }
                 processing.rect(this.positionX, this.positionY - this.playerHeight, this.playerWidth, this.playerHeight)
 
             };
-            // old jumping code - will delete when new jump c is implemented
-            // Player.prototype.doAJump = function() {
-            
-            //     this.isJumping = true;
-            //     if (this.goingUp){
-
-            //         // 160 GREATER THAN 200 - 100 = 100
-            //         if (this.positionY > centerY - this.jumpHeight) {
-            //             this.positionY /= this.jumpAcceleration;
-
-            //         } else if (this.positionY <= centerY - this.jumpHeight) {
-            //             this.goingUp = false;
-            //         }
-            //         // on the way down
-            //     } else if (this.goingUp == false){
-
-            //         if (this.positionY < centerY - this.playerHeight) {
-            //             this.positionY *= this.jumpAcceleration;
-
-            //             // if almost 1 more frame would put below ground
-            //         } else if (this.positionY >= centerY - this.playerHeight) {
-            //             this.positionY = centerY;
-            //             this.goingUp = true;
-            //             this.jump = false;
-            //             this.isJumping = false;
-
-            //             if (this.chamberedJump){
-            //                 this.jump = true;
-            //                 this.chamberedJump = false;
-            //                 this.isJumping = true;
-            //             }
-            //         }
-            //     }
-            // }
 
             Player.prototype.jumpTwo = function() {
                 
@@ -152,6 +125,8 @@
                             if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
                                 this.isColliding = true;
                                 this.lives--;
+                                this.damaged = true;
+                                this.damgageTimer = 30;
                                 this.immunity = 1;
                             }
 
@@ -358,6 +333,7 @@
                     // ****************************************************
                     
                     // Drawing the ground
+                    processing.fill(245,245,245);
                     drawGround();
 
                     // Drawing obstacles
@@ -388,6 +364,12 @@
                         scene = 2;
                     }
 
+                    if (jumpy.damaged && jumpy.damgageTimer > 0) {
+                        jumpy.damgageTimer --
+                    } else if (jumpy.damaged && jumpy.damgageTimer == 0) {
+                        jumpy.damaged = false;
+                    }
+
                     // ********************************************************
                     //                      DEBUGGING
                     //*********************************************************
@@ -400,7 +382,7 @@
 
                     // processing.text("Ob1 X   " +ob1.x, 15,80);
                     // processing.text("Ob1 Y   " +ob1.y, 15,90);
-
+                    processing.fill(245,245,245);
                     processing.text("Lives   " + jumpy.lives, 10,20);
                     processing.text("Score   " + score, 330, 20);
                     // processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
