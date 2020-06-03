@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Jumpler</title>
+	<title>Jumpy</title>
 	<script src="processing.js"></script>
 </head>
 <body>
@@ -30,7 +30,7 @@
 
         var Player = function() {
            
-            this.jump = false;
+            this.onGround = true;
             this.isJumping = false;
             this.chamberedJump = false;
             this.goingUp = true;
@@ -97,25 +97,29 @@
 
         Player.prototype.jumpTwo = function() {
             
-            this.isJumping = true;
             this.velocityY = -12;
+            this.onGround = false;
                 
         }
 
-        Player.prototype.endJump = function() {
-            if (this.velocityY < -6) {
-                this.velocityY = -6;
+        Player.prototype.limitJump = function() {
+            if (this.velocityY < -10) {
+                this.velocityY = -10;
             } 
         }
 
         Player.prototype.updatePosition = function() {
-            this.velocityY += this.gravity;
-            this.positionY += this.velocityY;
+            
+            if (jumpy.onGround == false) {
+                this.velocityY += 0.5;
+                this.positionY += this.velocityY;
 
-            if (this.positionY > centerY) {
-                this.positionY = centerY;
-                this.velocityY = 0;
-                this.isJumping = false;
+                if (this.positionY > centerY) {
+                    this.positionY = centerY;
+                    //this.velocityY = 0;
+                    this.onGround = true;
+                    this.isJumping = false;
+                }
             }
         }
 
@@ -216,7 +220,7 @@
             // ****************************************************
 
             processing.mousePressed = function() {
-                jumpy.jump = true;
+                jumpy.isJumping = true;
                 // allows player to chamber a jump if they are almost on the ground
                 if (jumpy.isJumping && (jumpy.positionY < jumpy.jumpHeight && jumpy.positionY > jumpy.jumpHeight/2) ){
                     jumpy.chamberedJump = true;
@@ -258,16 +262,15 @@
                 jumpy.positionX += jumpy.moveSpeed;
             }
 
-            if (jumpy.jump){
+            if (jumpy.onGround && jumpy.isJumping){
                 jumpy.jumpTwo();
             }
 
             if (jumpy.isJumping) {
-                jumpy.positionY += jumpy.velocityY;
-                jumpy.velocityY += jumpy.gravity;
+                jumpy.updatePosition();
+                jumpy.limitJump();
             }
-            jumpy.updatePosition;
-            jumpy.endJump;
+
             
 
             
