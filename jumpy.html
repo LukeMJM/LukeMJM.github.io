@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jumpler</title>
+	<script src="processing.js"></script>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script type="application/javascript">
+                
+        function sketchProc(processing) {
+       
+        // *****************************************************
+        //                  GLOBAL VARIABLES
+        // *****************************************************
+        var windowH, windowW;
+        var centerY = 200, centerX = 200;
+        var accFactor = 1.0
+        var heightOfWindow = processing.height;
+        var keyBeingPressed;
+
+
+        // *****************************************************
+        //                     GAME OBJECTS
+        // *****************************************************
+
+        // *****************************************************
+        //                  PLAYER CHARACTER
+        // *****************************************************
+
+        var Player = function() {
+           
+            this.jump = false;
+            this.isJumping = false;
+            this.chamberedJump = false;
+            this.goingUp = true;
+            this.scrollSpeed = 100;
+            this.playerHeight = 40;
+            this.playerWidth = 10;
+            this.jumpHeight = 130;
+            this.positionX = centerX;
+            this.positionY = centerY;
+            this.jumpAcceleration = 1.05;
+            this.jumpVel = -10;
+            this.gravity = 0.5;
+            this.velocityX;
+            this.velocityY;
+            this.isColliding = false;
+            this.immunity = 0;
+            this.lives = 3;
+            this.movingLeft = false;
+            this.movingRight = false;
+            this.moveSpeed = 5;
+
+        };
+
+        Player.prototype.draw = function() {
+            
+            processing.fill(245, 245, 245);
+            processing.rect(this.positionX, this.positionY - this.playerHeight, this.playerWidth, this.playerHeight)
+
+        };
+
+        // Player.prototype.doAJump = function() {
+        
+        //     this.isJumping = true;
+        //     if (this.goingUp){
+
+        //         // 160 GREATER THAN 200 - 100 = 100
+        //         if (this.positionY > centerY - this.jumpHeight) {
+        //             this.positionY /= this.jumpAcceleration;
+
+        //         } else if (this.positionY <= centerY - this.jumpHeight) {
+        //             this.goingUp = false;
+        //         }
+        //         // on the way down
+        //     } else if (this.goingUp == false){
+
+        //         if (this.positionY < centerY - this.playerHeight) {
+        //             this.positionY *= this.jumpAcceleration;
+
+        //             // if almost 1 more frame would put below ground
+        //         } else if (this.positionY >= centerY - this.playerHeight) {
+        //             this.positionY = centerY;
+        //             this.goingUp = true;
+        //             this.jump = false;
+        //             this.isJumping = false;
+
+        //             if (this.chamberedJump){
+        //                 this.jump = true;
+        //                 this.chamberedJump = false;
+        //                 this.isJumping = true;
+        //             }
+        //         }
+        //     }
+        // }
+
+        Player.prototype.jumpTwo = function() {
+            
+            this.isJumping = true;
+            this.velocityY = -12;
+                
+        }
+
+        Player.prototype.endJump = function() {
+            if (this.velocityY < -6) {
+                this.velocityY = -6;
+            } 
+        }
+
+        Player.prototype.updatePosition = function() {
+            this.velocityY += this.gravity;
+            this.positionY += this.velocityY;
+
+            if (this.positionY > centerY) {
+                this.positionY = centerY;
+                this.velocityY = 0;
+                this.isJumping = false;
+            }
+        }
+
+        Player.prototype.checkCollision = function(obstacleArray) {
+
+            if (this.immunity == 0) {
+                left = this.positionX;
+                right = this.positionX + this.playerWidth;
+                bottom = this.positionY;
+                top = this.positionY - this.playerHeight;
+
+                for (i =0; i < obstacleArray.length; i++) {
+                    // checking if x coordintes are intersecting
+                    if (right >= obstacleArray[i].x && left <= obstacleArray[i].x + obstacleArray[i].width) {
+                       
+                        if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
+                            this.isColliding = true;
+                            this.lives--;
+                            this.immunity = 60;
+                        }
+
+                    } else {
+                        this.isColliding = false;
+                    }
+                }
+            }
+        };
+
+        // Creating an instance of the player object
+
+        var jumpy = new Player();
+
+        // *****************************************************
+        //                       OBSTACLES
+        // *****************************************************
+
+
+        var Obstacle = function(x, y, width, height, speed) {
+
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.speed = speed;
+        };
+
+        Obstacle.prototype.draw = function() {
+            processing.fill(220, 220, 220);
+            processing.rect(this.x, this.y - this.height, this.width, this.height);
+        };
+
+        Obstacle.prototype.move = function() {
+            this.x -= this.speed * accFactor;
+
+            if (this.x <= 0) {
+                this.x = 400;
+            }
+
+        };
+
+        processing.setup = function(){
+            processing.frameRate (60);
+            processing.size(400,400);
+            windowH = processing.height;
+            windowW = processing.width;
+            processing.background(200,200,200);
+        }
+
+        // Creating obstacles and putting into an array to keep them 
+        
+        var ob1 = new Obstacle(340, centerY, 20, 40, 0);
+        var obstacleArray = [ob1];
+
+        // *******************************************************
+        //                      GAME LOOP
+        // *******************************************************
+        processing.draw = function() {
+            
+            var centerX = windowW/2;
+            var centerY = windowH/2;
+            var groundLevel = centerY;            
+
+            function drawGround(){
+                processing.rect(-1, centerY, windowW + 2, windowH);
+            }
+
+            function drawWall(height, width){ 
+                var xPosWall = 300;
+                processing.fill(245,245,245);
+                processing.rect(xPosWall, centerY-height, width, height);
+            }
+
+            // clear background
+            processing.background(200,200,200);
+
+            // ****************************************************
+            //              CHECKING FOR PLAYER INPUT
+            // ****************************************************
+
+            processing.mousePressed = function() {
+                jumpy.jump = true;
+                // allows player to chamber a jump if they are almost on the ground
+                if (jumpy.isJumping && (jumpy.positionY < jumpy.jumpHeight && jumpy.positionY > jumpy.jumpHeight/2) ){
+                    jumpy.chamberedJump = true;
+                }
+            }
+
+            processing.keyPressed = function() {
+                keyBeingPressed = processing.key;
+
+                    // a = 97
+                    if (keyBeingPressed == 97 && jumpy.movingRight == false) {
+                        jumpy.movingLeft = true;
+                    // d = 100
+                    } else if (keyBeingPressed == 100 && jumpy.movingLeft == false) {
+                        jumpy.movingRight = true;
+                    } else if (keyBeingPressed == 32) {
+                        jumpy.jump = true;
+                        // allows player jump by pressing enter as well as clicking
+                        if (jumpy.isJumping && (jumpy.positionY < jumpy.jumpHeight && jumpy.positionY > jumpy.jumpHeight/2) ){
+                            jumpy.chamberedJump = true;
+                        }
+                    }
+            }
+
+            processing.keyReleased = function() {
+                if (jumpy.movingLeft || jumpy.movingRight) {
+                    jumpy.movingLeft = false;
+                    jumpy.movingRight = false;
+                }
+            }
+
+            // ****************************************************
+            //                     MOVEMENT
+            // ****************************************************            
+
+            if (jumpy.movingLeft) {
+                jumpy.positionX -= jumpy.moveSpeed;
+            } else if (jumpy.movingRight) {
+                jumpy.positionX += jumpy.moveSpeed;
+            }
+
+            if (jumpy.jump){
+                jumpy.jumpTwo();
+            }
+
+            if (jumpy.isJumping) {
+                jumpy.positionY += jumpy.velocityY;
+                jumpy.velocityY += jumpy.gravity;
+            }
+            jumpy.updatePosition;
+            jumpy.endJump;
+            
+
+            
+
+            // ****************************************************
+            //                     DRAW GAME
+            // ****************************************************
+            
+            // Drawing the ground
+            drawGround();
+
+            // Drawing obstacles
+            for (i =0; i < obstacleArray.length; i++) {
+                obstacleArray[i].draw();
+            }
+
+            for (i =0; i < obstacleArray.length; i++) {
+                obstacleArray[i].move();
+            }
+
+            // Drawing player
+            jumpy.draw();
+
+
+            // *******************************************************
+            //                   CHECK COLLISIONS
+            // *******************************************************
+
+            jumpy.checkCollision(obstacleArray);
+
+            // removing immunity to collision if it exists
+            if (jumpy.immunity > 0) {
+                jumpy.immunity--;
+            }
+
+            // ********************************************************
+            //                      DEBUGGING
+            //*********************************************************
+            processing.text("Ob1 X   " +ob1.x, 15,80);
+            processing.text("Ob1 Y   " +ob1.y, 15,90);
+
+            processing.text("lives   " + jumpy.lives, 15,20);
+            processing.text("Key being pressed   " + keyBeingPressed, 15,30);
+            processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
+
+
+            processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
+            processing.text("jump   " + jumpy.jump, 15,120);
+            processing.text("isJumping   " + jumpy.isJumping, 15,130);
+            processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
+            processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
+            processing.text("Gravity   " + jumpy.gravity, 15,160);
+            processing.text("jump height   " + jumpy.jumpHeight, 15,170);
+            processing.text("colliding   " + jumpy.isColliding, 15,180);
+            processing.text("immunity   " + jumpy.immunity, 15,190);
+
+
+        };
+        }
+
+        var canvas = document.getElementById("canvas");
+        // attaching the sketchProc function to the canvas
+        var processingInstance = new Processing(canvas, sketchProc);
+        
+	</script>
+</body>
+</html>
