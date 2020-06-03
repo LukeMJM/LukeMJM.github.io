@@ -152,7 +152,7 @@
                             if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
                                 this.isColliding = true;
                                 this.lives--;
-                                this.immunity = 60;
+                                this.immunity = 1;
                             }
 
                         } else {
@@ -199,7 +199,10 @@
                     this.height = this.initialHeight * randB;
                     if (jumpy.immunity == 0) {
                         score++;
+                    } else if (jumpy.immunity == 1) {
+                        jumpy.immunity = 0;
                     }
+
                 }
 
             };
@@ -224,7 +227,7 @@
             // *******************************************************
             processing.draw = function() {
 
-                randA = processing.random(0.5, 2);
+                randA = processing.random(0.5, 1.5);
                 randB = processing.random(0.5, 2);
                 
                 var centerX = windowW/2;
@@ -376,11 +379,6 @@
 
                     jumpy.checkCollision(obstacleArray);
 
-                    // removing immunity to collision if it exists
-                    if (jumpy.immunity > 0) {
-                        jumpy.immunity--;
-                    }
-
                     
                     // *******************************************************
                     //                CHECK PLAYER's LIVES
@@ -416,7 +414,7 @@
                     // processing.text("Gravity   " + jumpy.gravity, 15,160);
                     // processing.text("Jump Height   " + (200 - jumpy.jumpHeight), 15,170);
                     // processing.text("colliding   " + jumpy.isColliding, 15,180);
-                    // processing.text("immunity   " + jumpy.immunity, 15,190);
+                    processing.text("immunity   " + jumpy.immunity, 15,190);
 
                 };
 
