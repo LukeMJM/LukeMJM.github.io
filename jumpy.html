@@ -19,6 +19,8 @@
         var heightOfWindow = processing.height;
         var keyBeingPressed;
 
+        var check = false;
+
 
         // *****************************************************
         //                     GAME OBJECTS
@@ -37,14 +39,15 @@
             this.scrollSpeed = 100;
             this.playerHeight = 40;
             this.playerWidth = 10;
-            this.jumpHeight = 130;
+            this.jumpHeight = 0;
             this.positionX = centerX;
             this.positionY = centerY;
-            this.jumpAcceleration = 1.05;
-            this.jumpVel = -10;
+            this.jumpAcceleration = 1.05; // legacy
+            this.jumpVel = -10; // unused
             this.gravity = 0.5;
-            this.velocityX;
+            this.velocityX; // unused
             this.velocityY;
+            this.impulseForce = -12;
             this.isColliding = false;
             this.immunity = 0;
             this.lives = 3;
@@ -97,7 +100,7 @@
 
         Player.prototype.jumpTwo = function() {
             
-            this.velocityY = -12;
+            this.velocityY = this.impulseForce;
             this.onGround = false;
                 
         }
@@ -114,12 +117,21 @@
                 this.velocityY += 0.5;
                 this.positionY += this.velocityY;
 
-                if (this.positionY > centerY) {
+                if (this.positionY >= centerY) {
                     this.positionY = centerY;
-                    //this.velocityY = 0;
+                    this.velocityY = 0;
                     this.onGround = true;
                     this.isJumping = false;
-                }
+
+                    if (this.chamberedJump) {
+
+                        check = true;
+                        this.velocityY = this.impulseForce;
+                        this.onGround = false;
+                        this.chamberedJump = false;
+                        this.isJumping = true;
+                    }
+                } 
             }
         }
 
@@ -193,6 +205,8 @@
         var ob1 = new Obstacle(340, centerY, 20, 40, 0);
         var obstacleArray = [ob1];
 
+        var heightestPoint = 200;
+
         // *******************************************************
         //                      GAME LOOP
         // *******************************************************
@@ -222,7 +236,9 @@
             processing.mousePressed = function() {
                 jumpy.isJumping = true;
                 // allows player to chamber a jump if they are almost on the ground
-                if (jumpy.isJumping && (jumpy.positionY < jumpy.jumpHeight && jumpy.positionY > jumpy.jumpHeight/2) ){
+                // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseForce*-1)/2))) {
                     jumpy.chamberedJump = true;
                 }
             }
@@ -309,6 +325,13 @@
             // ********************************************************
             //                      DEBUGGING
             //*********************************************************
+
+            
+
+            if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
+                jumpy.jumpHeight = (200 - jumpy.positionY);
+            }
+
             processing.text("Ob1 X   " +ob1.x, 15,80);
             processing.text("Ob1 Y   " +ob1.y, 15,90);
 
@@ -318,12 +341,12 @@
 
 
             processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
-            processing.text("jump   " + jumpy.jump, 15,120);
+            processing.text("Check   " + check, 15,120);
             processing.text("isJumping   " + jumpy.isJumping, 15,130);
             processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
             processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
             processing.text("Gravity   " + jumpy.gravity, 15,160);
-            processing.text("jump height   " + jumpy.jumpHeight, 15,170);
+            processing.text("Jump Height   " + (200 - jumpy.jumpHeight), 15,170);
             processing.text("colliding   " + jumpy.isColliding, 15,180);
             processing.text("immunity   " + jumpy.immunity, 15,190);
 
