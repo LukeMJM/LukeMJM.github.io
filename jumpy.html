@@ -253,9 +253,11 @@
                     } else if (keyBeingPressed == 100 && jumpy.movingLeft == false) {
                         jumpy.movingRight = true;
                     } else if (keyBeingPressed == 32) {
-                        jumpy.jump = true;
-                        // allows player jump by pressing enter as well as clicking
-                        if (jumpy.isJumping && (jumpy.positionY < jumpy.jumpHeight && jumpy.positionY > jumpy.jumpHeight/2) ){
+                        jumpy.isJumping = true;
+                        // allows player to chamber a jump if they are almost on the ground
+                        // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                        // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseForce*-1)/2))) {
                             jumpy.chamberedJump = true;
                         }
                     }
