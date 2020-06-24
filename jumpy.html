@@ -20,10 +20,7 @@
             });
         console.log(parameterName + ": " + result);
         return(result);
-    }
-
-        // example of url using GET parameters for offline mode
-        // http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5
+    }        
 
         // checking if player is me using a GET parameter
         var admin = findGetParameter("admin");
@@ -51,8 +48,11 @@
             // redirecting to allow easier editing of parameters if defaults are being used
     
         if (h == null) {
-            // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
-            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+            window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+
+            
+            // url using GET parameters for offline mode
+            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
 
         }
 
