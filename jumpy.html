@@ -6,8 +6,50 @@
 </head>
 <body>
 	<canvas id="canvas"></canvas>
-	<script type="application/javascript">
-                
+    <script type="application/javascript">
+
+    function findGetParameter(parameterName) {
+        var result = null,
+            tmp = [];
+        location.search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+            tmp = item.split("=");
+            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+            });
+        console.log(parameterName + ": " + result);
+        return(result);
+    }
+
+        // example of url using GET parameters
+        // http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5
+
+        // assigning values of GET parameters to variables
+        var h = findGetParameter("h");
+        var w = findGetParameter("w");
+        var s = findGetParameter("s");
+        var g = findGetParameter("g");
+        var iY = findGetParameter("iY");
+        var l = findGetParameter("l");
+        var unparsedCJE = findGetParameter("cJE");
+        var cJE;
+
+        if (unparsedCJE == "true") {
+            cJE = true;
+        } else if (unparsedCJE == "false") {
+            cJE = false;
+        } else {
+            cJE = false;
+        }
+
+            // redirecting to allow easier editing of parameters if defaults are being used
+    
+        if (h == null) {
+            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+        }
+
+
         function sketchProc(processing) {
        
             // *****************************************************
@@ -22,6 +64,8 @@
             var score = 0;
             var randA = processing.random(0.5, 2);
             var randB = processing.random(0.5, 2);
+            var debuggingOn = false;
+            var jsonFlag = true;
 
 
             // *****************************************************
@@ -33,31 +77,42 @@
             // *****************************************************
 
             var Player = function() {
-            
+
+                // default settings to use if no GET parameters are used
+                this.playerHeight = 40; //findGetParameter("h");
+                this.playerWidth = 10; //findGetParameter("w");
+                this.moveSpeed = 5; //findGetParameter("s");
+                this.gravity = 0.5; //findGetParameter("g");
+                this.impulseY = -12; //findGetParameter("iY");
+                this.lives = 5; //findGetParameter("l");
+
+                // changing input variables from strings to ints if they exist and overwriting defaults
+                if (h != null){
+                    this.playerHeight = parseInt(h);
+                    this.playerWidth = parseInt(w);
+                    this.moveSpeed = parseInt(s);
+                    this.gravity = parseFloat(g);
+                    this.impulseY = parseInt(iY);
+                    this.lives = parseInt(l);
+                    this.chamberedJumpEnabled = cJE;
+                }
+
+                // functional variables - not relevant in JSON
+                this.currentLives = this.lives;
+                this.immunity = 0;
+                this.velocityX; 
+                this.velocityY;
+                this.damgageTimer = 0;
+                this.isColliding = false;
+                this.damaged = false;
+                this.positionX = centerX;
+                this.positionY = centerY;
+                this.movingLeft = false;
+                this.movingRight = false;
                 this.onGround = true;
                 this.isJumping = false;
                 this.chamberedJump = false;
                 this.goingUp = true;
-                this.scrollSpeed = 100;
-                this.playerHeight = 40;
-                this.playerWidth = 10;
-                this.jumpHeight = 0;
-                this.positionX = centerX;
-                this.positionY = centerY;
-                this.jumpAcceleration = 1.05; // legacy
-                this.jumpVel = -10; // unused
-                this.gravity = 0.25;
-                this.velocityX; // unused
-                this.velocityY;
-                this.impulseY = -12;
-                this.isColliding = false;
-                this.immunity = 0;
-                this.lives = 5;
-                this.damaged = false;
-                this.damgageTimer = 0;
-                this.movingLeft = false;
-                this.movingRight = false;
-                this.moveSpeed = 5;
 
             };
 
@@ -89,7 +144,7 @@
             Player.prototype.updatePosition = function() {
                 
                 if (jumpy.onGround == false) {
-                    this.velocityY += 0.5;
+                    this.velocityY += this.gravity;
                     this.positionY += this.velocityY;
 
                     if (this.positionY >= centerY) {
@@ -124,7 +179,7 @@
                         
                             if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
                                 this.isColliding = true;
-                                this.lives--;
+                                this.currentLives--;
                                 this.damaged = true;
                                 this.damgageTimer = 30;
                                 this.immunity = 1;
@@ -177,10 +232,12 @@
                     } else if (jumpy.immunity == 1) {
                         jumpy.immunity = 0;
                     }
-
                 }
-
             };
+
+            // *******************************************************
+            //                       SETUP
+            // *******************************************************
 
             processing.setup = function(){
                 processing.frameRate (60);
@@ -232,11 +289,13 @@
 
                 if (scene == 0) {
                     processing.fill(81, 166, 31);
+                    // drawing start button
                     processing.rect(centerX - 40, centerY - 20, 80, 40);
                     processing.fill(255, 255, 255);
                     processing.textSize(18);
-                    processing.text("START",centerX -25, centerY + 6);
+                    processing.text("START",centerX -28, centerY + 7);
 
+                    // drawing controls text
                     processing.text("Controls",centerX -35, 50);
                     processing.textSize(16);
                     processing.text("Jump - click",centerX -45, 75);
@@ -246,6 +305,7 @@
                     processing.textSize(16);
                     processing.text("Jump over obstacles to increase your score",centerX -150, 145);
 
+                    // checking if start button is clicked
                     processing.mouseClicked = function() {
                         if (currentX >= 160 && currentX <= 240 &&
                             currentY >= 180 && currentY <= 220) {
@@ -269,7 +329,7 @@
                         // allows player to chamber a jump if they are almost on the ground
                         // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
                         // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
+                        if (jumpy.chamberedJumpEnabled && jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
                             jumpy.chamberedJump = true;
                         }
                     }
@@ -336,6 +396,25 @@
                     processing.fill(245,245,245);
                     drawGround();
 
+                    // drawing debugging button
+                    processing.rect(40, 360, 55, 20);
+                    processing.fill(10, 10, 10);
+                    processing.textSize(10);
+                    processing.text("Debugging", 43, 373);
+
+                    // checking if debugging button is clicked
+                    processing.mouseClicked = function() {
+                        if (currentX >= 40 && currentX <= 95 &&
+                            currentY >= 360 && currentY <= 380) {
+                            
+                            if (debuggingOn) {
+                                debuggingOn = false;
+                            } else if (debuggingOn == false) {
+                                debuggingOn = true;
+                            }
+                        }
+                    };
+
                     // Drawing obstacles
                     for (i =0; i < obstacleArray.length; i++) {
                         obstacleArray[i].draw();
@@ -360,7 +439,7 @@
                     //                CHECK PLAYER's LIVES
                     // *******************************************************
 
-                    if (jumpy.lives == 0) {
+                    if (jumpy.currentLives == 0) {
                         scene = 2;
                     }
 
@@ -371,32 +450,44 @@
                     }
 
                     // ********************************************************
+                    //               DISPLAY SCORE AND LIVES
+                    //*********************************************************
+
+                    processing.fill(245,245,245);
+                    processing.text("Lives   " + jumpy.currentLives, 10,20);
+                    processing.text("Score   " + score, 330, 20);
+
+                    // ********************************************************
                     //                      DEBUGGING
                     //*********************************************************
 
                     
+                    if (debuggingOn) {
+                        
+                        if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
+                            jumpy.jumpHeight = (200 - jumpy.positionY);
+                        }
 
-                    if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
-                        jumpy.jumpHeight = (200 - jumpy.positionY);
+                        processing.text("Player X   " +jumpy.positionX, 15,80);
+                        processing.text("Player Y   " +jumpy.positionY, 15,90);
+                        processing.fill(245,245,245);
+
+                        // processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
+
+
+                        // processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
+                        // console.log(jumpy.positionY);
+                        // console.log(jumpy.gravity);
+
+                        processing.text("   ", 15,120);
+                        processing.text("isJumping   " + jumpy.isJumping, 15,130);
+                        processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
+                        processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
+                        processing.text("Gravity   " + jumpy.gravity, 15,160);
+                        processing.text("Move Speed   " + (jumpy.moveSpeed), 15,170);
+                        processing.text("colliding   " + jumpy.isColliding, 15,180);
+                        processing.text("immunity   " + jumpy.immunity, 15,190);
                     }
-
-                    // processing.text("Ob1 X   " +ob1.x, 15,80);
-                    // processing.text("Ob1 Y   " +ob1.y, 15,90);
-                    processing.fill(245,245,245);
-                    processing.text("Lives   " + jumpy.lives, 10,20);
-                    processing.text("Score   " + score, 330, 20);
-                    // processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
-
-
-                    // processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
-                    // processing.text("   ", 15,120);
-                    // processing.text("isJumping   " + jumpy.isJumping, 15,130);
-                    // processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
-                    // processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
-                    // processing.text("Gravity   " + jumpy.gravity, 15,160);
-                    // processing.text("Jump Height   " + (200 - jumpy.jumpHeight), 15,170);
-                    // processing.text("colliding   " + jumpy.isColliding, 15,180);
-                    // processing.text("immunity   " + jumpy.immunity, 15,190);
 
                 };
 
@@ -407,6 +498,32 @@
                 if (scene == 2) {
                     processing.textSize(22);
                     processing.text(" Final Score:   " + score, 110, centerY);
+
+                    
+                    if (jsonFlag) {
+
+                        delete jumpy.immunity;
+                        delete jumpy.velocityX;
+                        delete jumpy.velocityY;
+                        delete jumpy.damgageTimer;
+                        delete jumpy.isColliding;
+                        delete jumpy.damaged;
+                        delete jumpy.positionX;
+                        delete jumpy.positionY;
+                        delete jumpy.movingLeft;
+                        delete jumpy.movingRight;
+                        delete jumpy.onGround;
+                        delete jumpy.isJumping;
+                        delete jumpy.chamberedJump;
+                        delete jumpy.goingUp;
+                        delete jumpy.currentLives;
+
+                        var myJSON = JSON.stringify(jumpy);
+                    
+                        console.log(myJSON);
+                        jsonFlag = false;
+                    }
+
                 }
             }
             
