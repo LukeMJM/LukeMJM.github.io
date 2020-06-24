@@ -25,7 +25,10 @@
         // example of url using GET parameters for offline mode
         // http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5
 
-        // assigning values of GET parameters to variables
+        // checking if player is me using a GET parameter
+        var admin = findGetParameter("admin");
+
+        // assigning values of GET parameters to variables for player object
         var h = findGetParameter("h");
         var w = findGetParameter("w");
         var s = findGetParameter("s");
@@ -396,24 +399,29 @@
                     processing.fill(245,245,245);
                     drawGround();
 
-                    // drawing debugging button
-                    processing.rect(40, 360, 55, 20);
-                    processing.fill(10, 10, 10);
-                    processing.textSize(10);
-                    processing.text("Debugging", 43, 373);
+                    if (admin != null) {
 
-                    // checking if debugging button is clicked
-                    processing.mouseClicked = function() {
-                        if (currentX >= 40 && currentX <= 95 &&
-                            currentY >= 360 && currentY <= 380) {
-                            
-                            if (debuggingOn) {
-                                debuggingOn = false;
-                            } else if (debuggingOn == false) {
-                                debuggingOn = true;
+                        // drawing debugging button
+                        processing.rect(40, 360, 55, 20);
+                        processing.fill(10, 10, 10);
+                        processing.textSize(10);
+                        processing.text("Debugging", 43, 373);
+
+                        // checking if debugging button is clicked
+                        processing.mouseClicked = function() {
+                            if (currentX >= 40 && currentX <= 95 &&
+                                currentY >= 360 && currentY <= 380) {
+                                
+                                if (debuggingOn) {
+                                    debuggingOn = false;
+                                } else if (debuggingOn == false) {
+                                    debuggingOn = true;
+                                }
                             }
-                        }
-                    };
+                        };
+
+                    }
+
 
                     // Drawing obstacles
                     for (i =0; i < obstacleArray.length; i++) {
