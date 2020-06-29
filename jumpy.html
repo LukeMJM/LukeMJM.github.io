@@ -10,13 +10,13 @@
 
     function findGetParameter(parameterName) {
         var result = null,
-            tmp = [];
+            temp = [];
         location.search
             .substr(1)
             .split("&")
             .forEach(function (item) {
-            tmp = item.split("=");
-            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+            temp = item.split("=");
+            if (temp[0] === parameterName) result = decodeURIComponent(temp[1]);
             });
         console.log(parameterName + ": " + result);
         return(result);
@@ -48,11 +48,11 @@
             // redirecting to allow easier editing of parameters if defaults are being used
     
         if (h == null) {
-            window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+            // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
 
             
             // url using GET parameters for offline mode
-            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true';
 
         }
 
@@ -63,12 +63,12 @@
             //                  GLOBAL VARIABLES
             // *****************************************************
             var windowH, windowW;
-            var centerY = 200, centerX = 200;
+            var centerY = 300, centerX = 200;
             var accFactor = 1.0
             var heightOfWindow = processing.height;
             var keyBeingPressed;
             var scene = 0;
-            var score = 0;
+            var groundLevel = 300; 
             var randA = processing.random(0.5, 2);
             var randB = processing.random(0.5, 2);
             var debuggingOn = false;
@@ -87,7 +87,7 @@
 
                 // default settings to use if no GET parameters are used
                 this.playerHeight = 40; //findGetParameter("h");
-                this.playerWidth = 10; //findGetParameter("w");
+                this.width = 10; //findGetParameter("w");
                 this.moveSpeed = 5; //findGetParameter("s");
                 this.gravity = 0.5; //findGetParameter("g");
                 this.impulseY = -12; //findGetParameter("iY");
@@ -95,8 +95,8 @@
 
                 // changing input variables from strings to ints if they exist and overwriting defaults
                 if (h != null){
-                    this.playerHeight = parseInt(h);
-                    this.playerWidth = parseInt(w);
+                    this.height = parseInt(h);
+                    this.width = parseInt(w);
                     this.moveSpeed = parseInt(s);
                     this.gravity = parseFloat(g);
                     this.impulseY = parseInt(iY);
@@ -104,7 +104,8 @@
                     this.chamberedJumpEnabled = cJE;
                 }
 
-                // functional variables - not relevant in JSON
+                // functional variables - not necessarily relevant in JSON
+                this.score = 0;
                 this.currentLives = this.lives;
                 this.immunity = 0;
                 this.velocityX; 
@@ -131,7 +132,7 @@
                 } else {
                     processing.fill(245, 245, 245);
                 }
-                processing.rect(this.positionX, this.positionY - this.playerHeight, this.playerWidth, this.playerHeight)
+                processing.rect(this.positionX, this.positionY - this.height, this.width, this.height)
 
             };
 
@@ -154,8 +155,9 @@
                     this.velocityY += this.gravity;
                     this.positionY += this.velocityY;
 
-                    if (this.positionY >= centerY) {
-                        this.positionY = centerY;
+                    // stopping character from going under the ground level and ending the jump process
+                    if (this.positionY >= groundLevel) {
+                        this.positionY = groundLevel;
                         this.velocityY = 0;
                         this.onGround = true;
                         this.isJumping = false;
@@ -168,7 +170,10 @@
                             this.chamberedJump = false;
                             this.isJumping = true;
                         }
-                    } 
+                    } else if (this.positionY <= this.height){
+                        console.log(this.height);
+                        this.velocityY = 0;
+                    }
                 }
             }
 
@@ -176,9 +181,9 @@
 
                 if (this.immunity == 0) {
                     left = this.positionX;
-                    right = this.positionX + this.playerWidth;
+                    right = this.positionX + this.width;
                     bottom = this.positionY;
-                    top = this.positionY - this.playerHeight;
+                    top = this.positionY - this.height;
 
                     for (i =0; i < obstacleArray.length; i++) {
                         // checking if x coordintes are intersecting
@@ -235,7 +240,7 @@
                     this.width = this.initialWidth * randA;
                     this.height = this.initialHeight * randB;
                     if (jumpy.immunity == 0) {
-                        score++;
+                        jumpy.score++;
                     } else if (jumpy.immunity == 1) {
                         jumpy.immunity = 0;
                     }
@@ -271,14 +276,14 @@
                 
                 var centerX = windowW/2;
                 var centerY = windowH/2;
-                var groundLevel = centerY; 
+                
                 
                 // getting the coordinates of the current mouse position
                 var currentY = processing.mouseY;
                 var currentX = processing.mouseX;           
 
                 function drawGround(){
-                    processing.rect(-1, centerY, windowW + 2, windowH);
+                    processing.rect(-1, groundLevel, windowW + 2, windowH);
                 }
 
                 function drawWall(height, width){ 
@@ -294,7 +299,7 @@
                 //                       START SCENE
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
-                if (scene == 0) {
+                if (scene === 0) {
                     processing.fill(81, 166, 31);
                     // drawing start button
                     processing.rect(centerX - 40, centerY - 20, 80, 40);
@@ -314,7 +319,7 @@
 
                     // checking if start button is clicked
                     processing.mouseClicked = function() {
-                        if (currentX >= 160 && currentX <= 240 &&
+                        if (scene === 0 && currentX >= 160 && currentX <= 240 &&
                             currentY >= 180 && currentY <= 220) {
                             
                             scene = 1;
@@ -330,14 +335,16 @@
                 //              CHECKING FOR PLAYER INPUT
                 // ****************************************************
 
-                if (scene == 1) {
+                if (scene === 1) {
                     processing.mousePressed = function() {
-                        jumpy.isJumping = true;
-                        // allows player to chamber a jump if they are almost on the ground
-                        // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
-                        // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                        if (jumpy.chamberedJumpEnabled && jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
-                            jumpy.chamberedJump = true;
+                        if (scene === 1) {
+                            jumpy.isJumping = true;
+                            // allows player to chamber a jump if they are almost on the ground
+                            // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                            // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                            if (jumpy.chamberedJumpEnabled && jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
+                                jumpy.chamberedJump = true;
+                            }
                         }
                     }
 
@@ -377,7 +384,7 @@
                     if (jumpy.movingLeft && jumpy.positionX > 0) {
                         jumpy.positionX -= jumpy.moveSpeed;
 
-                    } else if (jumpy.movingRight && jumpy.positionX < 400 - jumpy.playerWidth ) {
+                    } else if (jumpy.movingRight && jumpy.positionX < 400 - jumpy.width ) {
                         jumpy.positionX += jumpy.moveSpeed;
                     }
 
@@ -467,7 +474,7 @@
 
                     processing.fill(245,245,245);
                     processing.text("Lives   " + jumpy.currentLives, 10,20);
-                    processing.text("Score   " + score, 330, 20);
+                    processing.text("Score   " + jumpy.score, 330, 20);
 
                     // ********************************************************
                     //                      DEBUGGING
@@ -509,8 +516,7 @@
 
                 if (scene == 2) {
                     processing.textSize(22);
-                    processing.text(" Final Score:   " + score, 110, centerY);
-
+                    processing.text(" Final Score:   " + jumpy.score, 110, centerY/2);
                     
                     if (jsonFlag) {
 
@@ -529,12 +535,17 @@
                         delete jumpy.chamberedJump;
                         delete jumpy.goingUp;
                         delete jumpy.currentLives;
+                        delete jumpy.isJumping;
 
-                        var myJSON = JSON.stringify(jumpy);
+                        var playerJSON = JSON.stringify(jumpy, null, 2);
                     
-                        console.log(myJSON);
+                        console.log(playerJSON);
+                        console.log(JSON.stringify(jumpy,null, 2));
                         jsonFlag = false;
                     }
+
+                    processing.textSize(12);
+                    processing.text(JSON.stringify(jumpy, null, 2), 100, centerY);
 
                 }
             }
