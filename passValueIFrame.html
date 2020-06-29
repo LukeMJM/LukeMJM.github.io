@@ -1,0 +1,19 @@
+<html>
+<head>
+   <title>IFrame Parent</title>
+   <script type="text/javascript">
+   function setValue(val){
+       var value = val;
+       document.getElementById('Target').value = value;
+    }
+   </script>
+</head>
+ <body>
+     <h1>IFrame Parent</h1>
+     <h1>.....</h1>
+     <iframe name="iframe" id="iframe_id" src="childForm.html" height="150" >
+     </iframe>
+     <h1>.....</h1>
+     <div>Value: <input type="text" id="Target" ></div>
+ </body>
+ </html>
