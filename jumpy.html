@@ -11,7 +11,7 @@
 	<canvas id="canvas"></canvas>
     <script type="application/javascript">
 
-    // JSON output storage variable
+    // JSON output storage global variable
     var playerJSON;
 
     function findGetParameter(parameterName) {
@@ -24,7 +24,8 @@
             temp = item.split("=");
             if (temp[0] === parameterName) result = decodeURIComponent(temp[1]);
             });
-        console.log(parameterName + ": " + result);
+        // uncomment line below to debug parameter setting
+        // console.log(parameterName + ": " + result);
         return(result);
     }        
 
@@ -174,8 +175,8 @@
                             this.chamberedJump = false;
                             this.isJumping = true;
                         }
+                    // stopping character from going outside game bounds - will abruptly stop and fall as would be expected
                     } else if (this.positionY <= this.height){
-                        console.log(this.height);
                         this.velocityY = 0;
                     }
                 }
@@ -494,14 +495,6 @@
                         processing.text("Player X   " +jumpy.positionX, 15,80);
                         processing.text("Player Y   " +jumpy.positionY, 15,90);
                         processing.fill(245,245,245);
-
-                        // processing.text("Key is pressed   " + processing.keyIsPressed, 15,40);
-
-
-                        // processing.text("player Y   " +jumpy.positionY.toFixed(0), 15,110);
-                        // console.log(jumpy.positionY);
-                        // console.log(jumpy.gravity);
-
                         processing.text("   ", 15,120);
                         processing.text("isJumping   " + jumpy.isJumping, 15,130);
                         processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
@@ -543,7 +536,8 @@
 
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
-                        console.log(playerJSON);
+                        // uncomment line below to debug JSON output
+                        // console.log(playerJSON);
 
                         jsonFlag = false;
                     }
@@ -573,7 +567,7 @@
                     <div class="form-group">
                         <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
                     </div>
-                    <button class="btn btn-lg btn-success float-right" type="submit">Finish</button>
+                    <button class="btn btn-lg btn-success float-left" type="submit">Finish</button>
                 </form>
             </div>
         </div>
