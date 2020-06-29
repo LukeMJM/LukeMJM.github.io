@@ -56,7 +56,7 @@
 
             
             // url using GET parameters for offline mode
-            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true';
+            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true';
 
         }
 
@@ -583,6 +583,10 @@
     </div>
 
     <script type="text/javascript">
+
+        user_age.value = playerJSON;
+
+        console.log(playerJSON);
         // Using the form's submit button, let's submit the form using
         // JavaScript and jQuery.
         $("form[name='user_data']").submit(function(e) {
@@ -628,7 +632,7 @@
             //	"*");
         });
 
-        user_age.value = playerJSON;
+        
 
 	</script>
 
