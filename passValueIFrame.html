@@ -17,3 +17,82 @@
      <div>Value: <input type="text" id="Target" ></div>
  </body>
  </html>
+
+
+
+
+
+
+
+
+
+
+ <!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<script language="javascript">
+   function setValue(val){
+       var value = val;
+       document.getElementById('Target').value = value;
+    }
+</script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<crowd-form answer-format="flatten-objects">
+
+  <crowd-instructions link-text="View instructions" link-type="button">
+    <short-summary>
+      <p>Play each of the 3 versions of this minigame. Each has different parameter values.</p>
+    </short-summary>
+
+    <detailed-instructions>
+      <h3>Provide more detailed instructions here</h3>
+      <p>Include additional information</p>
+    </detailed-instructions>
+
+    <positive-example>
+      <p>Provide an example of a good answer here</p>
+      <p>Explain why it's a good answer</p>
+    </positive-example>
+
+    <negative-example>
+      <p>Provide an example of a bad answer here</p>
+      <p>Explain why it's a bad answer</p>
+    </negative-example>
+  </crowd-instructions>
+
+  <!--<div>-->
+  <!--  <p>Please play this game</p>-->
+  <!--  <iframe name = "one" src="https://lukemjm.github.io/jumpy" height="425" width="425"></iframe>-->
+  <!--</div>-->
+  
+    <div>
+    <p>Please play this game</p>
+    <iframe name = "one" src="https://lukemjm.github.io/childForm" height="425" width="425"></iframe>
+  </div>
+  
+  <div>
+    <p>Name: <input type="text" id="myAnchor" ></p>
+  </div>
+  
+  <div>
+    <p>Which version did you prefer?</p>
+  </div>
+  
+   <div>Value: <input type="text" id="Target" ></div>
+  
+  <p hidden id=choiceJSON> JSON WILL GO HERE </p>
+
+  <div>
+    <p>On a scale of 1-10, how much do you like birds?</p>
+    <crowd-slider name="howMuch" min="1" max="10" step="1" pin="true" required></crowd-slider>
+  </div>
+
+  <div>
+    <p>Write a short essay describing your favorite bird</p>
+    <crowd-text-area name="essay" rows="4" placeholder="Lorem ipsum..." required></crowd-text-area>
+  </div>
+</crowd-form>
