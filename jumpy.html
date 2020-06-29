@@ -544,12 +544,14 @@
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
                         console.log(playerJSON);
-                        console.log(JSON.stringify(jumpy,null, 2));
+
                         jsonFlag = false;
                     }
 
                     processing.textSize(12);
                     processing.text(JSON.stringify(jumpy, null, 2), 100, centerY);
+
+                    document.getElementById("user_age").value = playerJSON;
 
                 }
             }
@@ -584,9 +586,6 @@
 
     <script type="text/javascript">
 
-        user_age.value = playerJSON;
-
-        console.log(playerJSON);
         // Using the form's submit button, let's submit the form using
         // JavaScript and jQuery.
         $("form[name='user_data']").submit(function(e) {
