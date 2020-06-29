@@ -551,7 +551,7 @@
                     processing.textSize(12);
                     processing.text(JSON.stringify(jumpy, null, 2), 100, centerY);
 
-                    document.getElementById("user_age").value = playerJSON;
+                    document.getElementById("gameJSON").value = playerJSON;
 
                 }
             }
@@ -571,14 +571,9 @@
             <div class="col">
                 <form name="user_data">
                     <div class="form-group">
-                        <label for="user_age">Age</label>
-                        <input type="hidden" name="user_age" class="form-control" id="user_age" aria-describedby="user_age" required>
+                        <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
                     </div>
-                    <div class="form-group">
-                        <label for="user_height">Height</label>
-                        <input type="number" name="user_height" class="form-control" id="user_height" aria-describedby="user_height" required>
-                    </div>
-                    <button class="btn btn-lg btn-success float-right" type="submit">Send</button>
+                    <button class="btn btn-lg btn-success float-right" type="submit">Finish</button>
                 </form>
             </div>
         </div>
@@ -598,8 +593,7 @@
             console.log("Sending data to https://requester.mturk.com/create/projects/1621254.");
             parent.postMessage(
                 {
-                    user_age:    $("input[name='user_age']").val(),
-                    user_height: $("input[name='user_height']").val(),
+                    gameJSON:    $("input[name='gameJSON']").val(),
                 },
                 "https://requester.mturk.com/create/projects/1621254");
 
@@ -625,7 +619,7 @@
             //
             // parent.postMessage(
             //	{
-            //		user_age:    $("input[name='user_age']").val(),
+            //		gameJSON:    $("input[name='gameJSON']").val(),
             //		user_height: $("input[name='user_height']").val(),
             //	},
             //	"*");
