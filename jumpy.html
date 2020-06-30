@@ -13,6 +13,7 @@
 
     // JSON output storage global variable
     var playerJSON;
+    var scene = 0;    
 
     function findGetParameter(parameterName) {
         var result = null,
@@ -72,7 +73,7 @@
             var accFactor = 1.0
             var heightOfWindow = processing.height;
             var keyBeingPressed;
-            var scene = 0;
+            // var scene = 0; moved to top
             var groundLevel = 300; 
             var randA = processing.random(0.5, 2);
             var randB = processing.random(0.5, 2);
@@ -511,7 +512,7 @@
                 //                         END SCENE
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
-                if (scene == 2) {
+                if (scene === 2) {
                     processing.textSize(22);
                     processing.text(" Final Score:   " + jumpy.score, 110, centerY/2);
                     
@@ -542,10 +543,12 @@
                         jsonFlag = false;
                     }
 
-                    processing.textSize(12);
-                    processing.text(JSON.stringify(jumpy, null, 2), 100, centerY);
-
+                    processing.textSize(16);
+                    processing.text("Thanks for playing! Please click the finish button ", 30, centerY);
+                    processing.text("below to confirm you have played this iteration.", 35, centerY + 20);
                     document.getElementById("gameJSON").value = playerJSON;
+
+                    hideAndUnhideFinishButton();
 
                 }
             }
@@ -555,23 +558,41 @@
         var canvas = document.getElementById("canvas");
         // attaching the sketchProc function to the canvas
         var processingInstance = new Processing(canvas, sketchProc);
-        
-        
 
     </script>
 
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <form name="user_data">
-                    <div class="form-group">
-                        <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
-                    </div>
-                    <button class="btn btn-lg btn-success float-left" type="submit">Finish</button>
-                </form>
+    <div id="myDIV">
+        <div class="container">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <form name="user_data">
+                        <div class="form-group">
+                            <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
+                        </div>
+                        <button class="btn btn-lg btn-success float-left" type="submit">Finish</button>
+                    </form>
+                </div>
+                <div class="col"></div>
             </div>
         </div>
     </div>
+
+    <script>
+    
+    // small function to hide the finish button on page load and show it once game is finished
+    function hideAndUnhideFinishButton() {
+        var x = document.getElementById("myDIV");
+        if (scene === 2) {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+
+    hideAndUnhideFinishButton();
+
+    </script>
 
     <script type="text/javascript">
 
