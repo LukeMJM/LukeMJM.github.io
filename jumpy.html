@@ -11,9 +11,10 @@
 	<canvas id="canvas"></canvas>
     <script type="application/javascript">
 
-    // JSON output storage global variable
+    // Global variables which interact with parent page when using an IFrame
     var playerJSON;
     var scene = 0;    
+    var buttonPressed = false;
 
     function findGetParameter(parameterName) {
         var result = null,
@@ -543,10 +544,23 @@
                         jsonFlag = false;
                     }
 
-                    processing.textSize(16);
-                    processing.text("Thanks for playing! Please click the finish button ", 30, centerY);
-                    processing.text("below to confirm you have played this iteration.", 35, centerY + 20);
-                    document.getElementById("gameJSON").value = playerJSON;
+                    
+
+                    if (buttonPressed === false) {
+                        processing.textSize(16);
+                        processing.text("Please click the finish button below to", 60, centerY);
+                        processing.text("confirm you have played this iteration.",60, centerY + 20);
+                        document.getElementById("gameJSON").value = playerJSON;
+
+                    } else {
+                        processing.textSize(20);
+                        processing.text("Thanks for playing!", 110, centerY - 20);
+                        processing.textSize(16);
+                        processing.text("If you haven't played all 3 iterations,", 70, centerY + 20);
+                        processing.text("please continue with the next one.", 70, centerY + 40);
+                    }
+
+                    
 
                     hideAndUnhideFinishButton();
 
@@ -570,7 +584,7 @@
                         <div class="form-group">
                             <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
                         </div>
-                        <button class="btn btn-lg btn-success float-left" type="submit">Finish</button>
+                        <button onclick="buttonPressed = true;" class="btn btn-lg btn-success float-left" type="submit">Finish</button>
                     </form>
                 </div>
                 <div class="col"></div>
@@ -583,7 +597,7 @@
     // small function to hide the finish button on page load and show it once game is finished
     function hideAndUnhideFinishButton() {
         var x = document.getElementById("myDIV");
-        if (scene === 2) {
+        if (scene === 2 && buttonPressed === false) {
             x.style.display = "block";
         } else {
             x.style.display = "none";
