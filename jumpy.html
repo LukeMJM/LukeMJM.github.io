@@ -41,6 +41,7 @@
         var g = findGetParameter("g");
         var iY = findGetParameter("iY");
         var l = findGetParameter("l");
+        var id = findGetParameter("id");
         var unparsedCJE = findGetParameter("cJE");
         var cJE;
 
@@ -55,7 +56,7 @@
             // redirecting to allow easier editing of parameters if defaults are being used
     
         if (h == null) {
-            //window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+            // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
 
             
             // url using GET parameters for offline mode
@@ -128,6 +129,9 @@
                 this.isJumping = false;
                 this.chamberedJump = false;
                 this.goingUp = true;
+
+                // ID variable to be passed back into JSON
+                this.id = id;
 
             };
 
@@ -626,32 +630,7 @@
                 },
                 "https://requester.mturk.com/create/projects/1621254");
 
-            // The `parent.postMesage()` call allows you to specify "*" as the
-            // second argument--allowing you to send messages to any parent
-            // window regardless of the parent window's origin. To me, this
-            // method is insecure because you're basically allowing the code to
-            // say, "Hey, I have this message I'm going to send and I don't
-            // care who I send it to since I have a wildcard specified." It is
-            // my opinion that you always know where your iframe's messages are
-            // being sent when you create the communication between an iframe
-            // and its parent window; and that you do not use "*" if you know
-            // the parent windows origin.
-            //
-            // From the MDN:
-            //
-            // "Always provide a specific targetOrigin, not *, if you know
-            // where the other window's document should be located. Failing to
-            // provide a specific target discloses the data you send to any
-            // interested malicious site.
-            //
-            // Here's what the wildcard method looks like:
-            //
-            // parent.postMessage(
-            //	{
-            //		gameJSON:    $("input[name='gameJSON']").val(),
-            //		user_height: $("input[name='user_height']").val(),
-            //	},
-            //	"*");
+
         });
 
         
