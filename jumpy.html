@@ -80,8 +80,7 @@
             var frameRate = 60;
             var framesElapsed = 0;
             var timeElapsed = 0;
-            var timeRemaining = 60;
-            // var scene = 0; moved to top
+            var timeRemaining;
             var groundLevel = 300; 
             var randA = processing.random(0.5, 2);
             var randB = processing.random(0.5, 2);
@@ -120,9 +119,10 @@
                     this.impulseY = parseInt(iY); // lower -10 - upper -35
                     this.lives = parseInt(l); // lower 1 - upper 5
                     this.chamberedJumpEnabled = cJE;
+                    timeRemaining = t;
                 }
 
-                // functional variables - not necessarily relevant in JSON
+                // functional variables - not necessarily relevant in JSON but some are
                 this.score = 0;
                 this.highestScore = 0;
                 this.currentLives = this.lives;
@@ -140,6 +140,7 @@
                 this.isJumping = false;
                 this.chamberedJump = false;
                 this.goingUp = true;
+                this.attempts = 1;
                 
 
                 // id value to be passed back into JSON
@@ -510,6 +511,9 @@
 
                         // turning on out of lives message
                         outOfLivesTimer = outOfLivesTimerLength;
+
+                        // incrementing attempts by 1
+                        jumpy.attempts ++;
                         
                     }
 
@@ -557,8 +561,10 @@
                             timeRemaining--;
                         } 
 
-                        // if timeRemaining gets to 0, go to end screen
+                        // if timeRemaining gets to 0, go to end scene
                         if (timeRemaining === 0) {
+
+                            // go to end scene
                             scene = 2;
                         }
 
@@ -566,6 +572,11 @@
                     // ********************************************************
                     //               DISPLAY SCORE, TIME AND LIVES
                     //*********************************************************
+                        
+                    // update highestScore if necessary
+                    if (jumpy.score > jumpy.highestScore) {
+                        jumpy.highestScore = jumpy.score;
+                    }
 
                     processing.fill(245,245,245);
                     processing.text("Lives   " + jumpy.currentLives, 10,20);
@@ -605,7 +616,7 @@
 
                 if (scene === 2) {
                     processing.textSize(22);
-                    processing.text("Highest Score:   " + jumpy.score, 110, centerY/2);
+                    processing.text("Highest Score:   " + jumpy.highestScore, 110, centerY/2);
                     
                     if (jsonFlag) {
 
@@ -625,6 +636,7 @@
                         delete jumpy.goingUp;
                         delete jumpy.currentLives;
                         delete jumpy.isJumping;
+                        // delete jumpy.score;
 
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
