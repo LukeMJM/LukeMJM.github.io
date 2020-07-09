@@ -34,16 +34,19 @@
         // checking if player is me using a GET parameter
         var admin = findGetParameter("admin");
 
-        // assigning values of GET parameters to variables for player object
-        var h = findGetParameter("h");
-        var w = findGetParameter("w");
-        var s = findGetParameter("s");
-        var g = findGetParameter("g");
-        var iY = findGetParameter("iY");
-        var l = findGetParameter("l");
-        var id = findGetParameter("id");
+        // assigning values of GET parameters to variables for player + obstacle objects
+        var h = findGetParameter("h"); // player's height
+        var w = findGetParameter("w"); // player's width
+        var s = findGetParameter("s"); // player's movement speed
+        var g = findGetParameter("g"); // gravity force
+        var iY = findGetParameter("iY"); // player's Y impulse
+        var l = findGetParameter("l"); // player lives
+        var id = findGetParameter("id"); // game instance ID for mech turk
         var unparsedCJE = findGetParameter("cJE");
-        var cJE;
+        var cJE; // chambered jump enabled
+
+        var obstacleSpeedIncrement = parseFloat(findGetParameter("oSI"));
+        var t = findGetParameter("t"); // time allowed per game in seconds
 
         if (unparsedCJE == "true") {
             cJE = true;
@@ -56,11 +59,11 @@
             // redirecting to allow easier editing of parameters if defaults are being used
     
         if (h == null) {
-            // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=5';
+            window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
 
             
             // url using GET parameters for offline mode
-            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true';
+            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
 
         }
 
@@ -75,6 +78,10 @@
             var accFactor = 1.0
             var heightOfWindow = processing.height;
             var keyBeingPressed;
+            var frameRate = 60;
+            var framesElapsed = 0;
+            var timeElapsed = 0;
+            var timeRemaining = 60;
             // var scene = 0; moved to top
             var groundLevel = 300; 
             var randA = processing.random(0.5, 2);
@@ -103,12 +110,12 @@
 
                 // changing input variables from strings to ints if they exist and overwriting defaults
                 if (h != null){
-                    this.height = parseInt(h);
-                    this.width = parseInt(w);
-                    this.moveSpeed = parseInt(s);
-                    this.gravity = parseFloat(g);
-                    this.impulseY = parseInt(iY);
-                    this.lives = parseInt(l);
+                    this.height = parseInt(h); // lower 10 - upper 120
+                    this.width = parseInt(w); // lower 3 - upper 60
+                    this.moveSpeed = parseInt(s); // lower 2 - upper 10
+                    this.gravity = parseFloat(g); // lower 0.2 - upper 0.75
+                    this.impulseY = parseInt(iY); // lower -10 - upper -35
+                    this.lives = parseInt(l); // lower 1 - upper 5
                     this.chamberedJumpEnabled = cJE;
                 }
 
@@ -129,9 +136,12 @@
                 this.isJumping = false;
                 this.chamberedJump = false;
                 this.goingUp = true;
+                
 
-                // ID variable to be passed back into JSON
+                // id value to be passed back into JSON
                 this.id = id;
+                // obstacle speed increase value to be included in JSON
+                this.obstacleSpeedIncrement = obstacleSpeedIncrement; // lower 0.1 - upper 1
 
             };
 
@@ -247,7 +257,7 @@
                 // also adding to score as obstacle has been cleared by player
                 if (this.x + this.width <= 0) {
                     this.x = 400;
-                    this.speed += 0.25;
+                    this.speed += obstacleSpeedIncrement;
                     this.width = this.initialWidth * randA;
                     this.height = this.initialHeight * randB;
                     if (jumpy.immunity == 0) {
@@ -263,7 +273,7 @@
             // *******************************************************
 
             processing.setup = function(){
-                processing.frameRate (60);
+                processing.frameRate (frameRate);
                 processing.size(400,400);
                 windowH = processing.height;
                 windowW = processing.width;
@@ -479,12 +489,27 @@
                         jumpy.damaged = false;
                     }
 
+                    // *******************************************************
+                    //                         TIMER
+                    // *******************************************************
+
+                        framesElapsed++;
+
+                        if (framesElapsed % frameRate == 1){
+                            timeRemaining--;
+                        } 
+
+
+
+
+
                     // ********************************************************
-                    //               DISPLAY SCORE AND LIVES
+                    //               DISPLAY SCORE, TIME AND LIVES
                     //*********************************************************
 
                     processing.fill(245,245,245);
                     processing.text("Lives   " + jumpy.currentLives, 10,20);
+                    processing.text("Time remaining   " + timeRemaining, 140, 20);
                     processing.text("Score   " + jumpy.score, 330, 20);
 
                     // ********************************************************
@@ -543,7 +568,7 @@
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
                         // uncomment line below to debug JSON output
-                        // console.log(playerJSON);
+                        console.log(playerJSON);
 
                         jsonFlag = false;
                     }
@@ -553,15 +578,23 @@
                     if (buttonPressed === false) {
                         processing.textSize(16);
                         processing.text("Please click the finish button below to", 60, centerY);
-                        processing.text("confirm you have played this iteration.",60, centerY + 20);
+                        processing.text("reveal a short survey about this game.",60, centerY + 20);
                         document.getElementById("gameJSON").value = playerJSON;
 
                     } else {
                         processing.textSize(20);
                         processing.text("Thanks for playing!", 110, centerY - 20);
                         processing.textSize(16);
-                        processing.text("If you haven't played all 3 iterations,", 70, centerY + 20);
-                        processing.text("please continue with the next one.", 70, centerY + 40);
+                        processing.text("Please answer the short survey below", 70, centerY + 20);
+
+                        if (jumpy.id == 1) {
+                            processing.text(" and then continue to version 2.", 80, centerY + 40);
+                        } else if (jumpy.id == 2) {
+                            processing.text(" and then continue to version 3.", 80, centerY + 40);
+                        } else if (jumpy.id == 3) {
+                            processing.text(" and the summary survey at the bottom of the page.", 20, centerY + 40);
+                        }
+                        
                     }
 
                     
