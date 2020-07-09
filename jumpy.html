@@ -491,8 +491,7 @@
                     //                CHECK PLAYER's LIVES
                     // *******************************************************
 
-                    // if player is out of lives, reset everything but check their highest score
-
+                    // if player is out of lives, reset everything but store their highest score
                     if (jumpy.currentLives == 0) {
                         if (jumpy.score > jumpy.highestScore) {
                             jumpy.highestScore = jumpy.score;
@@ -521,23 +520,29 @@
                         processing.text("You ran out of lives, try again!", 70, 100);
                         processing.textSize(12);
                         processing.fill(255, 255, 255);
+
+                        // after 2 seconds, decrement the tone value of the outOfLives text by 1, to give a fadeout effect
                         if (outOfLivesTimer < (outOfLivesTimerLength - 2) && outOfLivesTextValue > 200){
                             outOfLivesTextValue--;
                         }
 
+                        // every second the outOfLivesTimer will be decremented by 1
                         if (framesElapsed % frameRate == 1){
                             outOfLivesTimer--;
 
+                            // if the outOfLivesTimer reaches 0, reset the text colour of the text
                             if (outOfLivesTimer == 0){
                                 outOfLivesTextValue = 255;
                             }
                         } 
 
-                        
                     }
 
+                    // decrementing the damgeTimer every frame after jumpy is damaged
                     if (jumpy.damaged && jumpy.damgageTimer > 0) {
                         jumpy.damgageTimer --
+                        
+                        // removing the damaged flag from jumpy if the timer reaches 0
                     } else if (jumpy.damaged && jumpy.damgageTimer == 0) {
                         jumpy.damaged = false;
                     }
@@ -556,8 +561,6 @@
                         if (timeRemaining === 0) {
                             scene = 2;
                         }
-
-
 
 
                     // ********************************************************
@@ -631,8 +634,6 @@
                         jsonFlag = false;
                     }
 
-                    
-
                     if (buttonPressed === false) {
                         processing.textSize(16);
                         processing.text("Please click the finish button below to", 60, centerY);
@@ -654,9 +655,7 @@
                         }
                         
                     }
-
                     
-
                     hideAndUnhideFinishButton();
 
                 }
