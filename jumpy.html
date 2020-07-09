@@ -59,11 +59,10 @@
             // redirecting to allow easier editing of parameters if defaults are being used
     
         if (h == null) {
-            window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
-
+            // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
             
             // url using GET parameters for offline mode
-            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
+            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
 
         }
 
@@ -88,6 +87,10 @@
             var randB = processing.random(0.5, 2);
             var debuggingOn = false;
             var jsonFlag = true;
+            var defaultObjectSpeed = 2;
+            var outOfLivesTimer = 0;
+            var outOfLivesTimerLength = 5;
+            var outOfLivesTextValue = 255;
 
 
             // *****************************************************
@@ -121,6 +124,7 @@
 
                 // functional variables - not necessarily relevant in JSON
                 this.score = 0;
+                this.highestScore = 0;
                 this.currentLives = this.lives;
                 this.immunity = 0;
                 this.velocityX; 
@@ -245,6 +249,14 @@
                 this.speed = speed;
             };
 
+            Obstacle.prototype.setX = function(x) {
+                this.x = x;
+            };
+
+            Obstacle.prototype.setSpeed = function(speed) {
+                this.speed = speed;
+            };
+
             Obstacle.prototype.draw = function() {
                 processing.fill(220, 220, 220);
                 processing.rect(this.x, this.y - this.height, this.width, this.height);
@@ -282,7 +294,7 @@
 
             // Creating obstacles and putting into an array to keep them 
             
-            var ob1 = new Obstacle(340, centerY, 20, 40, 2);
+            var ob1 = new Obstacle(340, centerY, 20, 40, defaultObjectSpeed);
             var obstacleArray = [ob1];
 
             var heightestPoint = 200;
@@ -479,8 +491,49 @@
                     //                CHECK PLAYER's LIVES
                     // *******************************************************
 
+                    // if player is out of lives, reset everything but check their highest score
+
                     if (jumpy.currentLives == 0) {
-                        scene = 2;
+                        if (jumpy.score > jumpy.highestScore) {
+                            jumpy.highestScore = jumpy.score;
+                        }
+                        
+                        // resetting player position, lives and score to default to simulate a fresh game
+                        jumpy.score = 0;
+                        jumpy.currentLives = jumpy.lives
+                        jumpy.positionX = centerX;
+                        jumpy.positionY = groundLevel;
+                        jumpy.immunity = 0;
+
+                        // resetting obstacle speed to default and x position off screen to give some respite
+                        obstacleArray[0].setX(800);
+                        obstacleArray[0].setSpeed(defaultObjectSpeed);
+
+                        // turning on out of lives message
+                        outOfLivesTimer = outOfLivesTimerLength;
+                        
+                    }
+
+                    // Displaying out of lives message
+                    if (outOfLivesTimer != 0) {
+                        processing.textSize(20)
+                        processing.fill(outOfLivesTextValue, outOfLivesTextValue, outOfLivesTextValue);
+                        processing.text("You ran out of lives, try again!", 70, 100);
+                        processing.textSize(12);
+                        processing.fill(255, 255, 255);
+                        if (outOfLivesTimer < (outOfLivesTimerLength - 2) && outOfLivesTextValue > 200){
+                            outOfLivesTextValue--;
+                        }
+
+                        if (framesElapsed % frameRate == 1){
+                            outOfLivesTimer--;
+
+                            if (outOfLivesTimer == 0){
+                                outOfLivesTextValue = 255;
+                            }
+                        } 
+
+                        
                     }
 
                     if (jumpy.damaged && jumpy.damgageTimer > 0) {
@@ -493,12 +546,16 @@
                     //                         TIMER
                     // *******************************************************
 
+                        // creating timer
                         framesElapsed++;
-
                         if (framesElapsed % frameRate == 1){
                             timeRemaining--;
                         } 
 
+                        // if timeRemaining gets to 0, go to end screen
+                        if (timeRemaining === 0) {
+                            scene = 2;
+                        }
 
 
 
@@ -510,7 +567,8 @@
                     processing.fill(245,245,245);
                     processing.text("Lives   " + jumpy.currentLives, 10,20);
                     processing.text("Time remaining   " + timeRemaining, 140, 20);
-                    processing.text("Score   " + jumpy.score, 330, 20);
+                    processing.text("Current Score   " + jumpy.score, 280, 20);
+                    processing.text("Highest Score   " + jumpy.highestScore, 280, 40);
 
                     // ********************************************************
                     //                      DEBUGGING
@@ -544,7 +602,7 @@
 
                 if (scene === 2) {
                     processing.textSize(22);
-                    processing.text(" Final Score:   " + jumpy.score, 110, centerY/2);
+                    processing.text("Highest Score:   " + jumpy.score, 110, centerY/2);
                     
                     if (jsonFlag) {
 
