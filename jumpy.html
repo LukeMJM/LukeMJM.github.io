@@ -62,7 +62,7 @@
             // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
             
             // url using GET parameters for offline mode
-            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
+            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
 
         }
 
@@ -103,12 +103,12 @@
             var Player = function() {
 
                 // default settings to use if no GET parameters are used
-                this.playerHeight = 40; //findGetParameter("h");
-                this.width = 10; //findGetParameter("w");
-                this.moveSpeed = 5; //findGetParameter("s");
-                this.gravity = 0.5; //findGetParameter("g");
-                this.impulseY = -12; //findGetParameter("iY");
-                this.lives = 5; //findGetParameter("l");
+                // this.playerHeight = 40; //findGetParameter("h");
+                // this.width = 10; //findGetParameter("w");
+                // this.moveSpeed = 5; //findGetParameter("s");
+                // this.gravity = 0.5; //findGetParameter("g");
+                // this.impulseY = -12; //findGetParameter("iY");
+                // this.lives = 5; //findGetParameter("l");
 
                 // changing input variables from strings to ints if they exist and overwriting defaults
                 if (h != null){
@@ -116,7 +116,7 @@
                     this.width = parseInt(w); // lower 3 - upper 60
                     this.moveSpeed = parseInt(s); // lower 2 - upper 10
                     this.gravity = parseFloat(g); // lower 0.2 - upper 0.75
-                    this.impulseY = parseInt(iY); // lower -10 - upper -35
+                    this.impulseY = parseInt(iY); // lower -35 - upper -10
                     this.lives = parseInt(l); // lower 1 - upper 5
                     this.chamberedJumpEnabled = cJE;
                     timeRemaining = t;
@@ -636,7 +636,7 @@
                         delete jumpy.goingUp;
                         delete jumpy.currentLives;
                         delete jumpy.isJumping;
-                        // delete jumpy.score;
+                        delete jumpy.score;
 
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
