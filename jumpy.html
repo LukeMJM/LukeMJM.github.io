@@ -62,7 +62,7 @@
             // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
             
             // url using GET parameters for offline mode
-            // window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
+            window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
 
         }
 
@@ -70,7 +70,7 @@
         function sketchProc(processing) {
        
             // *****************************************************
-            //                  GLOBAL VARIABLES
+            //                  GLOBAL VARIABLdES
             // *****************************************************
             var windowH, windowW;
             var centerY = 300, centerX = 200;
@@ -91,6 +91,11 @@
             var outOfLivesTimerLength = 5;
             var outOfLivesTextValue = 255;
 
+            // keypressed booleans
+            var a = false;
+            var d = false;
+            var spacebar = false;
+
 
             // *****************************************************
             //                     GAME OBJECTS
@@ -103,7 +108,7 @@
             var Player = function() {
 
                 // default settings to use if no GET parameters are used
-                // this.playerHeight = 40; //findGetParameter("h");
+                // this.height = 40; //findGetParameter("h");
                 // this.width = 10; //findGetParameter("w");
                 // this.moveSpeed = 5; //findGetParameter("s");
                 // this.gravity = 0.5; //findGetParameter("g");
@@ -127,8 +132,8 @@
                 this.highestScore = 0;
                 this.currentLives = this.lives;
                 this.immunity = 0;
-                this.velocityX; 
-                this.velocityY;
+                this.velocityX = 0; 
+                this.velocityY = 0;
                 this.damgageTimer = 0;
                 this.isColliding = false;
                 this.damaged = false;
@@ -162,7 +167,7 @@
 
             };
 
-            Player.prototype.jumpTwo = function() {
+            Player.prototype.beginJump = function() {
                 
                 this.velocityY = this.impulseY;
                 this.onGround = false;
@@ -382,57 +387,100 @@
                         }
                     }
 
+                    // Checks if a key is pressed and turns on its boolean if it is
                     processing.keyPressed = function() {
-                        keyBeingPressed = processing.key;
+                        // a = 97 - moving left
+                        if (processing.key == 97) {
+                            a = true;
+                            
+                        // d = 100 - moving right
+                        } else if (processing.key == 100) {
+                            d = true;
 
-                            // a = 97
-                            if (keyBeingPressed == 97) {
-                                jumpy.movingRight = false
-                                jumpy.movingLeft = true;
-                            // d = 100
-                            } else if (keyBeingPressed == 100) {
-                                jumpy.movingLeft = false
-                                jumpy.movingRight = true;
-                            } else if (keyBeingPressed == 32) {
-                                jumpy.isJumping = true;
-                                // allows player to chamber a jump if they are almost on the ground
-                                // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
-                                // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                                if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
-                                    jumpy.chamberedJump = true;
-                                }
-                            }
+                        } else if (processing.key == 32) {
+                            spacebar = true;
+                        }
+
                     }
 
+                    // turning off all key booleans if one is released - others will be immediately reactived if they are pressed
                     processing.keyReleased = function() {
-                        if (jumpy.movingLeft || jumpy.movingRight) {
-                            jumpy.movingLeft = false;
-                            jumpy.movingRight = false;
+                        // a = 97
+                        if (processing.key == 97) {
+                            a = false;
+                            
+                        // d = 100 
+                        } else if (processing.key == 100) {
+                            d = false;
+
+                        // spacebar = 32
+                        } else if (processing.key == 32) {
+                            spacebar = false;
                         }
                     }
 
                     // ****************************************************
                     //                     MOVEMENT
-                    // ****************************************************            
+                    // ****************************************************    
+                    
+                    // a is pressed - player moving left
+                    if (a) {
+                        jumpy.velocityX += -jumpy.moveSpeed;
+                    } 
+                    
+                    // d is pressed - player moving right
+                    if (d) {
+                        jumpy.velocityX += jumpy.moveSpeed;
 
-                    if (jumpy.movingLeft && jumpy.positionX > 0) {
-                        jumpy.positionX -= jumpy.moveSpeed;
+                    } 
+                    
+                    // neither movement key is pressed, so X velocity can be set to 0
+                    if (d == false && a == false) {
+                        jumpy.velocityX = 0;
 
-                    } else if (jumpy.movingRight && jumpy.positionX < 400 - jumpy.width ) {
-                        jumpy.positionX += jumpy.moveSpeed;
                     }
+
+                    // capping move speed
+                    if (jumpy.velocityX > jumpy.moveSpeed){
+                        jumpy.velocityX = jumpy.moveSpeed;
+                    } else if (jumpy.velocityX < -jumpy.moveSpeed) {
+                        jumpy.velocityX = -jumpy.moveSpeed;
+                    }
+
+                    // stops player moving off screen - probably a better way to write this
+                    if (jumpy.positionX == 0 && jumpy.velocityX < 0) {
+                    
+                    } else if (jumpy.positionX == (400 - jumpy.width) && jumpy.velocityX > 0) {
+                    
+                    } else {
+                        jumpy.positionX += jumpy.velocityX;
+                    }
+                    
 
                     // ****************************************************
                     //                     JUMPING
                     // **************************************************** 
 
-                    if (jumpy.onGround && jumpy.isJumping){
-                        jumpy.jumpTwo();
+                    // if spacebar boolean is on, the spacebar is pressed - a jump is initiated
+                    if (spacebar) {
+                        jumpy.isJumping = true;
+                        // allows player to chamber a jump if they are almost on the ground
+                        // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                        // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
+                            jumpy.chamberedJump = true;
+                        }
                     }
 
+                    // checks that the player is on the ground and allows a new jump to begin if they are
+                    if (jumpy.onGround && jumpy.isJumping){
+                        jumpy.beginJump();
+                    }
+
+                    
                     if (jumpy.isJumping) {
                         jumpy.updatePosition();
-                        jumpy.limitJump();
+                        // jumpy.limitJump();
                     }
 
                     
@@ -587,25 +635,33 @@
                     // ********************************************************
                     //                      DEBUGGING
                     //*********************************************************
-
+                    processing.key
                     
                     if (debuggingOn) {
                         
                         if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
                             jumpy.jumpHeight = (200 - jumpy.positionY);
                         }
+                        processing.fill(245,245,245);
+                        processing.textSize(10);
+                        processing.text("KeyPressed   " + processing.key, 15,30);
+                        
+                        processing.text("Jump   " + spacebar, 15,50);
+                        processing.text("Left   " + a, 15,60);
+                        processing.text("Right   " + d, 15,70);
+
 
                         processing.text("Player X   " +jumpy.positionX, 15,80);
                         processing.text("Player Y   " +jumpy.positionY, 15,90);
-                        processing.fill(245,245,245);
-                        processing.text("   ", 15,120);
+                        processing.text("X Velocity   " + jumpy.velocityX, 15, 100);
+                        processing.text("Y Velocity   " + jumpy.velocityY, 15, 110);
                         processing.text("isJumping   " + jumpy.isJumping, 15,130);
                         processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
-                        processing.text("Y Velocity   " + jumpy.velocityY, 15, 150);
-                        processing.text("Gravity   " + jumpy.gravity, 15,160);
-                        processing.text("Move Speed   " + (jumpy.moveSpeed), 15,170);
-                        processing.text("colliding   " + jumpy.isColliding, 15,180);
-                        processing.text("immunity   " + jumpy.immunity, 15,190);
+
+                        processing.text("Gravity   " + jumpy.gravity, 15,150);
+                        processing.text("Move Speed   " + (jumpy.moveSpeed), 15,160);
+                        processing.text("colliding   " + jumpy.isColliding, 15,170);
+                        processing.text("immunity   " + jumpy.immunity, 15,180);
                     }
 
                 };
