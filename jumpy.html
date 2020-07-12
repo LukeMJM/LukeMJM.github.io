@@ -448,9 +448,9 @@
                     }
 
                     // stops player moving off screen - probably a better way to write this
-                    if (jumpy.positionX == 0 && jumpy.velocityX < 0) {
+                    if (jumpy.positionX <= 0 && jumpy.velocityX < 0) {
                     
-                    } else if (jumpy.positionX == (400 - jumpy.width) && jumpy.velocityX > 0) {
+                    } else if (jumpy.positionX >= (400 - jumpy.width) && jumpy.velocityX > 0) {
                     
                     } else {
                         jumpy.positionX += jumpy.velocityX;
