@@ -98,8 +98,7 @@
 
 
             // *****************************************************
-            //                     GAME OBJECTS
-            // *****************************************************
+            //                     GAME OBJECTSa
 
             // *****************************************************
             //                  PLAYER CHARACTER
@@ -121,7 +120,7 @@
                     this.width = parseInt(w); // lower 3 - upper 60
                     this.moveSpeed = parseInt(s); // lower 2 - upper 10
                     this.gravity = parseFloat(g); // lower 0.2 - upper 0.75
-                    this.impulseY = parseInt(iY); // lower -35 - upper -10
+                    this.impulseY = parseInt(iY); // lower -20 - upper -10
                     this.lives = parseInt(l); // lower 1 - upper 5
                     this.chamberedJumpEnabled = cJE;
                     timeRemaining = t;
@@ -349,7 +348,7 @@
                     // drawing controls text
                     processing.text("Controls",centerX -35, 50);
                     processing.textSize(16);
-                    processing.text("Jump - click",centerX -45, 75);
+                    processing.text("Jump - click / spacebar",centerX -85, 75);
                     processing.text("Move left - a",centerX -47, 90);
                     processing.text("Move right - d",centerX -50, 105);
 
@@ -381,7 +380,7 @@
                             // allows player to chamber a jump if they are almost on the ground
                             // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
                             // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                            if (jumpy.chamberedJumpEnabled && jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
+                            if (jumpy.chamberedJumpEnabled && jumpy.isJumping && (jumpy.velocityY > 0 && jumpy.positionY >= (groundLevel - jumpy.height))) {
                                 jumpy.chamberedJump = true;
                             }
                         }
@@ -482,7 +481,6 @@
                         jumpy.updatePosition();
                         // jumpy.limitJump();
                     }
-
                     
                     // ****************************************************
                     //                     DRAW GAME
@@ -639,9 +637,6 @@
                     
                     if (debuggingOn) {
                         
-                        if (jumpy.positionY < (200 - jumpy.jumpHeight)) {
-                            jumpy.jumpHeight = (200 - jumpy.positionY);
-                        }
                         processing.fill(245,245,245);
                         processing.textSize(10);
                         processing.text("KeyPressed   " + processing.key, 15,30);
@@ -697,7 +692,7 @@
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
                         // uncomment line below to debug JSON output
-                        console.log(playerJSON);
+                        // console.log(playerJSON);
 
                         jsonFlag = false;
                     }
@@ -781,7 +776,7 @@
 
             // Send the user's age and height to the parent window--sending the
             // data as an object that the parent can receive and parse.
-            console.log("Sending data to https://requester.mturk.com/create/projects/1621254.");
+            // console.log("Sending data to https://requester.mturk.com/create/projects/1621254.");
             parent.postMessage(
                 {
                     gameJSON:    $("input[name='gameJSON']").val(),
