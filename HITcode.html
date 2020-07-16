@@ -1,0 +1,248 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+    <script type="text/javascript">
+    
+		// Determine how the browser should listen for messages from other
+		// windows. If `addEventListener` exists, then use that. Otherwise, use
+		// `attachEvent` because an older browser is probably being used. Also,
+		// use a callback to handle messages so that both methods of "message
+		// listening" can be routed to the same function. The callback in this
+		// example is `handleMessage` and it will take one argument (the
+		// `MessageEvent` object).
+		if (window.addEventListener) {
+			window.addEventListener("message", handleMessage);
+		} else {
+			window.attachEvent("onmessage", handleMessage);
+		}
+
+		/**
+		 * Handle a message that was sent from some window.
+		 *
+		 * @param {MessageEvent} event The MessageEvent object holding the message/data.
+		 */
+		function handleMessage(event) {
+			console.log("Received a message from " + event.origin + ".");
+
+			// When one window sends a message, or data, to another window via
+			// `parent.postMessage()`, the message (the first argument) in the
+			// `parent.postMessage()` call is accessible via `event.data` here.
+			var dataFromGame = event.data;
+            var JSONobj = JSON.parse(dataFromGame.gameJSON);
+			// Log the data to the console.
+			console.log(JSONobj);
+			console.log(JSONobj.id);
+			
+			
+			if (JSONobj.id == 1) {
+			    document.getElementById("JSON1").value = dataFromGame.gameJSON;
+			    hideAndUnhide("survey1");
+			} else if (JSONobj.id == 2) {
+			    document.getElementById("JSON2").value = dataFromGame.gameJSON;
+			    hideAndUnhide("survey2");
+			} else if (JSONobj.id == 3) {
+			    document.getElementById("JSON3").value = dataFromGame.gameJSON;
+			    hideAndUnhide("survey3");
+
+			}
+		}
+	</script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<crowd-form answer-format="flatten-objects">
+
+  <crowd-instructions link-text="View instructions" link-type="button">
+    <short-summary>
+      <p>Please play each of the 3 versions of this minigame, trying to get the highest score you can. When you have played for 1 minute, a finish button will appear - click on this to register that you have played for the full time. 
+      <br>Upon clicking the finish button, a short survey will appear under the game window relating to your experience of the game - answer this and then continue to the next game. 
+      <br>After playing all 3 games, please answer the final questions at the bottom of the page. Thank you for your help!</p>
+    </short-summary>
+
+    <detailed-instructions>
+      <h3></h3>
+      <p>Information on the controls for each game will be present inside the game window.</p>
+    </detailed-instructions>
+
+  </crowd-instructions>
+    
+    <div id="version1">
+        <h1>Version 1</h1>
+            <iframe name="iframe1" id="iframe_id1" src=${url1} height="550" width = "410" >
+            </iframe>
+        <crowd-input name="gameJSON1" type="hidden" id="JSON1" required></crowd-input>
+    </div>
+    
+    <div id="survey1">
+      <p>With 1 being easy and 10 being hard, how would you rate the difficulty of version 1?</p>
+      <crowd-slider name="difficulty1" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being totally out of control and 10 being totally in control, how in control did you feel playing version 1?</p>
+      <crowd-slider name="control1" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being boring and 10 being fun, how did it feel to play version 1?</p>
+      <crowd-slider name="engagement1" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being relaxing and 10 being stressful, how did version 1 feel?</p>
+      <crowd-slider name="stress1" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>If there was an issue with the game that made it unplayable or almost unplayable, check the box below.</p>
+      <crowd-checkbox name="gamebroken1" value="true" onclick=hideAndUnhide("gamebreak1")></crowd-checkbox>
+      
+      <div id="gamebreak1">
+          <p>Which element of the game was the issue?</p>
+          <crowd-checkbox name="gamebreak1" value="playerSize">The size of the player character</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak1" value="gravHigh">The player character's jump was too small</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak1" value="gravLow">The player character took too long to land after a jump</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak1" value="speed">The speed at which the player character moved at</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak1" value="obSpeed">The obstacles quickly got too fast</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak1" value="jumpChamber">Jumping felt unresponsive at times</crowd-checkbox>
+      </div>
+      
+    </div>
+     
+    <div id="version2">
+        <h1>Version 2</h1>
+            <iframe name="iframe2" id="iframe_id2" src=${url2} height="550" width = "410" >
+            </iframe>
+        <crowd-input name="gameJSON2" type="hidden" id="JSON2" required></crowd-input>
+    </div>
+    
+    <div id="survey2">
+      <p>With 1 being easy and 10 being hard, how would you rate the difficulty of version 2?</p>
+      <crowd-slider name="difficulty2" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being totally out of control and 10 being totally in control, how in control did you feel playing version 2?</p>
+      <crowd-slider name="control2" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being boring and 10 being fun, how did it feel to play version 2?</p>
+      <crowd-slider name="engagement2" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being relaxing and 10 being stressful, how did version 2 feel?</p>
+      <crowd-slider name="stress2" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+            <p>If there was an issue with the game that made it unplayable or almost unplayable, check the box below.</p>
+      <crowd-checkbox name="gamebroken2" value="true" onclick=hideAndUnhide("gamebreak2")></crowd-checkbox>
+      
+      <div id="gamebreak2">
+          <p>Which element of the game was the issue?</p>
+          <crowd-checkbox name="gamebreak2" value="playerSize">The size of the player character</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak2" value="gravHigh">The player character's jump was too small</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak2" value="gravLow">The player character took too long to land after a jump</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak2" value="speed">The speed at which the player character moved at</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak2" value="obSpeed">The obstacles quickly got too fast</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak2" value="jumpChamber">Jumping felt unresponsive at times</crowd-checkbox>
+      </div>
+      
+    </div>
+    
+    <div id="version3">
+        <h1>Version 3</h1>
+            <iframe name="iframe3" id="iframe_id3" src=${url3} height="550" width = "410" >
+            </iframe>
+        <crowd-input name="gameJSON3" type="hidden" id="JSON3" required></crowd-input>
+    </div>
+    
+    <div id="survey3">
+      <p>With 1 being easy and 10 being hard, how would you rate the difficulty of version 3?</p>
+      <crowd-slider name="difficulty3" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being totally out of control and 10 being totally in control, how in control did you feel playing version 3?</p>
+      <crowd-slider name="control3" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being boring and 10 being fun, how did it feel to play version 3?</p>
+      <crowd-slider name="engagement3" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+      <p>With 1 being relaxing and 10 being stressful, how did version 3 feel?</p>
+      <crowd-slider name="stress3" min="1" max="10" step="1" pin="true" required></crowd-slider>
+      
+            <p>If there was an issue with the game that made it unplayable or almost unplayable, check the box below.</p>
+      <crowd-checkbox name="gamebroken3" value="true" onclick=hideAndUnhide("gamebreak3")></crowd-checkbox>
+      
+      <div id="gamebreak3">
+          <p>Which element of the game was the issue?</p>
+          <crowd-checkbox name="gamebreak3" value="playerSize">The size of the player character</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak3" value="gravHigh">The player character's jump was too small</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak3" value="gravLow">The player character took too long to land after a jump</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak3" value="speed">The speed at which the player character moved at</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak3" value="obSpeed">The obstacles quickly got too fast</crowd-checkbox><br>
+          <crowd-checkbox name="gamebreak3" value="jumpChamber">Jumping felt unresponsive at times</crowd-checkbox>
+      </div>
+      
+    </div>
+    
+    <div id="finalQuestions">
+    <br>
+    <h3>Final Questions</h3>
+      <p>How would you rank the 3 versions of the game you played from best to worst? Please input your answer in this format: best, middle, worst
+      <br> eg. if you thought version 1 was the best and 3 was the worst you would enter: 1, 2, 3</p>
+      <crowd-input name="ranking" placeholder="1, 2 ,3" required></crowd-input>
+      
+    <br><br>
+
+    <div>
+      <p>Which game genres do you usually prefer? If you don't play games, please select 'Not a gamer'</p>
+        <crowd-checkbox name="genres" value="notGamer">Not a gamer</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="action">Action</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="adventure">Adventure</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="fps">First Person Shooter</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="mmo">MMO</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="moba">MOBA</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="mobile">Mobile</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="platformer">Platformers</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="rpg">RPG</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="sport">Sport</crowd-checkbox><br>
+        <crowd-checkbox name="genres" value="strategy">Strategy</crowd-checkbox>
+    </div>
+    
+    <br><br>
+
+      <p>Do you know your Myer-Briggs personality type? If so, what is it?</p>
+        <crowd-radio-group>
+            <crowd-radio-button name="personalityUnknown">Don't know</crowd-radio-button>
+            <crowd-radio-button name="INTJ">INTJ</crowd-radio-button>
+            <crowd-radio-button name="INTP">INTP</crowd-radio-button>
+            <crowd-radio-button name="ENTJ">ENTJ</crowd-radio-button>
+            <crowd-radio-button name="ENTP">ENTP</crowd-radio-button>
+            <crowd-radio-button name="INFJ">INFJ</crowd-radio-button>
+            <crowd-radio-button name="INFP">INFP</crowd-radio-button>
+            <crowd-radio-button name="ENFJ">ENFJ</crowd-radio-button><br>
+            <crowd-radio-button name="ENFP">ENFP</crowd-radio-button>
+            <crowd-radio-button name="ISTJ">ISTJ</crowd-radio-button>
+            <crowd-radio-button name="ISFJ">ISFJ</crowd-radio-button>
+            <crowd-radio-button name="ESTJ">ESTJ</crowd-radio-button>
+            <crowd-radio-button name="ESFJ">ESFJ</crowd-radio-button>
+            <crowd-radio-button name="ISTP">ISTP</crowd-radio-button>
+            <crowd-radio-button name="ISFP">ISFP</crowd-radio-button>
+            <crowd-radio-button name="ESTP">ESTP</crowd-radio-button>
+            <crowd-radio-button name="ESFP">ESFP</crowd-radio-button>
+        </crowd-radio-group>
+
+      <p>Finally, do you have any comments or suggestions as to how we could improve your experience with this HIT?</p>
+      <crowd-input name="comments"></crowd-input>
+    
+    </div>
+    
+</crowd-form>
+
+<script type="text/javascript">
+
+    function hideAndUnhide(id) {
+        var x = document.getElementById(id);
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+    
+    hideAndUnhide("survey1");
+	hideAndUnhide("survey2");
+	hideAndUnhide("survey3");
+    hideAndUnhide("gamebreak1")
+    hideAndUnhide("gamebreak2")
+    hideAndUnhide("gamebreak3")
+	
+</script>
