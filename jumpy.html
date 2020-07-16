@@ -145,6 +145,7 @@
                 this.chamberedJump = false;
                 this.goingUp = true;
                 this.attempts = 1;
+                this.keyPresses = 0;
                 
 
                 // id value to be passed back into JSON
@@ -331,7 +332,7 @@
                 }
 
                 // clear background
-                processing.background(200,200,200);
+                processing.background(220,220,220);
 
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
                 //                       START SCENE
@@ -341,7 +342,7 @@
                     processing.fill(81, 166, 31);
                     // drawing start button
                     processing.rect(centerX - 40, centerY - 20, 80, 40);
-                    processing.fill(255, 255, 255);
+                    processing.fill(10, 10, 10);
                     processing.textSize(18);
                     processing.text("START",centerX -28, centerY + 7);
 
@@ -377,6 +378,8 @@
                     processing.mousePressed = function() {
                         if (scene === 1) {
                             jumpy.isJumping = true;
+                            jumpy.keyPresses++;
+
                             // allows player to chamber a jump if they are almost on the ground
                             // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
                             // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
@@ -391,13 +394,17 @@
                         // a = 97 - moving left
                         if (processing.key == 97) {
                             a = true;
+                            jumpy.keyPresses++;
                             
                         // d = 100 - moving right
                         } else if (processing.key == 100) {
                             d = true;
-
+                            jumpy.keyPresses++;
+                        // spacebar = 32
                         } else if (processing.key == 32) {
                             spacebar = true;
+                            jumpy.keyPresses++;
+
                         }
 
                     }
@@ -569,7 +576,7 @@
                         processing.fill(outOfLivesTextValue, outOfLivesTextValue, outOfLivesTextValue);
                         processing.text("You ran out of lives, try again!", 70, 100);
                         processing.textSize(12);
-                        processing.fill(255, 255, 255);
+                        processing.fill(10, 10, 10);
 
                         // after 2 seconds, decrement the tone value of the outOfLives text by 1, to give a fadeout effect
                         if (outOfLivesTimer < (outOfLivesTimerLength - 2) && outOfLivesTextValue > 200){
@@ -624,7 +631,7 @@
                         jumpy.highestScore = jumpy.score;
                     }
 
-                    processing.fill(245,245,245);
+                    processing.fill(10,10,10);
                     processing.text("Lives   " + jumpy.currentLives, 10,20);
                     processing.text("Time remaining   " + timeRemaining, 140, 20);
                     processing.text("Current Score   " + jumpy.score, 280, 20);
@@ -692,14 +699,14 @@
                         playerJSON = JSON.stringify(jumpy, null, 2);
                     
                         // uncomment line below to debug JSON output
-                        // console.log(playerJSON);
+                        console.log(playerJSON);
 
                         jsonFlag = false;
                     }
 
                     if (buttonPressed === false) {
                         processing.textSize(16);
-                        processing.text("Please click the finish button below to", 60, centerY);
+                        processing.text("Please click the yellow button below to", 60, centerY);
                         processing.text("reveal a short survey about this game.",60, centerY + 20);
                         document.getElementById("gameJSON").value = playerJSON;
 
@@ -741,7 +748,7 @@
                         <div class="form-group">
                             <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
                         </div>
-                        <button onclick="buttonPressed = true;" class="btn btn-lg btn-success float-left" type="submit">Finish</button>
+                        <button onclick="buttonPressed = true;" class="btn btn-lg btn-warning float-left" type="submit">CLICK HERE</button>
                     </form>
                 </div>
                 <div class="col"></div>
@@ -781,7 +788,7 @@
                 {
                     gameJSON:    $("input[name='gameJSON']").val(),
                 },
-                "https://requester.mturk.com/create/projects/1621254");
+                "https://requester.mturk.com/create/projects/162125124");
 
 
         });
