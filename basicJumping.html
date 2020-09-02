@@ -1,0 +1,2387 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Basic Jumping</title>
+    <script src="processing.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+    <link href="https://unpkg.com/tabulator-tables@4.7.2/dist/css/tabulator.min.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/docs/4.5/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/docs/4.5/assets/img/favicons/manifest.json">
+    <link rel="mask-icon" href="/docs/4.5/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
+    <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon.ico">
+    <meta name="msapplication-config" content="/docs/4.5/assets/img/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#563d7c">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
+
+    <script>
+
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', { 'packages': ['corechart'] });
+
+
+
+    </script>
+
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">LukeMJM</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="mechanicDB.html">Mechanic Database <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Mechanics</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="basicJumping.html">Basic Jumping</a>
+                        <a class="dropdown-item" href="#">Another Mechanic</a>
+                        <a class="dropdown-item" href="#">Another Mechanic</a>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="test.html">Testy Place <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+
+        <div class="text-center">
+            <br><br>
+            <h1>Basic Jumping</h1>
+            <p class="lead">Below is a basic jumping platformer game with many of its parameters exposed.<br> Feel free
+                to adjust them to get a feel for what works best, or just to experiment!</p>
+        </div>
+
+        <div class="d-flex justify-content-center">
+
+
+            <canvas id="canvas"></canvas>
+            <script type="application/javascript">
+                // GAME CODE IS FOLDED HERE
+                // #region 
+
+                // global variables which interact with parent page when using an IFrame
+                var playerJSON;
+                var scene = 0;
+                var buttonPressed = false;
+
+                // global variable to allow user to track if parameter updates have been made mid game
+                var update = false;
+
+                var admin = "y";
+
+                // Setting hard values if GET parameters aren't being used
+                var h = 40;
+                var w = 10;
+                var s = 5;
+                var g = 0.5;
+                var iY = -12;
+                var positiveIY = iY * -1;
+                var l = 3;
+                var id = 1
+                var cJE = true;
+                var oSI = 0.25;
+                var t = 60;
+
+                function sketchProc(processing) {
+
+                    // *****************************************************
+                    //                  GLOBAL VARIABLdES
+                    // *****************************************************
+                    var windowH, windowW;
+                    var centerY = 200, centerX = 200;
+                    var accFactor = 1.0
+                    var heightOfWindow = processing.height;
+                    var keyBeingPressed;
+                    var frameRate = 60;
+                    var framesElapsed = 0;
+                    var timeElapsed = 0;
+                    var timeRemaining;
+                    var groundLevel = 300;
+                    var randA = processing.random(0.5, 2);
+                    var randB = processing.random(0.5, 2);
+                    var debuggingOn = false;
+                    var jsonFlag = true;
+                    var defaultObjectSpeed = 2;
+                    var outOfLivesTimer = 0;
+                    var outOfLivesTimerLength = 5;
+                    var outOfLivesTextValue = 255;
+                    var bgValue = 220 // tone value for background
+
+                    // keypressed booleans
+                    var a = false;
+                    var d = false;
+                    var spacebar = false;
+
+
+                    // *****************************************************
+                    //                     GAME OBJECTSa
+
+                    // *****************************************************
+                    //                  PLAYER CHARACTER
+                    // *****************************************************
+
+                    var Player = function () {
+
+                        // default settings to use if no GET parameters are used
+                        // this.height = 40; //findGetParameter("h");
+                        // this.width = 10; //findGetParameter("w");
+                        // this.moveSpeed = 5; //findGetParameter("s");
+                        // this.gravity = 0.5; //findGetParameter("g");
+                        // this.impulseY = -12; //findGetParameter("iY");
+                        // this.lives = 5; //findGetParameter("l");
+
+                        // changing input variables from strings to ints if they exist and overwriting defaults
+
+                        this.height = parseInt(h); // lower 10 - upper 120
+                        this.width = parseInt(w); // lower 3 - upper 60
+                        this.moveSpeed = parseInt(s); // lower 2 - upper 10
+                        this.gravity = parseFloat(g); // lower 0.2 - upper 0.75
+                        this.impulseY = parseInt(iY); // lower -20 - upper -10
+                        this.lives = parseInt(l); // lower 1 - upper 5
+                        this.chamberedJumpEnabled = cJE;
+
+                        timeRemaining = t;
+
+
+                        // functional variables - not necessarily relevant in JSON but some are
+                        this.score = 0;
+                        this.highestScore = 0;
+                        this.currentLives = this.lives;
+                        this.immunity = 0;
+                        this.velocityX = 0;
+                        this.velocityY = 0;
+                        this.damgageTimer = 0;
+                        this.isColliding = false;
+                        this.damaged = false;
+                        this.positionX = centerX;
+                        this.positionY = groundLevel;
+                        this.movingLeft = false;
+                        this.movingRight = false;
+                        this.onGround = true;
+                        this.isJumping = false;
+                        this.chamberedJump = false;
+                        this.goingUp = true;
+                        this.attempts = 1;
+                        this.keyPresses = 0;
+
+
+                        // id value to be passed back into JSON
+                        this.id = id;
+                        // obstacle speed increase value to be included in JSON
+                        this.obstacleSpeedIncrement = oSI; // lower 0.1 - upper 1
+
+                    };
+
+                    Player.prototype.draw = function () {
+
+                        if (this.damaged && ((this.damgageTimer >= 20 && this.damgageTimer <= 30) || (this.damgageTimer > 0 && this.damgageTimer < 11))) {
+                            processing.fill(255, 100, 100);
+
+                        } else {
+                            processing.fill(245, 245, 245);
+                        }
+                        processing.rect(this.positionX, this.positionY - this.height, this.width, this.height)
+
+                    };
+
+                    Player.prototype.beginJump = function () {
+
+                        this.velocityY = this.impulseY;
+                        this.onGround = false;
+
+                    }
+
+                    Player.prototype.limitJump = function () {
+                        if (this.velocityY < -12) {
+                            this.velocityY = -12;
+                        }
+                    }
+
+                    Player.prototype.updatePosition = function () {
+
+                        if (jumpy.onGround == false) {
+                            this.velocityY += this.gravity;
+                            this.positionY += this.velocityY;
+
+                            // stopping character from going under the ground level and ending the jump process
+                            if (this.positionY >= groundLevel) {
+                                this.positionY = groundLevel;
+                                this.velocityY = 0;
+                                this.onGround = true;
+                                this.isJumping = false;
+
+                                if (this.chamberedJump) {
+
+                                    check = true;
+                                    this.velocityY = this.impulseY;
+                                    this.onGround = false;
+                                    this.chamberedJump = false;
+                                    this.isJumping = true;
+                                }
+                                // stopping character from going outside game bounds - will abruptly stop and fall as would be expected
+                            } else if (this.positionY <= this.height) {
+                                this.velocityY = 0;
+                            }
+                        }
+                    }
+
+                    Player.prototype.checkCollision = function (obstacleArray) {
+
+                        if (this.immunity == 0) {
+                            left = this.positionX;
+                            right = this.positionX + this.width;
+                            bottom = this.positionY;
+                            top = this.positionY - this.height;
+
+                            for (i = 0; i < obstacleArray.length; i++) {
+                                // checking if x coordintes are intersecting
+                                if (right >= obstacleArray[i].x && left <= obstacleArray[i].x + obstacleArray[i].width) {
+
+                                    if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
+                                        this.isColliding = true;
+                                        this.currentLives--;
+                                        this.damaged = true;
+                                        this.damgageTimer = 30;
+                                        this.immunity = 1;
+                                    }
+
+                                } else {
+                                    this.isColliding = false;
+                                }
+                            }
+                        }
+                    };
+
+                    // Creating an instance of the player object
+
+                    var jumpy = new Player();
+
+                    // *****************************************************
+                    //                       OBSTACLES
+                    // *****************************************************
+
+
+                    var Obstacle = function (x, y, width, height, speed) {
+
+                        this.x = x;
+                        this.y = y;
+                        this.initialWidth = width;
+                        this.initialHeight = height;
+                        this.width = width;
+                        this.height = height;
+                        this.speed = speed;
+                    };
+
+                    Obstacle.prototype.setX = function (x) {
+                        this.x = x;
+                    };
+
+                    Obstacle.prototype.setSpeed = function (speed) {
+                        this.speed = speed;
+                    };
+
+                    Obstacle.prototype.draw = function () {
+                        processing.fill(220, 220, 220);
+                        processing.rect(this.x, this.y - this.height, this.width, this.height);
+                    };
+
+                    Obstacle.prototype.move = function () {
+                        this.x -= this.speed * accFactor;
+
+                        // reseting the obstacle if it clears the screen 
+                        // also adding to score as obstacle has been cleared by player
+                        if (this.x + this.width <= 0) {
+                            this.x = windowW;
+                            this.speed += oSI;
+                            this.width = this.initialWidth * randA;
+                            this.height = this.initialHeight * randB;
+                            if (jumpy.immunity == 0) {
+                                jumpy.score++;
+                            } else if (jumpy.immunity == 1) {
+                                jumpy.immunity = 0;
+                            }
+                        }
+                    };
+
+                    // *******************************************************
+                    //                       SETUP
+                    // *******************************************************
+
+                    processing.setup = function () {
+                        processing.frameRate(frameRate);
+                        processing.size(800, 400);
+                        windowH = processing.height;
+                        windowW = processing.width;
+                        processing.background(bgValue, bgValue, bgValue);
+                    }
+
+                    // Creating obstacles and putting into an array to keep them 
+
+                    var ob1 = new Obstacle(-200, groundLevel, 20, 40, defaultObjectSpeed);
+                    var obstacleArray = [ob1];
+
+                    // *******************************************************
+                    //                      GAME LOOP
+                    // *******************************************************
+                    processing.draw = function () {
+
+                        randA = processing.random(0.5, 1.5);
+                        randB = processing.random(0.5, 2);
+
+                        var centerX = windowW / 2;
+                        var centerY = windowH / 2;
+
+
+                        // getting the coordinates of the current mouse position
+                        var currentY = processing.mouseY;
+                        var currentX = processing.mouseX;
+
+                        function drawGround() {
+                            processing.rect(-1, groundLevel, windowW + 2, windowH);
+                        }
+
+                        function drawWall(height, width) {
+                            var xPosWall = windowW;
+                            processing.fill(245, 245, 245);
+                            processing.rect(xPosWall, groundLevel - height, width, height);
+                        }
+
+                        // clear background
+                        processing.background(bgValue, bgValue, bgValue);
+
+                        // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+                        //                       START SCENE
+                        // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
+                        if (scene === 0) {
+                            processing.fill(81, 166, 31);
+                            // drawing start button
+                            processing.rect(centerX - 40, centerY - 20, 80, 40);
+                            processing.fill(10, 10, 10);
+                            processing.textSize(18);
+                            processing.text("START", centerX - 28, centerY + 7);
+
+                            // drawing controls text
+                            processing.text("Controls", centerX - 35, 50);
+                            processing.textSize(16);
+                            processing.text("Jump - click / spacebar", centerX - 85, 75);
+                            processing.text("Move left - a", centerX - 47, 90);
+                            processing.text("Move right - d", centerX - 50, 105);
+
+                            processing.textSize(16);
+                            processing.text("Jump over obstacles to increase your score", centerX - 150, 145);
+
+                            // checking if start button is clicked
+                            processing.mouseClicked = function () {
+                                if (scene === 0 && currentX >= centerX - 40 && currentX <= centerX + 40 &&
+                                    currentY >= centerY - 20 && currentY <= centerY + 20) {
+
+                                    scene = 1;
+                                }
+                            };
+                        }
+
+                        // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+                        //                      MAIN GAME SCENE
+                        // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
+
+                        // ****************************************************
+                        //           CHECKING FOR PARAMETER UPDATES
+                        // ****************************************************
+
+                        if (update) {
+
+                            jumpy.height = parseInt(h); // lower 10 - upper 120
+                            jumpy.width = parseInt(w); // lower 3 - upper 60
+                            jumpy.moveSpeed = parseInt(s); // lower 2 - upper 10
+                            jumpy.gravity = parseFloat(g); // lower 0.2 - upper 0.75
+                            jumpy.impulseY = parseInt(iY); // lower -20 - upper -10
+                            jumpy.lives = parseInt(l); // lower 1 - upper 5
+                            if (jumpy.currentLives > jumpy.lives) {
+                                jumpy.currentLives = jumpy.lives;
+                            }
+                            jumpy.chamberedJumpEnabled = cJE;
+
+                            timeRemaining = t;
+
+                            update = false;
+                        }
+
+                        // ****************************************************
+                        //              CHECKING FOR PLAYER INPUT
+                        // ****************************************************
+
+                        if (scene === 1) {
+                            processing.mousePressed = function () {
+                                if (scene === 1) {
+                                    jumpy.isJumping = true;
+                                    jumpy.keyPresses++;
+
+                                    // allows player to chamber a jump if they are almost on the ground
+                                    // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                                    // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                                    if (jumpy.isJumping && jumpy.velocityY > 0 && jumpy.positionY > (groundLevel - jumpy.height)) {
+                                        jumpy.chamberedJump = true;
+                                    }
+                                }
+                            }
+
+                            // Checks if a key is pressed and turns on its boolean if it is
+                            processing.keyPressed = function () {
+                                // a = 97 - moving left
+                                if (processing.key == 97) {
+                                    a = true;
+                                    jumpy.keyPresses++;
+
+                                    // d = 100 - moving right
+                                } else if (processing.key == 100) {
+                                    d = true;
+                                    jumpy.keyPresses++;
+                                    // spacebar = 32
+                                } else if (processing.key == 32) {
+                                    spacebar = true;
+                                    jumpy.keyPresses++;
+
+                                }
+
+                            }
+
+                            // turning off all key booleans if one is released - others will be immediately reactived if they are pressed
+                            processing.keyReleased = function () {
+                                // a = 97
+                                if (processing.key == 97) {
+                                    a = false;
+
+                                    // d = 100 
+                                } else if (processing.key == 100) {
+                                    d = false;
+
+                                    // spacebar = 32
+                                } else if (processing.key == 32) {
+                                    spacebar = false;
+                                }
+                            }
+
+                            // ****************************************************
+                            //                     MOVEMENT
+                            // ****************************************************    
+
+                            // a is pressed - player moving left
+                            if (a) {
+                                jumpy.velocityX += -jumpy.moveSpeed;
+                            }
+
+                            // d is pressed - player moving right
+                            if (d) {
+                                jumpy.velocityX += jumpy.moveSpeed;
+
+                            }
+
+                            // neither movement key is pressed, so X velocity can be set to 0
+                            if (d == false && a == false) {
+                                jumpy.velocityX = 0;
+
+                            }
+
+                            // capping move speed
+                            if (jumpy.velocityX > jumpy.moveSpeed) {
+                                jumpy.velocityX = jumpy.moveSpeed;
+                            } else if (jumpy.velocityX < -jumpy.moveSpeed) {
+                                jumpy.velocityX = -jumpy.moveSpeed;
+                            }
+
+                            // stops player moving off screen - probably a better way to write this
+                            if (jumpy.positionX <= 0 && jumpy.velocityX < 0) {
+
+                            } else if (jumpy.positionX >= (windowW - jumpy.width) && jumpy.velocityX > 0) {
+
+                            } else {
+                                jumpy.positionX += jumpy.velocityX;
+                            }
+
+
+                            // ****************************************************
+                            //                     JUMPING
+                            // **************************************************** 
+
+                            // if spacebar boolean is on, the spacebar is pressed - a jump is initiated
+                            if (spacebar) {
+                                jumpy.isJumping = true;
+                                // allows player to chamber a jump if they are almost on the ground
+                                // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
+                                // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
+                                if (jumpy.isJumping && jumpy.velocityY > 0 && jumpy.positionY > (groundLevel - jumpy.height)) {
+                                    jumpy.chamberedJump = true;
+                                }
+                            }
+
+                            // checks that the player is on the ground and allows a new jump to begin if they are
+                            if (jumpy.onGround && jumpy.isJumping) {
+                                jumpy.beginJump();
+                            }
+
+
+                            if (jumpy.isJumping) {
+                                jumpy.updatePosition();
+                            }
+
+                            // ****************************************************
+                            //                     DRAW GAME
+                            // ****************************************************
+
+                            // Drawing the ground
+                            processing.fill(245, 245, 245);
+                            drawGround();
+
+                            if (admin == "y") {
+
+                                // drawing debugging button
+                                processing.rect(40, 360, 55, 20);
+                                processing.fill(10, 10, 10);
+                                processing.textSize(10);
+                                processing.text("Debugging", 43, 373);
+
+                                // checking if debugging button is clicked
+                                processing.mouseClicked = function () {
+                                    if (currentX >= 40 && currentX <= 95 &&
+                                        currentY >= 360 && currentY <= 380) {
+
+                                        if (debuggingOn) {
+                                            debuggingOn = false;
+                                        } else if (debuggingOn == false) {
+                                            debuggingOn = true;
+                                        }
+                                    }
+                                };
+
+                            }
+
+
+                            // Drawing obstacles
+                            for (i = 0; i < obstacleArray.length; i++) {
+                                obstacleArray[i].draw();
+                            }
+
+                            for (i = 0; i < obstacleArray.length; i++) {
+                                obstacleArray[i].move();
+                            }
+
+                            // Drawing player
+                            jumpy.draw();
+
+
+                            // *******************************************************
+                            //                   CHECK COLLISIONS
+                            // *******************************************************
+
+                            jumpy.checkCollision(obstacleArray);
+
+
+                            // *******************************************************
+                            //                CHECK PLAYER's LIVES
+                            // *******************************************************
+
+                            // if player is out of lives, reset everything but store their highest score
+                            if (jumpy.currentLives == 0) {
+                                if (jumpy.score > jumpy.highestScore) {
+                                    jumpy.highestScore = jumpy.score;
+                                }
+
+                                // resetting player position, lives and score to default to simulate a fresh game
+                                jumpy.score = 0;
+                                jumpy.currentLives = jumpy.lives
+                                jumpy.positionX = centerX;
+                                jumpy.positionY = groundLevel;
+                                jumpy.immunity = 0;
+
+                                // resetting obstacle speed to default and x position off screen to give some respite
+                                obstacleArray[0].setX(windowW + 200);
+                                obstacleArray[0].setSpeed(defaultObjectSpeed);
+
+                                // turning on out of lives message
+                                outOfLivesTimer = outOfLivesTimerLength;
+
+                                // incrementing attempts by 1
+                                jumpy.attempts++;
+
+                            }
+
+                            // Displaying out of lives message
+                            if (outOfLivesTimer != 0) {
+                                processing.textSize(20)
+                                processing.fill(outOfLivesTextValue, outOfLivesTextValue, outOfLivesTextValue);
+                                processing.text("You ran out of lives, try again!", centerX - 130, 100);
+                                processing.textSize(12);
+                                processing.fill(10, 10, 10);
+
+                                // after 2 seconds, decrement the tone value of the outOfLives text by 1, to give a fadeout effect
+                                if (outOfLivesTimer < (outOfLivesTimerLength - 2) && outOfLivesTextValue > 200) {
+                                    outOfLivesTextValue--;
+                                }
+
+                                // every second the outOfLivesTimer will be decremented by 1
+                                if (framesElapsed % frameRate == 1) {
+                                    outOfLivesTimer--;
+                                }
+
+                                if (outOfLivesTextValue === bgValue) {
+                                    outOfLivesTimer = 0;
+                                }
+
+                                // if the outOfLivesTimer reaches 0, reset the text colour of the text
+                                if (outOfLivesTimer == 0) {
+                                    outOfLivesTextValue = 255;
+                                }
+
+                            }
+
+                            // decrementing the damgeTimer every frame after jumpy is damaged
+                            if (jumpy.damaged && jumpy.damgageTimer > 0) {
+                                jumpy.damgageTimer--
+
+                                // removing the damaged flag from jumpy if the timer reaches 0
+                            } else if (jumpy.damaged && jumpy.damgageTimer == 0) {
+                                jumpy.damaged = false;
+                            }
+
+                            // *******************************************************
+                            //                         TIMER
+                            // *******************************************************
+
+                            // creating timer
+                            framesElapsed++;
+                            if (framesElapsed % frameRate == 1) {
+                                timeRemaining--;
+                            }
+
+                            // if timeRemaining gets to 0, go to end scene
+                            if (timeRemaining === 0) {
+
+                                // go to end scene
+                                scene = 2;
+                            }
+
+
+                            // ********************************************************
+                            //               DISPLAY SCORE, TIME AND LIVES
+                            //*********************************************************
+
+                            // update highestScore if necessary
+                            if (jumpy.score > jumpy.highestScore) {
+                                jumpy.highestScore = jumpy.score;
+                            }
+
+                            processing.fill(10, 10, 10);
+                            processing.textSize(11);
+                            processing.text("Lives   " + jumpy.currentLives, 10, 20);
+                            processing.text("Time remaining   " + timeRemaining, centerX - 60, 20);
+                            processing.text("Highest Score   " + jumpy.highestScore, windowW - 120, 20);
+                            processing.text("Current Score   " + jumpy.score, windowW - 120, 40);
+
+
+
+                            // ********************************************************
+                            //                      DEBUGGING
+                            //*********************************************************
+                            processing.key
+
+                            if (debuggingOn) {
+
+                                processing.fill(0, 0, 0);
+                                processing.textSize(10);
+                                processing.text("KeyPressed   " + processing.key, 15, 30);
+
+                                processing.text("Jump   " + spacebar, 15, 50);
+                                processing.text("Left   " + a, 15, 60);
+                                processing.text("Right   " + d, 15, 70);
+
+
+                                processing.text("Player X   " + jumpy.positionX, 15, 80);
+                                processing.text("Player Y   " + jumpy.positionY, 15, 90);
+                                processing.text("X Velocity   " + jumpy.velocityX, 15, 100);
+                                processing.text("Y Velocity   " + jumpy.velocityY, 15, 110);
+                                processing.text("isJumping   " + jumpy.isJumping, 15, 130);
+                                processing.text("chambered jump enabled  " + jumpy.chamberedJumpEnabled, 15, 140);
+                                processing.text("chambered jump  " + jumpy.chamberedJump, 15, 150);
+
+                                processing.text("Gravity   " + jumpy.gravity, 15, 170);
+                                processing.text("Move Speed   " + (jumpy.moveSpeed), 15, 180);
+                                processing.text("colliding   " + jumpy.isColliding, 15, 190);
+                                processing.text("immunity   " + jumpy.immunity, 15, 200);
+
+                                processing.text("height   " + jumpy.height, 15, 220);
+                                processing.text("width   " + jumpy.width, 15, 230);
+                                processing.text("iY " + iY, 15, 240);
+
+                            }
+
+                        };
+
+                        // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+                        //                         END SCENE
+                        // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
+                        if (scene === 2) {
+                            processing.textSize(22);
+                            processing.text("Highest Score:   " + jumpy.highestScore, centerX - 90, centerY / 2);
+
+
+                        }
+                    }
+
+                }
+
+                var canvas = document.getElementById("canvas");
+                // attaching the sketchProc function to the canvas
+                var processingInstance = new Processing(canvas, sketchProc);
+
+                    // #endregion
+            </script>
+
+        </div>
+
+        <br><br>
+        <div id="example-table" class="mx-5"></div>
+        <br><br>
+        <div class="text-center">
+            <h2>Data gathered about the Basic Jumping mechanic </h2> <br><br>
+            <p class="lead" id="gamers">gamers go here</p>
+            <p class="lead" id="avTime">av time taken goes here</p>
+            <p class="lead" id="numResults">num of results go here</p>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Speed Master Chart </h5>
+                            <div id="chart_div16"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Jump Impulse Master Chart </h5>
+                            <div id="chart_div17"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Gravity Master Chart</h5>
+                            <div id="chart_div18"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Control </h5>
+                            <div id="chart_div4"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Control </h5>
+                            <div id="chart_div5"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Control </h5>
+                            <div id="chart_div6"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Difficulty </h5>
+                            <div id="chart_div7"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Difficulty </h5>
+                            <div id="chart_div8"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Difficulty </h5>
+                            <div id="chart_div9"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Engagement </h5>
+                            <div id="chart_div10"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Engagement </h5>
+                            <div id="chart_div11"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Engagement </h5>
+                            <div id="chart_div12"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Stress </h5>
+                            <div id="chart_div13"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Stress </h5>
+                            <div id="chart_div14"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Stress </h5>
+                            <div id="chart_div15"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Personality Type Distribution</h5>
+                            <div id="chart_div2"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Personality Type Distribution</h5>
+                            <div id="chart_div1"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Personality Type Distribution</h5>
+                            <div id="chart_div3"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Respondents who identify as a "Gamer"</h5>
+                            <div id="chart_div19"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Game Genre Preferences</h5>
+                            <div id="chart_div20"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">Data last updated 12/08/2020</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center"></h5>
+                            <div id="chart_div21"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+
+    <script>
+
+        var results;
+        var gamers = 0;
+        var totalTime = 0;
+        var averageTime = 0;
+        var numResults = 0;
+
+        // creating arrays to hold results of data extraction
+        var controlXSpeed = [
+            ["Control", "Movement Speed", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var controlXYImpulse = [
+            ["Control", "Player YImpulse", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var controlXGravity = [
+            ["Control", "Player Gravity", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        // engagement arrays 
+        var difficultyXSpeed = [
+            ["Difficulty", "Movement Speed", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var difficultyXYImpulse = [
+            ["Difficulty", "Player YImpulse", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var difficultyXGravity = [
+            ["Difficulty", "Player Gravity", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+
+        // engagement arrays 
+        var engagementXSpeed = [
+            ["engagement", "Movement Speed", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var engagementXYImpulse = [
+            ["engagement", "Player YImpulse", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var engagementXGravity = [
+            ["engagement", "Player Gravity", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        // stress arrays 
+        var stressXSpeed = [
+            ["stress", "Movement Speed", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var stressXYImpulse = [
+            ["stress", "Player YImpulse", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        var stressXGravity = [
+            ["stress", "Player Gravity", "Frequency"],
+            [1, 0, 0],
+            [2, 0, 0],
+            [3, 0, 0],
+            [4, 0, 0],
+            [5, 0, 0],
+            [6, 0, 0],
+            [7, 0, 0],
+            [8, 0, 0],
+            [9, 0, 0],
+            [10, 0, 0],
+        ];
+
+        // 2d array of personality types and an integer to count their frequency
+        var personalityTypesData = [
+            ["personalityUnknown", 0, []],
+            ["INTJ", 0, []],
+            ["INTP", 0, []],
+            ["ENTJ", 0, []],
+            ["ENTP", 0, []],
+            ["INFJ", 0, []],
+            ["INFP", 0, []],
+            ["ENFJ", 0, []],
+            ["ENFP", 0, []],
+            ["ISTJ", 0, []],
+            ["ISFJ", 0, []],
+            ["ESTJ", 0, []],
+            ["ESFJ", 0, []],
+            ["ISTP", 0, []],
+            ["ISFP", 0, []],
+            ["ESTP", 0, []],
+            ["ESFP", 0, []]
+        ];
+
+        var gamePrefsData = [
+            ["Action", 0, []],
+            ["Adventure", 0, []],
+            ["FPS", 0, []],
+            ["MMO", 0, []],
+            ["MOBA", 0, []],
+            ["Mobile", 0, []],
+            ["Not Gamer", 0, []],
+            ["Platformer", 0, []],
+            ["RPG", 0, []],
+            ["Sport", 0, []],
+            ["Strategy", 0, []]
+        ];
+
+        var gamersData = [
+            ["Gamer", 0],
+            ["Not Gamer", 0]
+        ];
+
+        // Testing to check I can compare against a 3d array
+        // var gamePrefsData2 = [
+        //   ["Not Gamer", 0, []],
+        //   ["Adventure", 0, []]
+        // ];
+
+        // if (gamePrefsData[0][1] === gamePrefsData2[0][1]) {
+        //   console.log("match");
+        //   gamePrefsData2[0][2].push("ADASDADAA")
+        //   console.log(gamePrefsData2[0][2]);
+
+        // }
+
+        var total = 0;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////// GATHERING DATA FROM CSV /////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        d3.csv("data/results.csv")
+            .then(function (data) {
+
+                data.forEach(function (d) {
+
+                    // checking if HIT was rejected and moving on to next tuple if it was
+                    if (d.AssignmentStatus === "Rejected") {
+                        return;
+                    }
+
+                    // workerID - some workers have completed multiple HITS
+                    // console.log(d.WorkerId);
+
+                    // incrementing total number of results var for each new tuple after it is confirmed to be an approved result
+                    numResults++;
+
+                    // showing the HIT Id
+                    // console.log(d.HITId);
+
+                    // type casting from strings to ints - use + before var name for a quick typecast
+                    d.Answer_control1 = +d.Answer_control1;
+                    d.Answer_control2 = +d.Answer_control2;
+                    d.Answer_control3 = +d.Answer_control3;
+                    d.Answer_difficulty1 = +d.Answer_difficulty1;
+                    d.Answer_difficulty2 = +d.Answer_difficulty2;
+                    d.Answer_difficulty3 = +d.Answer_difficulty3;
+                    d.Answer_engagement1 = +d.Answer_engagement1;
+                    d.Answer_engagement2 = +d.Answer_engagement2;
+                    d.Answer_engagement3 = +d.Answer_engagement3;
+                    d.Answer_stress1 = +d.Answer_stress1;
+                    d.Answer_stress2 = +d.Answer_stress2;
+                    d.Answer_stress3 = +d.Answer_stress3;
+
+
+                    // Time workers spent on task
+                    d.WorkTimeInSeconds = +d.WorkTimeInSeconds;
+                    // finding average time spent on task - could eliminate any data significantly outside of this
+                    totalTime += d.WorkTimeInSeconds;
+
+                    // allowing us to check that no HITS have a time spent which would imply they are invalid results
+                    // if (d.WorkTimeInSeconds < 200) {
+                    //   console.log(d.WorkerId + " - time spent: " + d.WorkTimeInSeconds);
+                    // }
+
+                    // Parsing JSON into objects so we can access their properties
+                    JSON1 = JSON.parse(d.Answer_gameJSON1);
+                    JSON2 = JSON.parse(d.Answer_gameJSON2);
+                    JSON3 = JSON.parse(d.Answer_gameJSON3);
+
+                    // flipping impulseY to positive
+                    JSON1.impulseY = Math.abs(JSON1.impulseY);
+                    JSON2.impulseY = Math.abs(JSON2.impulseY);
+                    JSON3.impulseY = Math.abs(JSON3.impulseY);
+
+                    // function to process all the data required for a comparison of player moveSpeed x control
+                    function processData(answerArray, answerNum, jsonAttribute) {
+                        switch (answerNum) {
+                            case 1:
+                                answerArray[1][1] += jsonAttribute;
+                                answerArray[1][2]++;
+                                break;
+                            case 2:
+                                answerArray[2][1] += jsonAttribute;
+                                answerArray[2][2]++;
+                                break;
+                            case 3:
+                                answerArray[3][1] += jsonAttribute;
+                                answerArray[3][2]++;
+                                break;
+                            case 4:
+                                answerArray[4][1] += jsonAttribute;
+                                answerArray[4][2]++;
+                                break;
+                            case 5:
+                                answerArray[5][1] += jsonAttribute;
+                                answerArray[5][2]++;
+                                break;
+                            case 6:
+                                answerArray[6][1] += jsonAttribute;
+                                answerArray[6][2]++;
+                                break;
+                            case 7:
+                                answerArray[7][1] += jsonAttribute;
+                                answerArray[7][2]++;
+                                break;
+                            case 8:
+                                answerArray[8][1] += jsonAttribute;
+                                answerArray[8][2]++;
+                                break;
+                            case 9:
+                                answerArray[9][1] += jsonAttribute;
+                                answerArray[9][2]++;
+                                break;
+                            case 10:
+                                answerArray[10][1] += jsonAttribute;
+                                answerArray[10][2]++;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+
+                    // using a function to avoid repetetive code
+
+                    // ************* contol *************
+                    // speed
+                    processData(controlXSpeed, d.Answer_control1, JSON1.moveSpeed);
+                    processData(controlXSpeed, d.Answer_control2, JSON2.moveSpeed);
+                    processData(controlXSpeed, d.Answer_control3, JSON3.moveSpeed);
+
+                    // yImpulse
+                    processData(controlXYImpulse, d.Answer_control1, JSON1.impulseY);
+                    processData(controlXYImpulse, d.Answer_control2, JSON2.impulseY);
+                    processData(controlXYImpulse, d.Answer_control3, JSON3.impulseY);
+
+                    // gravity
+                    processData(controlXGravity, d.Answer_control1, JSON1.gravity);
+                    processData(controlXGravity, d.Answer_control2, JSON2.gravity);
+                    processData(controlXGravity, d.Answer_control3, JSON3.gravity);
+
+                    // ************* difficulty *************
+                    // speed
+                    processData(difficultyXSpeed, d.Answer_difficulty1, JSON1.moveSpeed);
+                    processData(difficultyXSpeed, d.Answer_difficulty2, JSON2.moveSpeed);
+                    processData(difficultyXSpeed, d.Answer_difficulty3, JSON3.moveSpeed);
+
+                    // yImpulse
+                    processData(difficultyXYImpulse, d.Answer_difficulty1, JSON1.impulseY);
+                    processData(difficultyXYImpulse, d.Answer_difficulty2, JSON2.impulseY);
+                    processData(difficultyXYImpulse, d.Answer_difficulty3, JSON3.impulseY);
+
+                    // gravity
+                    processData(difficultyXGravity, d.Answer_difficulty1, JSON1.gravity);
+                    processData(difficultyXGravity, d.Answer_difficulty2, JSON2.gravity);
+                    processData(difficultyXGravity, d.Answer_difficulty3, JSON3.gravity);
+
+                    // ************* engagement *************
+                    // speed
+                    processData(engagementXSpeed, d.Answer_engagement1, JSON1.moveSpeed);
+                    processData(engagementXSpeed, d.Answer_engagement2, JSON2.moveSpeed);
+                    processData(engagementXSpeed, d.Answer_engagement3, JSON3.moveSpeed);
+
+                    // yImpulse
+                    processData(engagementXYImpulse, d.Answer_engagement1, JSON1.impulseY);
+                    processData(engagementXYImpulse, d.Answer_engagement2, JSON2.impulseY);
+                    processData(engagementXYImpulse, d.Answer_engagement3, JSON3.impulseY);
+
+                    // gravity
+                    processData(engagementXGravity, d.Answer_engagement1, JSON1.gravity);
+                    processData(engagementXGravity, d.Answer_engagement2, JSON2.gravity);
+                    processData(engagementXGravity, d.Answer_engagement3, JSON3.gravity);
+
+                    // ************* stress *************
+                    // speed
+                    processData(stressXSpeed, d.Answer_stress1, JSON1.moveSpeed);
+                    processData(stressXSpeed, d.Answer_stress2, JSON2.moveSpeed);
+                    processData(stressXSpeed, d.Answer_stress3, JSON3.moveSpeed);
+
+                    // yImpulse
+                    processData(stressXYImpulse, d.Answer_stress1, JSON1.impulseY);
+                    processData(stressXYImpulse, d.Answer_stress2, JSON2.impulseY);
+                    processData(stressXYImpulse, d.Answer_stress3, JSON3.impulseY);
+
+                    // gravity
+                    processData(stressXGravity, d.Answer_stress1, JSON1.gravity);
+                    processData(stressXGravity, d.Answer_stress2, JSON2.gravity);
+                    processData(stressXGravity, d.Answer_engagement3, JSON3.gravity);
+
+                    // counting number of self-assessed "gamers"
+                    if (d.Answer_genres_notGamer === "true") {
+                        // the user in this row specified that they are not a gamer
+                        gamersData[1][1]++;
+                    } else {
+                        // the user in this row specified that they are a gamer
+                        gamersData[0][1]++;
+                    }
+
+                    // determinging personality type and counting
+                    for (let i = 0; i < personalityTypesData.length; i++) {
+
+                        if (d.Answer_personality === personalityTypesData[i][0]) {
+                            personalityTypesData[i][1]++;
+                            personalityTypesData[i][2].push(d.WorkerId);
+                        }
+                    }
+
+                    // written as a function to keep code tider and collapsable
+                    function extractGamePrefData() {
+                        // extracting game preference data
+                        if (d.Answer_genres_action === "true") {
+                            gamePrefsData[0][1]++;
+                            gamePrefsData[0][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_adventure === "true") {
+                            gamePrefsData[1][1]++;
+                            gamePrefsData[1][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_fps === "true") {
+                            gamePrefsData[2][1]++;
+                            gamePrefsData[2][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_mmo === "true") {
+                            gamePrefsData[3][1]++;
+                            gamePrefsData[3][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_moba === "true") {
+                            gamePrefsData[4][1]++;
+                            gamePrefsData[4][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_mobile === "true") {
+                            gamePrefsData[5][1]++;
+                            gamePrefsData[5][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_notGamer === "true") {
+                            gamePrefsData[6][1]++;
+                            gamePrefsData[6][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_platformer === "true") {
+                            gamePrefsData[7][1]++;
+                            gamePrefsData[7][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_rpg === "true") {
+                            gamePrefsData[8][1]++;
+                            gamePrefsData[8][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_sport === "true") {
+                            gamePrefsData[9][1]++;
+                            gamePrefsData[9][2].push(d.WorkerId);
+                        }
+
+                        if (d.Answer_genres_strategy === "true") {
+                            gamePrefsData[10][1]++;
+                            gamePrefsData[10][2].push(d.WorkerId);
+                        }
+                    }
+                    extractGamePrefData();
+
+
+                });
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////// PROCESSING DATA FOR CHARTS ////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                document.getElementById('gamers').innerHTML = ("Number of gamers: <strong>" + gamers + "<strong>");
+
+                averageTime = totalTime / 99;
+                document.getElementById('avTime').innerHTML = ("Average Time Taken: <strong>" + averageTime.toFixed(1) + "s<strong>");
+
+                document.getElementById('numResults').innerHTML = ("Number of results: <strong>" + numResults + "<strong>");
+
+                // creating a string full of all of our personality data
+                var personalityData = "";
+                // changing name of personalityTypesData[0][0] from "personalityUnknown" to a more readable "Respondent is unsure"
+                personalityTypesData[0][0] = "Unsure";
+
+                // Printing Personality Type data 
+                // for (let i = 0; i < personalityTypesData.length; i++) {
+                //   personalityData += "Number of " + personalityTypesData[i][0] + "s: " + "<strong>" + personalityTypesData[i][1] + "</strong><br>";
+                // }
+                // document.getElementById('personalities').innerHTML = personalityData;
+
+                // function allowing us to sort our 2d arrays by a specified column
+                function sortByColumn(a, index) {
+
+                    a.sort(sortFunction);
+
+                    function sortFunction(a, b) {
+                        if (a[index] === b[index]) {
+                            return 0;
+                        }
+                        else {
+                            return (a[index] > b[index]) ? -1 : 1;
+                        }
+                    }
+
+                    return a;
+                }
+
+                // sorting data to be numerically descending to make chart look better
+                personalityChartData = personalityTypesData.slice();
+                personalityChartData = sortByColumn(personalityChartData, 1);
+
+                // removing workerIDs
+                for (let index = 0; index < personalityChartData.length; index++) {
+                    personalityChartData[index].splice(2, 1);
+
+                }
+
+                // preparing data and removing workerIDs to allow data to be used for pie chart
+                gamePrefsChartData = gamePrefsData.slice();
+                gamePrefsChartData = sortByColumn(gamePrefsChartData, 1);
+
+                for (let index = 0; index < gamePrefsChartData.length; index++) {
+                    gamePrefsChartData[index].splice(2, 1);
+                }
+
+                var swapTemp = 0;
+
+                // function for generating averages
+
+                function generateAverages(array) {
+                    for (let index = 1; index < array.length; index++) {
+                        array[index][1] = +(array[index][1] / array[index][2]).toFixed(2);
+                        // console.log("Average " + array[0][1] + " for control of " + array[index][0] + ": " + array[index][1]);
+
+                        // swapping array position to have control on y axis of chart
+                        // swapTemp = controlXSpeed[index][1];
+                        // controlXSpeed[index][1] = controlXSpeed[index][0];
+                        // controlXSpeed[index][0] = swapTemp;
+                    }
+
+                }
+
+                // ************* contol *************
+                generateAverages(controlXSpeed);
+                generateAverages(controlXYImpulse);
+                generateAverages(controlXGravity);
+
+                // assigning to fresh array and removing frequency column
+                var controlXSpeedChartData = controlXSpeed.slice();
+                for (let index = 0; index < controlXSpeedChartData.length; index++) {
+                    controlXSpeedChartData[index].splice(2, 1);
+                }
+
+                var controlXYImpulseChartData = controlXYImpulse.slice();
+                for (let index = 0; index < controlXYImpulseChartData.length; index++) {
+                    controlXYImpulseChartData[index].splice(2, 1);
+                }
+
+                var controlXGravityChartData = controlXGravity.slice();
+                for (let index = 0; index < controlXGravityChartData.length; index++) {
+                    controlXGravityChartData[index].splice(2, 1);
+                }
+
+                // ************* difficulty *************
+                generateAverages(difficultyXSpeed);
+                generateAverages(difficultyXYImpulse);
+                generateAverages(difficultyXGravity);
+
+                // assigning to fresh array and removing frequency column
+                var difficultyXSpeedChartData = difficultyXSpeed.slice();
+                for (let index = 0; index < difficultyXSpeedChartData.length; index++) {
+                    difficultyXSpeedChartData[index].splice(2, 1);
+                }
+
+                var difficultyXYImpulseChartData = difficultyXYImpulse.slice();
+                for (let index = 0; index < difficultyXYImpulseChartData.length; index++) {
+                    difficultyXYImpulseChartData[index].splice(2, 1);
+                }
+
+                var difficultyXGravityChartData = difficultyXGravity.slice();
+                for (let index = 0; index < difficultyXGravityChartData.length; index++) {
+                    difficultyXGravityChartData[index].splice(2, 1);
+                }
+
+                // ************* engagement *************
+                generateAverages(engagementXSpeed);
+                generateAverages(engagementXYImpulse);
+                generateAverages(engagementXGravity);
+
+                // assigning to fresh array and removing frequency column
+                var engagementXSpeedChartData = engagementXSpeed.slice();
+                for (let index = 0; index < engagementXSpeedChartData.length; index++) {
+                    engagementXSpeedChartData[index].splice(2, 1);
+                }
+
+                var engagementXYImpulseChartData = engagementXYImpulse.slice();
+                for (let index = 0; index < engagementXYImpulseChartData.length; index++) {
+                    engagementXYImpulseChartData[index].splice(2, 1);
+                }
+
+                var engagementXGravityChartData = engagementXGravity.slice();
+                for (let index = 0; index < engagementXGravityChartData.length; index++) {
+                    engagementXGravityChartData[index].splice(2, 1);
+                }
+
+                // ************* stress *************
+                generateAverages(stressXSpeed);
+                generateAverages(stressXYImpulse);
+                generateAverages(stressXGravity);
+
+                // assigning to fresh array and removing frequency column
+                var stressXSpeedChartData = stressXSpeed.slice();
+                for (let index = 0; index < stressXSpeedChartData.length; index++) {
+                    stressXSpeedChartData[index].splice(2, 1);
+                }
+
+                var stressXYImpulseChartData = stressXYImpulse.slice();
+                for (let index = 0; index < stressXYImpulseChartData.length; index++) {
+                    stressXYImpulseChartData[index].splice(2, 1);
+                }
+
+                var stressXGravityChartData = stressXGravity.slice();
+                for (let index = 0; index < stressXGravityChartData.length; index++) {
+                    stressXGravityChartData[index].splice(2, 1);
+                }
+
+
+                // creating master arrays to show all graphs at once
+                // *************** speed ***************
+                var masterSpeedArray = JSON.parse(JSON.stringify(controlXSpeed));
+
+                for (let index = 0; index < masterSpeedArray.length; index++) {
+                    if (index == 0) {
+                        masterSpeedArray[0].push("Difficulty - Move Speed");
+                        masterSpeedArray[0].push("Engagement - Move Speed");
+                        masterSpeedArray[0].push("Stress - Move Speed");
+                        masterSpeedArray[0][1] = "Control - Move Speed";
+
+                    } else {
+                        masterSpeedArray[index][0] = +masterSpeedArray[index][0];
+                        masterSpeedArray[index][1] = +masterSpeedArray[index][1];
+                        masterSpeedArray[index].push(difficultyXSpeed[index][1]);
+                        masterSpeedArray[index].push(engagementXSpeed[index][1]);
+                        masterSpeedArray[index].push(stressXSpeed[index][1]);
+                    }
+                }
+
+                // *************** yImpulse ***************
+                var masterYImpulseArray = JSON.parse(JSON.stringify(controlXYImpulse));
+
+                for (let index = 0; index < masterYImpulseArray.length; index++) {
+                    if (index == 0) {
+                        masterYImpulseArray[0].push("Difficulty - Jump Impulse Strength");
+                        masterYImpulseArray[0].push("Engagement - Jump Impulse Strength");
+                        masterYImpulseArray[0].push("Stress - Jump Impulse Strength");
+                        masterYImpulseArray[0][1] = "Control - Jump Impulse Strength";
+
+                    } else {
+                        masterYImpulseArray[index][0] = +masterYImpulseArray[index][0];
+                        masterYImpulseArray[index][1] = +masterYImpulseArray[index][1];
+                        masterYImpulseArray[index].push(difficultyXYImpulse[index][1]);
+                        masterYImpulseArray[index].push(engagementXYImpulse[index][1]);
+                        masterYImpulseArray[index].push(stressXYImpulse[index][1]);
+                    }
+                }
+
+                // *************** gravity ***************
+                var masterGravityArray = JSON.parse(JSON.stringify(controlXGravity));
+
+                for (let index = 0; index < masterGravityArray.length; index++) {
+                    if (index == 0) {
+                        masterGravityArray[0].push("Difficulty - Gravity Strength");
+                        masterGravityArray[0].push("Engagement - Gravity Strength");
+                        masterGravityArray[0].push("Stress - Gravity Strength");
+                        masterGravityArray[0][1] = "Control - Gravity Strength";
+
+                    } else {
+                        masterGravityArray[index][0] = +masterGravityArray[index][0];
+                        masterGravityArray[index][1] = +masterGravityArray[index][1];
+                        masterGravityArray[index].push(difficultyXGravity[index][1]);
+                        masterGravityArray[index].push(engagementXGravity[index][1]);
+                        masterGravityArray[index].push(stressXGravity[index][1]);
+                    }
+                }
+
+                console.log(masterGravityArray);
+
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////// DRAWING CHARTS /////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                // Set a callback to run when the Google Visualization API is loaded.
+                google.charts.setOnLoadCallback(drawChart1);
+                google.charts.setOnLoadCallback(drawChart2);
+                google.charts.setOnLoadCallback(drawChart3);
+                google.charts.setOnLoadCallback(drawChart4);
+                google.charts.setOnLoadCallback(drawChart5);
+                google.charts.setOnLoadCallback(drawChart6);
+                google.charts.setOnLoadCallback(drawChart7);
+                google.charts.setOnLoadCallback(drawChart8);
+                google.charts.setOnLoadCallback(drawChart9);
+                google.charts.setOnLoadCallback(drawChart10);
+                google.charts.setOnLoadCallback(drawChart11);
+                google.charts.setOnLoadCallback(drawChart12);
+                google.charts.setOnLoadCallback(drawChart13);
+                google.charts.setOnLoadCallback(drawChart14);
+                google.charts.setOnLoadCallback(drawChart15);
+                google.charts.setOnLoadCallback(drawChart16);
+                google.charts.setOnLoadCallback(drawChart17);
+                google.charts.setOnLoadCallback(drawChart18);
+                google.charts.setOnLoadCallback(drawChart19);
+                google.charts.setOnLoadCallback(drawChart20);
+
+
+
+
+                ///////////////////////////////////////////////////////////////// CHART 1 - personality pie /////////////////////////////////////////////////////////////////
+
+                function drawChart1() {
+
+                    // Preparing the data
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'PersonalityType');
+                    data.addColumn('number', 'Frequency');
+                    data.addRows(
+                        personalityChartData
+                    );
+
+                    // Set chart options
+                    var options = {
+                        'title': 'Personality types of respondents (n= ' + numResults + ')',
+                        'width': 500,
+                        'height': 400,
+                        sliceVisibilityThreshold: 0
+                    };
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 2 - personality pie exc unknowns /////////////////////////////////////////////////////////////////
+
+                // preparing array for 2nd chart - slice() creatings a new array object from personalityTypesData so that chart2Data isn't just referencing the same array from a different place
+                var chart2Data = personalityChartData.slice();
+
+                // shift() removes the first entry (the unknown personality type data in this case)
+                chart2Data.shift();
+
+                function drawChart2() {
+
+                    // Preparing the data
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'PersonalityType');
+                    data.addColumn('number', 'Frequency');
+                    data.addRows(
+                        chart2Data
+                    );
+
+                    // Set chart options
+                    var options = {
+                        'title': 'Personality types excluding unknowns (n = ' + (numResults - personalityChartData[0][1]) + ")",
+                        'width': 500,
+                        'height': 400,
+                        sliceVisibilityThreshold: 0
+                    };
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 3 - personality bar exc unknowns /////////////////////////////////////////////////////////////////
+
+                function drawChart3() {
+
+                    // Preparing the data
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'PersonalityType');
+                    data.addColumn('number', 'Frequency');
+                    data.addRows(
+                        chart2Data
+                    );
+
+                    // Set chart options
+                    var options = {
+                        'title': 'Personality types excluding unknowns (n = ' + (numResults - personalityChartData[0][1]) + ")",
+                        'width': 550,
+                        'height': 400,
+                        legend: { position: 'none' }
+
+
+                    };
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization.BarChart(document.getElementById('chart_div3'));
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 4 - game genre prefs /////////////////////////////////////////////////////////////////
+
+                function drawChart4() {
+
+                    // Preparing the data
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'PersonalityType');
+                    data.addColumn('number', 'Frequency');
+                    data.addRows(
+                        gamePrefsChartData
+                    );
+
+                    // Set chart options
+                    var options = {
+                        'title': 'Game genre preferences of respondents (n= ' + numResults + ')',
+                        'width': 500,
+                        'height': 400,
+                        sliceVisibilityThreshold: 0
+                    };
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div20'));
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 5 - control vs speed /////////////////////////////////////////////////////////////////
+
+                function drawChart5() {
+                    var data = google.visualization.arrayToDataTable(
+                        controlXSpeedChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived control vs Character Move Speed (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Control', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div4'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 6 - control vs Y Impulse /////////////////////////////////////////////////////////////////
+
+                function drawChart6() {
+                    var data = google.visualization.arrayToDataTable(
+                        controlXYImpulseChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived control vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Control', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div5'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 7 - control vs gravity /////////////////////////////////////////////////////////////////
+
+                function drawChart7() {
+                    var data = google.visualization.arrayToDataTable(
+                        controlXGravityChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived control vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Control', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div6'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 8 - difficulty vs speed /////////////////////////////////////////////////////////////////
+
+                function drawChart8() {
+                    var data = google.visualization.arrayToDataTable(
+                        difficultyXSpeedChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived difficulty vs Character Move Speed (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Difficulty', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div7'));
+
+                    chart.draw(data, options);
+                }
+
+
+                ///////////////////////////////////////////////////////////////// CHART 9 - difficulty vs Y Impulse /////////////////////////////////////////////////////////////////
+
+                function drawChart9() {
+                    var data = google.visualization.arrayToDataTable(
+                        difficultyXYImpulseChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived difficulty vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Difficulty', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div8'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 10 - difficulty vs gravity /////////////////////////////////////////////////////////////////
+
+                function drawChart10() {
+                    var data = google.visualization.arrayToDataTable(
+                        difficultyXGravityChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived difficulty vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Difficulty', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div9'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 11 - engagement vs speed /////////////////////////////////////////////////////////////////
+
+                function drawChart11() {
+                    var data = google.visualization.arrayToDataTable(
+                        engagementXSpeedChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived engagement vs Character Move Speed (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Engagement', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div10'));
+
+                    chart.draw(data, options);
+                }
+
+
+                ///////////////////////////////////////////////////////////////// CHART 12 - engagement vs Y Impulse /////////////////////////////////////////////////////////////////
+
+                function drawChart12() {
+                    var data = google.visualization.arrayToDataTable(
+                        engagementXYImpulseChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived engagement vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Engagement', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div11'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 13 - engagement vs gravity /////////////////////////////////////////////////////////////////
+
+                function drawChart13() {
+                    var data = google.visualization.arrayToDataTable(
+                        engagementXGravityChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived engagement vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Engagement', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div12'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 14 - stress vs speed /////////////////////////////////////////////////////////////////
+
+                function drawChart14() {
+                    var data = google.visualization.arrayToDataTable(
+                        stressXSpeedChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived stress vs Character Move Speed (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Stress', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div13'));
+
+                    chart.draw(data, options);
+                }
+
+
+                ///////////////////////////////////////////////////////////////// CHART 15 - stress vs Y Impulse /////////////////////////////////////////////////////////////////
+
+                function drawChart15() {
+                    var data = google.visualization.arrayToDataTable(
+                        stressXYImpulseChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived stress vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Stress', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div14'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 16 - stress vs gravity /////////////////////////////////////////////////////////////////
+
+                function drawChart16() {
+                    var data = google.visualization.arrayToDataTable(
+                        stressXGravityChartData
+                    );
+
+                    var options = {
+                        title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        hAxis: { title: 'Stress', minValue: 1, maxValue: 10 },
+                        vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+                        legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div15'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 17 - master speed chart /////////////////////////////////////////////////////////////////
+
+                function drawChart17() {
+                    var data = google.visualization.arrayToDataTable(
+                        masterSpeedArray
+                    );
+
+                    var options = {
+                        title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+
+
+                        // legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div16'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 18 - master y impulse chart /////////////////////////////////////////////////////////////////
+
+                function drawChart18() {
+                    var data = google.visualization.arrayToDataTable(
+                        masterYImpulseArray
+                    );
+
+                    var options = {
+                        title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+
+
+                        // legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div17'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 19 - master gravity chart /////////////////////////////////////////////////////////////////
+
+                function drawChart19() {
+                    var data = google.visualization.arrayToDataTable(
+                        masterGravityArray
+                    );
+
+                    var options = {
+                        title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+                        'width': 500,
+                        'height': 400,
+                        curveType: 'function',
+                        vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+
+
+                        // legend: 'none',
+
+                    };
+
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div18'));
+
+                    chart.draw(data, options);
+                }
+
+                ///////////////////////////////////////////////////////////////// CHART 20 - gamers data /////////////////////////////////////////////////////////////////
+
+                function drawChart20() {
+
+                    // Preparing the data
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Gamer');
+                    data.addColumn('number', 'Frequency');
+                    data.addRows(
+                        gamersData
+                    );
+
+                    // Set chart options
+                    var options = {
+                        'title': 'Number of respondents who self-identified as a "Gamer" (n= ' + numResults + ')',
+                        'width': 500,
+                        'height': 400,
+                        sliceVisibilityThreshold: 0
+                    };
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div19'));
+                    chart.draw(data, options);
+                }
+
+
+            });
+
+
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+    <script src="/docs/4.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd"
+        crossorigin="anonymous"></script>
+</body>
+
+<script>
+
+    //defining data for tabulator table
+    var tabledata = [
+        { id: 1, height: h, width: w, speed: s, gravity: g, impulseY: positiveIY, lives: l, chamberedJump: cJE, obstacleSpeed: oSI, time: t }
+
+    ];
+
+    // TABULATOR
+    var table = new Tabulator("#example-table", {
+        height: 61, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        data: tabledata, //assign data to table
+        layout: "fitColumns", //fit columns to width of table (optional)
+        columns: [ //Define Table Columns
+            {
+                title: "Height", field: "height", editor: "number", editorParams: {
+                    min: 5, max: 200, step: 5
+                }
+            },
+            {
+                title: "Width", field: "width", editor: "number", editorParams: {
+                    min: 5, max: 200, step: 5
+                }
+            },
+            {
+                title: "Speed", field: "speed", editor: "number", editorParams: {
+                    min: 1, max: 20, step: 1
+                }
+            },
+            {
+                title: "Gravity", field: "gravity", editor: "number", editorParams: {
+                    min: 0.05, max: 5, step: 0.05
+                }
+            },
+            {
+                title: "Jump Impulse", field: "impulseY", editor: "number", editorParams: {
+                    min: 1, max: 50, step: 1
+                }
+            },
+            {
+                title: "Max Lives", field: "lives", editor: "number", editorParams: {
+                    min: 1, max: 10, step: 1
+                }
+            },
+            {
+                title: "Chambered Jumps Enabled", field: "chamberedJump", width: 220, editor: "select", editorParams: {
+                    true: "true",
+                    false: "false",
+                }
+            },
+            {
+                title: "Obstacle Speed Increment", field: "obstacleSpeed", width: 210, editor: "number", editorParams: {
+                    min: 0.05, max: 10, step: 0.05
+                }
+            },
+            {
+                title: "Time", field: "time", editor: "number", editorParams: {
+                    min: 1, max: 1800, step: 5
+                }
+            },
+
+        ],
+        // rowClick:function(e, row){ //trigger an alert message when the row is clicked
+        //     alert("Row " + row.getData().id + " Clicked!!!!");
+        // },
+        dataEdited: function (data) {
+            //data - the updated table data
+            h = data[0].height;
+            w = data[0].width;
+            s = data[0].speed;
+            g = data[0].gravity;
+            iY = data[0].impulseY * -1;
+            l = data[0].lives;
+            id = data[0].height;
+            cJE = data[0].chamberedJump;
+            oSI = data[0].obstacleSpeed;
+            t = data[0].time;
+
+            update = true;
+        },
+    });
+
+
+</script>
+
+
+
+</html>

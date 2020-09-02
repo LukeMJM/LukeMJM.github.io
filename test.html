@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Testing</title>
+  <script src="processing.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+  <link href="https://unpkg.com/tabulator-tables@4.7.2/dist/css/tabulator.min.css" rel="stylesheet">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="/docs/4.5/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="mask-icon" href="/docs/4.5/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
+  <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon.ico">
+  <meta name="msapplication-config" content="/docs/4.5/assets/img/favicons/browserconfig.xml">
+  <meta name="theme-color" content="#563d7c">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <script src="https://d3js.org/d3.v5.js"></script>
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
+
+  <script>
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+
+
+  </script>
+
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">LukeMJM</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="mechanicDB.html">Mechanic Database <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Mechanics</a>
+          <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="basicJumping.html">Basic Jumping</a>
+            <a class="dropdown-item" href="#">Another Mechanic</a>
+            <a class="dropdown-item" href="#">Another Mechanic</a>
+          </div>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="test.html">Testy Place <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+
+    <div class="text-center">
+      <h1>This is the Testing Page</h1> <br><br>
+      <p class="lead" id="gamers">gamers go here</p>
+      <p class="lead" id="avTime">av time taken goes here</p>
+      <p class="lead" id="numResults">num of results go here</p>
+
+
+      <!-- row of 3 cards to hold chart data -->
+      <div class="row mx-2 py-3">
+        <div class="col">
+          <div class="card-deck mx-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Personality Type Distribution</h5>
+                <div id="chart_div2"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Personality Type Distribution</h5>
+                <div id="chart_div1"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Personality Type Distribution</h5>
+                <div id="chart_div3"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- row of 3 cards to hold chart data -->
+      <div class="row mx-2 py-3">
+        <div class="col">
+          <div class="card-deck mx-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Speed Master Chart </h5>
+                <div id="chart_div16"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Jump Impulse Master Chart </h5>
+                <div id="chart_div17"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Gravity Master Chart</h5>
+                <div id="chart_div18"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- row of 3 cards to hold chart data -->
+      <div class="row mx-2 py-3">
+        <div class="col">
+          <div class="card-deck mx-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Control </h5>
+                <div id="chart_div4"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Control </h5>
+                <div id="chart_div5"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Control </h5>
+                <div id="chart_div6"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- row of 3 cards to hold chart data -->
+      <div class="row mx-2 py-3">
+        <div class="col">
+          <div class="card-deck mx-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Difficulty </h5>
+                <div id="chart_div7"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Difficulty </h5>
+                <div id="chart_div8"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Difficulty </h5>
+                <div id="chart_div9"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- row of 3 cards to hold chart data -->
+      <div class="row mx-2 py-3">
+        <div class="col">
+          <div class="card-deck mx-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Engagement </h5>
+                <div id="chart_div10"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Engagement </h5>
+                <div id="chart_div11"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Engagement </h5>
+                <div id="chart_div12"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- row of 3 cards to hold chart data -->
+      <div class="row mx-2 py-3">
+        <div class="col">
+          <div class="card-deck mx-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Stress </h5>
+                <div id="chart_div13"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Stress </h5>
+                <div id="chart_div14"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Perceived Stress </h5>
+                <div id="chart_div15"></div>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Data last updated 12/08/2020</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+    </div>
+
+
+  </div>
+
+  <div class="d-flex justify-content-center">
+
+
+  </div>
+
+  <script>
+
+    var results;
+    var gamers = 0;
+    var totalTime = 0;
+    var averageTime = 0;
+    var numResults = 0;
+
+    // creating arrays to hold results of data extraction
+    var controlXSpeed = [
+      ["Control", "Movement Speed", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var controlXYImpulse = [
+      ["Control", "Player YImpulse", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var controlXGravity = [
+      ["Control", "Player Gravity", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    // engagement arrays 
+    var difficultyXSpeed = [
+      ["Difficulty", "Movement Speed", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var difficultyXYImpulse = [
+      ["Difficulty", "Player YImpulse", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var difficultyXGravity = [
+      ["Difficulty", "Player Gravity", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+
+    // engagement arrays 
+    var engagementXSpeed = [
+      ["engagement", "Movement Speed", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var engagementXYImpulse = [
+      ["engagement", "Player YImpulse", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var engagementXGravity = [
+      ["engagement", "Player Gravity", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    // stress arrays 
+    var stressXSpeed = [
+      ["stress", "Movement Speed", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var stressXYImpulse = [
+      ["stress", "Player YImpulse", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    var stressXGravity = [
+      ["stress", "Player Gravity", "Frequency"],
+      [1, 0, 0],
+      [2, 0, 0],
+      [3, 0, 0],
+      [4, 0, 0],
+      [5, 0, 0],
+      [6, 0, 0],
+      [7, 0, 0],
+      [8, 0, 0],
+      [9, 0, 0],
+      [10, 0, 0],
+    ];
+
+    // 2d array of personality types and an integer to count their frequency
+    var personalityTypesData = [
+      ["personalityUnknown", 0, []],
+      ["INTJ", 0, []],
+      ["INTP", 0, []],
+      ["ENTJ", 0, []],
+      ["ENTP", 0, []],
+      ["INFJ", 0, []],
+      ["INFP", 0, []],
+      ["ENFJ", 0, []],
+      ["ENFP", 0, []],
+      ["ISTJ", 0, []],
+      ["ISFJ", 0, []],
+      ["ESTJ", 0, []],
+      ["ESFJ", 0, []],
+      ["ISTP", 0, []],
+      ["ISFP", 0, []],
+      ["ESTP", 0, []],
+      ["ESFP", 0, []]
+    ];
+
+    var gamePrefsData = [
+      ["Action", 0, []],
+      ["Adventure", 0, []],
+      ["FPS", 0, []],
+      ["MMO", 0, []],
+      ["MOBA", 0, []],
+      ["Mobile", 0, []],
+      ["Not Gamer", 0, []],
+      ["Platformer", 0, []],
+      ["RPG", 0, []],
+      ["Sport", 0, []],
+      ["Strategy", 0, []]
+    ];
+
+    // Testing to check I can compare against a 3d array
+    // var gamePrefsData2 = [
+    //   ["Not Gamer", 0, []],
+    //   ["Adventure", 0, []]
+    // ];
+
+    // if (gamePrefsData[0][1] === gamePrefsData2[0][1]) {
+    //   console.log("match");
+    //   gamePrefsData2[0][2].push("ADASDADAA")
+    //   console.log(gamePrefsData2[0][2]);
+
+    // }
+
+    var total = 0;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////// GATHERING DATA FROM CSV /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    d3.csv("data/results.csv")
+      .then(function (data) {
+
+        data.forEach(function (d) {
+
+          // checking if HIT was rejected and moving on to next tuple if it was
+          if (d.AssignmentStatus === "Rejected") {
+            return;
+          }
+
+          // workerID - some workers have completed multiple HITS
+          // console.log(d.WorkerId);
+
+          // incrementing total number of results var for each new tuple after it is confirmed to be an approved result
+          numResults++;
+
+          // showing the HIT Id
+          // console.log(d.HITId);
+
+          // type casting from strings to ints - use + before var name for a quick typecast
+          d.Answer_control1 = +d.Answer_control1;
+          d.Answer_control2 = +d.Answer_control2;
+          d.Answer_control3 = +d.Answer_control3;
+          d.Answer_difficulty1 = +d.Answer_difficulty1;
+          d.Answer_difficulty2 = +d.Answer_difficulty2;
+          d.Answer_difficulty3 = +d.Answer_difficulty3;
+          d.Answer_engagement1 = +d.Answer_engagement1;
+          d.Answer_engagement2 = +d.Answer_engagement2;
+          d.Answer_engagement3 = +d.Answer_engagement3;
+          d.Answer_stress1 = +d.Answer_stress1;
+          d.Answer_stress2 = +d.Answer_stress2;
+          d.Answer_stress3 = +d.Answer_stress3;
+
+
+          // Time workers spent on task
+          d.WorkTimeInSeconds = +d.WorkTimeInSeconds;
+          // finding average time spent on task - could eliminate any data significantly outside of this
+          totalTime += d.WorkTimeInSeconds;
+
+          // allowing us to check that no HITS have a time spent which would imply they are invalid results
+          // if (d.WorkTimeInSeconds < 200) {
+          //   console.log(d.WorkerId + " - time spent: " + d.WorkTimeInSeconds);
+          // }
+
+          // Parsing JSON into objects so we can access their properties
+          JSON1 = JSON.parse(d.Answer_gameJSON1);
+          JSON2 = JSON.parse(d.Answer_gameJSON2);
+          JSON3 = JSON.parse(d.Answer_gameJSON3);
+
+          // flipping impulseY to positive
+          JSON1.impulseY = Math.abs(JSON1.impulseY);
+          JSON2.impulseY = Math.abs(JSON2.impulseY);
+          JSON3.impulseY = Math.abs(JSON3.impulseY);
+
+          // function to process all the data required for a comparison of player moveSpeed x control
+          function processData(answerArray, answerNum, jsonAttribute) {
+            switch (answerNum) {
+              case 1:
+                answerArray[1][1] += jsonAttribute;
+                answerArray[1][2]++;
+                break;
+              case 2:
+                answerArray[2][1] += jsonAttribute;
+                answerArray[2][2]++;
+                break;
+              case 3:
+                answerArray[3][1] += jsonAttribute;
+                answerArray[3][2]++;
+                break;
+              case 4:
+                answerArray[4][1] += jsonAttribute;
+                answerArray[4][2]++;
+                break;
+              case 5:
+                answerArray[5][1] += jsonAttribute;
+                answerArray[5][2]++;
+                break;
+              case 6:
+                answerArray[6][1] += jsonAttribute;
+                answerArray[6][2]++;
+                break;
+              case 7:
+                answerArray[7][1] += jsonAttribute;
+                answerArray[7][2]++;
+                break;
+              case 8:
+                answerArray[8][1] += jsonAttribute;
+                answerArray[8][2]++;
+                break;
+              case 9:
+                answerArray[9][1] += jsonAttribute;
+                answerArray[9][2]++;
+                break;
+              case 10:
+                answerArray[10][1] += jsonAttribute;
+                answerArray[10][2]++;
+                break;
+
+              default:
+                break;
+            }
+
+          }
+
+          // using a function to avoid repetetive code
+
+          // ************* contol *************
+          // speed
+          processData(controlXSpeed, d.Answer_control1, JSON1.moveSpeed);
+          processData(controlXSpeed, d.Answer_control2, JSON2.moveSpeed);
+          processData(controlXSpeed, d.Answer_control3, JSON3.moveSpeed);
+
+          // yImpulse
+          processData(controlXYImpulse, d.Answer_control1, JSON1.impulseY);
+          processData(controlXYImpulse, d.Answer_control2, JSON2.impulseY);
+          processData(controlXYImpulse, d.Answer_control3, JSON3.impulseY);
+
+          // gravity
+          processData(controlXGravity, d.Answer_control1, JSON1.gravity);
+          processData(controlXGravity, d.Answer_control2, JSON2.gravity);
+          processData(controlXGravity, d.Answer_control3, JSON3.gravity);
+
+          // ************* difficulty *************
+          // speed
+          processData(difficultyXSpeed, d.Answer_difficulty1, JSON1.moveSpeed);
+          processData(difficultyXSpeed, d.Answer_difficulty2, JSON2.moveSpeed);
+          processData(difficultyXSpeed, d.Answer_difficulty3, JSON3.moveSpeed);
+
+          // yImpulse
+          processData(difficultyXYImpulse, d.Answer_difficulty1, JSON1.impulseY);
+          processData(difficultyXYImpulse, d.Answer_difficulty2, JSON2.impulseY);
+          processData(difficultyXYImpulse, d.Answer_difficulty3, JSON3.impulseY);
+
+          // gravity
+          processData(difficultyXGravity, d.Answer_difficulty1, JSON1.gravity);
+          processData(difficultyXGravity, d.Answer_difficulty2, JSON2.gravity);
+          processData(difficultyXGravity, d.Answer_difficulty3, JSON3.gravity);
+
+          // ************* engagement *************
+          // speed
+          processData(engagementXSpeed, d.Answer_engagement1, JSON1.moveSpeed);
+          processData(engagementXSpeed, d.Answer_engagement2, JSON2.moveSpeed);
+          processData(engagementXSpeed, d.Answer_engagement3, JSON3.moveSpeed);
+
+          // yImpulse
+          processData(engagementXYImpulse, d.Answer_engagement1, JSON1.impulseY);
+          processData(engagementXYImpulse, d.Answer_engagement2, JSON2.impulseY);
+          processData(engagementXYImpulse, d.Answer_engagement3, JSON3.impulseY);
+
+          // gravity
+          processData(engagementXGravity, d.Answer_engagement1, JSON1.gravity);
+          processData(engagementXGravity, d.Answer_engagement2, JSON2.gravity);
+          processData(engagementXGravity, d.Answer_engagement3, JSON3.gravity);
+
+          // ************* stress *************
+          // speed
+          processData(stressXSpeed, d.Answer_stress1, JSON1.moveSpeed);
+          processData(stressXSpeed, d.Answer_stress2, JSON2.moveSpeed);
+          processData(stressXSpeed, d.Answer_stress3, JSON3.moveSpeed);
+
+          // yImpulse
+          processData(stressXYImpulse, d.Answer_stress1, JSON1.impulseY);
+          processData(stressXYImpulse, d.Answer_stress2, JSON2.impulseY);
+          processData(stressXYImpulse, d.Answer_stress3, JSON3.impulseY);
+
+          // gravity
+          processData(stressXGravity, d.Answer_stress1, JSON1.gravity);
+          processData(stressXGravity, d.Answer_stress2, JSON2.gravity);
+          processData(stressXGravity, d.Answer_engagement3, JSON3.gravity);
+
+          // counting number of self-assessed "gamers"
+          if (d.Answer_genres_notGamer === "true") {
+            // the user in this row specified that they are not a gamer
+          } else {
+            // the user in this row specified that they are a gamer
+            gamers++;
+          }
+
+          // determinging personality type and counting
+          for (let i = 0; i < personalityTypesData.length; i++) {
+
+            if (d.Answer_personality === personalityTypesData[i][0]) {
+              personalityTypesData[i][1]++;
+              personalityTypesData[i][2].push(d.WorkerId);
+            }
+          }
+
+          // written as a function to keep code tider and collapsable
+          function extractGamePrefData() {
+            // extracting game preference data
+            if (d.Answer_genres_action === "true") {
+              gamePrefsData[0][1]++;
+              gamePrefsData[0][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_adventure === "true") {
+              gamePrefsData[1][1]++;
+              gamePrefsData[1][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_fps === "true") {
+              gamePrefsData[2][1]++;
+              gamePrefsData[2][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_mmo === "true") {
+              gamePrefsData[3][1]++;
+              gamePrefsData[3][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_moba === "true") {
+              gamePrefsData[4][1]++;
+              gamePrefsData[4][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_mobile === "true") {
+              gamePrefsData[5][1]++;
+              gamePrefsData[5][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_notGamer === "true") {
+              gamePrefsData[6][1]++;
+              gamePrefsData[6][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_platformer === "true") {
+              gamePrefsData[7][1]++;
+              gamePrefsData[7][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_rpg === "true") {
+              gamePrefsData[8][1]++;
+              gamePrefsData[8][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_sport === "true") {
+              gamePrefsData[9][1]++;
+              gamePrefsData[9][2].push(d.WorkerId);
+            }
+
+            if (d.Answer_genres_strategy === "true") {
+              gamePrefsData[10][1]++;
+              gamePrefsData[10][2].push(d.WorkerId);
+            }
+          }
+          extractGamePrefData();
+
+
+        });
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////// PROCESSING DATA FOR CHARTS ////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        document.getElementById('gamers').innerHTML = ("Number of gamers: <strong>" + gamers + "<strong>");
+
+        averageTime = totalTime / 99;
+        document.getElementById('avTime').innerHTML = ("Average Time Taken: <strong>" + averageTime.toFixed(1) + "s<strong>");
+
+        document.getElementById('numResults').innerHTML = ("Number of results: <strong>" + numResults + "<strong>");
+
+        // creating a string full of all of our personality data
+        var personalityData = "";
+        // changing name of personalityTypesData[0][0] from "personalityUnknown" to a more readable "Respondent is unsure"
+        personalityTypesData[0][0] = "Unsure";
+
+        // Printing Personality Type data 
+        // for (let i = 0; i < personalityTypesData.length; i++) {
+        //   personalityData += "Number of " + personalityTypesData[i][0] + "s: " + "<strong>" + personalityTypesData[i][1] + "</strong><br>";
+        // }
+        // document.getElementById('personalities').innerHTML = personalityData;
+
+        // function allowing us to sort our 2d arrays by a specified column
+        function sortByColumn(a, index) {
+
+          a.sort(sortFunction);
+
+          function sortFunction(a, b) {
+            if (a[index] === b[index]) {
+              return 0;
+            }
+            else {
+              return (a[index] > b[index]) ? -1 : 1;
+            }
+          }
+
+          return a;
+        }
+
+        // sorting data to be numerically descending to make chart look better
+        personalityChartData = personalityTypesData.slice();
+        personalityChartData = sortByColumn(personalityChartData, 1);
+
+        // removing workerIDs
+        for (let index = 0; index < personalityChartData.length; index++) {
+          personalityChartData[index].splice(2, 1);
+
+        }
+
+        // preparing data and removing workerIDs to allow data to be used for pie chart
+        gamePrefsChartData = gamePrefsData.slice();
+        gamePrefsChartData = sortByColumn(gamePrefsChartData, 1);
+
+        for (let index = 0; index < gamePrefsChartData.length; index++) {
+          gamePrefsChartData[index].splice(2, 1);
+        }
+
+        var swapTemp = 0;
+
+        // function for generating averages
+
+        function generateAverages(array) {
+          for (let index = 1; index < array.length; index++) {
+            array[index][1] = +(array[index][1] / array[index][2]).toFixed(2);
+            // console.log("Average " + array[0][1] + " for control of " + array[index][0] + ": " + array[index][1]);
+
+            // swapping array position to have control on y axis of chart
+            // swapTemp = controlXSpeed[index][1];
+            // controlXSpeed[index][1] = controlXSpeed[index][0];
+            // controlXSpeed[index][0] = swapTemp;
+          }
+
+        }
+
+        // ************* contol *************
+        generateAverages(controlXSpeed);
+        generateAverages(controlXYImpulse);
+        generateAverages(controlXGravity);
+
+        // assigning to fresh array and removing frequency column
+        var controlXSpeedChartData = controlXSpeed.slice();
+        for (let index = 0; index < controlXSpeedChartData.length; index++) {
+          controlXSpeedChartData[index].splice(2, 1);
+        }
+
+        var controlXYImpulseChartData = controlXYImpulse.slice();
+        for (let index = 0; index < controlXYImpulseChartData.length; index++) {
+          controlXYImpulseChartData[index].splice(2, 1);
+        }
+
+        var controlXGravityChartData = controlXGravity.slice();
+        for (let index = 0; index < controlXGravityChartData.length; index++) {
+          controlXGravityChartData[index].splice(2, 1);
+        }
+
+        // ************* difficulty *************
+        generateAverages(difficultyXSpeed);
+        generateAverages(difficultyXYImpulse);
+        generateAverages(difficultyXGravity);
+
+        // assigning to fresh array and removing frequency column
+        var difficultyXSpeedChartData = difficultyXSpeed.slice();
+        for (let index = 0; index < difficultyXSpeedChartData.length; index++) {
+          difficultyXSpeedChartData[index].splice(2, 1);
+        }
+
+        var difficultyXYImpulseChartData = difficultyXYImpulse.slice();
+        for (let index = 0; index < difficultyXYImpulseChartData.length; index++) {
+          difficultyXYImpulseChartData[index].splice(2, 1);
+        }
+
+        var difficultyXGravityChartData = difficultyXGravity.slice();
+        for (let index = 0; index < difficultyXGravityChartData.length; index++) {
+          difficultyXGravityChartData[index].splice(2, 1);
+        }
+
+        // ************* engagement *************
+        generateAverages(engagementXSpeed);
+        generateAverages(engagementXYImpulse);
+        generateAverages(engagementXGravity);
+
+        // assigning to fresh array and removing frequency column
+        var engagementXSpeedChartData = engagementXSpeed.slice();
+        for (let index = 0; index < engagementXSpeedChartData.length; index++) {
+          engagementXSpeedChartData[index].splice(2, 1);
+        }
+
+        var engagementXYImpulseChartData = engagementXYImpulse.slice();
+        for (let index = 0; index < engagementXYImpulseChartData.length; index++) {
+          engagementXYImpulseChartData[index].splice(2, 1);
+        }
+
+        var engagementXGravityChartData = engagementXGravity.slice();
+        for (let index = 0; index < engagementXGravityChartData.length; index++) {
+          engagementXGravityChartData[index].splice(2, 1);
+        }
+
+        // ************* stress *************
+        generateAverages(stressXSpeed);
+        generateAverages(stressXYImpulse);
+        generateAverages(stressXGravity);
+
+        // assigning to fresh array and removing frequency column
+        var stressXSpeedChartData = stressXSpeed.slice();
+        for (let index = 0; index < stressXSpeedChartData.length; index++) {
+          stressXSpeedChartData[index].splice(2, 1);
+        }
+
+        var stressXYImpulseChartData = stressXYImpulse.slice();
+        for (let index = 0; index < stressXYImpulseChartData.length; index++) {
+          stressXYImpulseChartData[index].splice(2, 1);
+        }
+
+        var stressXGravityChartData = stressXGravity.slice();
+        for (let index = 0; index < stressXGravityChartData.length; index++) {
+          stressXGravityChartData[index].splice(2, 1);
+        }
+
+
+        // creating master arrays to show all graphs at once
+        // *************** speed ***************
+        var masterSpeedArray = JSON.parse(JSON.stringify(controlXSpeed));
+
+        for (let index = 0; index < masterSpeedArray.length; index++) {
+          if (index == 0) {
+            masterSpeedArray[0].push("Difficulty - Move Speed");
+            masterSpeedArray[0].push("Engagement - Move Speed");
+            masterSpeedArray[0].push("Stress - Move Speed");
+            masterSpeedArray[0][1] = "Control - Move Speed";
+
+          } else {
+            masterSpeedArray[index][0] = +masterSpeedArray[index][0];
+            masterSpeedArray[index][1] = +masterSpeedArray[index][1];
+            masterSpeedArray[index].push(difficultyXSpeed[index][1]);
+            masterSpeedArray[index].push(engagementXSpeed[index][1]);
+            masterSpeedArray[index].push(stressXSpeed[index][1]);
+          }
+        }
+
+        // *************** yImpulse ***************
+        var masterYImpulseArray = JSON.parse(JSON.stringify(controlXYImpulse));
+
+        for (let index = 0; index < masterYImpulseArray.length; index++) {
+          if (index == 0) {
+            masterYImpulseArray[0].push("Difficulty - Jump Impulse Strength");
+            masterYImpulseArray[0].push("Engagement - Jump Impulse Strength");
+            masterYImpulseArray[0].push("Stress - Jump Impulse Strength");
+            masterYImpulseArray[0][1] = "Control - Jump Impulse Strength";
+
+          } else {
+            masterYImpulseArray[index][0] = +masterYImpulseArray[index][0];
+            masterYImpulseArray[index][1] = +masterYImpulseArray[index][1];
+            masterYImpulseArray[index].push(difficultyXYImpulse[index][1]);
+            masterYImpulseArray[index].push(engagementXYImpulse[index][1]);
+            masterYImpulseArray[index].push(stressXYImpulse[index][1]);
+          }
+        }
+
+        // *************** gravity ***************
+        var masterGravityArray = JSON.parse(JSON.stringify(controlXGravity));
+
+        for (let index = 0; index < masterGravityArray.length; index++) {
+          if (index == 0) {
+            masterGravityArray[0].push("Difficulty - Gravity Strength");
+            masterGravityArray[0].push("Engagement - Gravity Strength");
+            masterGravityArray[0].push("Stress - Gravity Strength");
+            masterGravityArray[0][1] = "Control - Gravity Strength";
+
+          } else {
+            masterGravityArray[index][0] = +masterGravityArray[index][0];
+            masterGravityArray[index][1] = +masterGravityArray[index][1];
+            masterGravityArray[index].push(difficultyXGravity[index][1]);
+            masterGravityArray[index].push(engagementXGravity[index][1]);
+            masterGravityArray[index].push(stressXGravity[index][1]);
+          }
+        }
+
+        console.log(masterGravityArray);
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////// DRAWING CHARTS /////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart1);
+        google.charts.setOnLoadCallback(drawChart2);
+        google.charts.setOnLoadCallback(drawChart3);
+        // google.charts.setOnLoadCallback(drawChart4);
+        google.charts.setOnLoadCallback(drawChart5);
+        google.charts.setOnLoadCallback(drawChart6);
+        google.charts.setOnLoadCallback(drawChart7);
+        google.charts.setOnLoadCallback(drawChart8);
+        google.charts.setOnLoadCallback(drawChart9);
+        google.charts.setOnLoadCallback(drawChart10);
+        google.charts.setOnLoadCallback(drawChart11);
+        google.charts.setOnLoadCallback(drawChart12);
+        google.charts.setOnLoadCallback(drawChart13);
+        google.charts.setOnLoadCallback(drawChart14);
+        google.charts.setOnLoadCallback(drawChart15);
+        google.charts.setOnLoadCallback(drawChart16);
+        google.charts.setOnLoadCallback(drawChart17);
+        google.charts.setOnLoadCallback(drawChart18);
+        google.charts.setOnLoadCallback(drawChart19);
+
+
+
+        ///////////////////////////////////////////////////////////////// CHART 1 - personality pie /////////////////////////////////////////////////////////////////
+
+        function drawChart1() {
+
+          // Preparing the data
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'PersonalityType');
+          data.addColumn('number', 'Frequency');
+          data.addRows(
+            personalityChartData
+          );
+
+          // Set chart options
+          var options = {
+            'title': 'Personality types of respondents (n= ' + numResults + ')',
+            'width': 500,
+            'height': 400,
+            sliceVisibilityThreshold: 0
+          };
+
+          // Instantiate and draw our chart, passing in some options.
+          var chart = new google.visualization.PieChart(document.getElementById('chart_div2'));
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 2 - personality pie exc unknowns /////////////////////////////////////////////////////////////////
+
+        // preparing array for 2nd chart - slice() creatings a new array object from personalityTypesData so that chart2Data isn't just referencing the same array from a different place
+        var chart2Data = personalityChartData.slice();
+
+        // shift() removes the first entry (the unknown personality type data in this case)
+        chart2Data.shift();
+
+        function drawChart2() {
+
+          // Preparing the data
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'PersonalityType');
+          data.addColumn('number', 'Frequency');
+          data.addRows(
+            chart2Data
+          );
+
+          // Set chart options
+          var options = {
+            'title': 'Personality types excluding unknowns (n = ' + (numResults - personalityChartData[0][1]) + ")",
+            'width': 500,
+            'height': 400,
+            sliceVisibilityThreshold: 0
+          };
+
+          // Instantiate and draw our chart, passing in some options.
+          var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 3 - personality bar exc unknowns /////////////////////////////////////////////////////////////////
+
+        function drawChart3() {
+
+          // Preparing the data
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'PersonalityType');
+          data.addColumn('number', 'Frequency');
+          data.addRows(
+            chart2Data
+          );
+
+          // Set chart options
+          var options = {
+            'title': 'Personality types excluding unknowns (n = ' + (numResults - personalityChartData[0][1]) + ")",
+            'width': 550,
+            'height': 400,
+            legend: { position: 'none' }
+
+
+          };
+
+          // Instantiate and draw our chart, passing in some options.
+          var chart = new google.visualization.BarChart(document.getElementById('chart_div3'));
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 4 - game genre prefs /////////////////////////////////////////////////////////////////
+
+        function drawChart4() {
+
+          // Preparing the data
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'PersonalityType');
+          data.addColumn('number', 'Frequency');
+          data.addRows(
+            gamePrefsChartData
+          );
+
+          // Set chart options
+          var options = {
+            'title': 'Game genre preferences of respondents (n= ' + numResults + ')',
+            'width': 500,
+            'height': 400,
+            sliceVisibilityThreshold: 0
+          };
+
+          // Instantiate and draw our chart, passing in some options.
+          var chart = new google.visualization.PieChart(document.getElementById('chart_div10'));
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 5 - control vs speed /////////////////////////////////////////////////////////////////
+
+        function drawChart5() {
+          var data = google.visualization.arrayToDataTable(
+            controlXSpeedChartData
+          );
+
+          var options = {
+            title: 'Average perceived control vs Character Move Speed (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Control', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div4'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 6 - control vs Y Impulse /////////////////////////////////////////////////////////////////
+
+        function drawChart6() {
+          var data = google.visualization.arrayToDataTable(
+            controlXYImpulseChartData
+          );
+
+          var options = {
+            title: 'Average perceived control vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Control', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div5'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 7 - control vs gravity /////////////////////////////////////////////////////////////////
+
+        function drawChart7() {
+          var data = google.visualization.arrayToDataTable(
+            controlXGravityChartData
+          );
+
+          var options = {
+            title: 'Average perceived control vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Control', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div6'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 8 - difficulty vs speed /////////////////////////////////////////////////////////////////
+
+        function drawChart8() {
+          var data = google.visualization.arrayToDataTable(
+            difficultyXSpeedChartData
+          );
+
+          var options = {
+            title: 'Average perceived difficulty vs Character Move Speed (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Difficulty', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div7'));
+
+          chart.draw(data, options);
+        }
+
+
+        ///////////////////////////////////////////////////////////////// CHART 9 - difficulty vs Y Impulse /////////////////////////////////////////////////////////////////
+
+        function drawChart9() {
+          var data = google.visualization.arrayToDataTable(
+            difficultyXYImpulseChartData
+          );
+
+          var options = {
+            title: 'Average perceived difficulty vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Difficulty', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div8'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 10 - difficulty vs gravity /////////////////////////////////////////////////////////////////
+
+        function drawChart10() {
+          var data = google.visualization.arrayToDataTable(
+            difficultyXGravityChartData
+          );
+
+          var options = {
+            title: 'Average perceived difficulty vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Difficulty', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div9'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 11 - engagement vs speed /////////////////////////////////////////////////////////////////
+
+        function drawChart11() {
+          var data = google.visualization.arrayToDataTable(
+            engagementXSpeedChartData
+          );
+
+          var options = {
+            title: 'Average perceived engagement vs Character Move Speed (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Engagement', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div10'));
+
+          chart.draw(data, options);
+        }
+
+
+        ///////////////////////////////////////////////////////////////// CHART 12 - engagement vs Y Impulse /////////////////////////////////////////////////////////////////
+
+        function drawChart12() {
+          var data = google.visualization.arrayToDataTable(
+            engagementXYImpulseChartData
+          );
+
+          var options = {
+            title: 'Average perceived engagement vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Engagement', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div11'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 13 - engagement vs gravity /////////////////////////////////////////////////////////////////
+
+        function drawChart13() {
+          var data = google.visualization.arrayToDataTable(
+            engagementXGravityChartData
+          );
+
+          var options = {
+            title: 'Average perceived engagement vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Engagement', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div12'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 14 - stress vs speed /////////////////////////////////////////////////////////////////
+
+        function drawChart14() {
+          var data = google.visualization.arrayToDataTable(
+            stressXSpeedChartData
+          );
+
+          var options = {
+            title: 'Average perceived stress vs Character Move Speed (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Stress', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div13'));
+
+          chart.draw(data, options);
+        }
+
+
+        ///////////////////////////////////////////////////////////////// CHART 15 - stress vs Y Impulse /////////////////////////////////////////////////////////////////
+
+        function drawChart15() {
+          var data = google.visualization.arrayToDataTable(
+            stressXYImpulseChartData
+          );
+
+          var options = {
+            title: 'Average perceived stress vs Character Jump Impulse Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Stress', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div14'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 16 - stress vs gravity /////////////////////////////////////////////////////////////////
+
+        function drawChart16() {
+          var data = google.visualization.arrayToDataTable(
+            stressXGravityChartData
+          );
+
+          var options = {
+            title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            hAxis: { title: 'Stress', minValue: 1, maxValue: 10 },
+            vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+            legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div15'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 17 - master speed chart /////////////////////////////////////////////////////////////////
+
+        function drawChart17() {
+          var data = google.visualization.arrayToDataTable(
+            masterSpeedArray
+          );
+
+          var options = {
+            title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            vAxis: { title: 'Movement Speed', minValue: 5, maxValue: 7 },
+
+
+            // legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div16'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 18 - master y impulse chart /////////////////////////////////////////////////////////////////
+
+        function drawChart18() {
+          var data = google.visualization.arrayToDataTable(
+            masterYImpulseArray
+          );
+
+          var options = {
+            title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            vAxis: { title: 'Jump Impulse Strength', minValue: 10, maxValue: 15 },
+
+
+            // legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div17'));
+
+          chart.draw(data, options);
+        }
+
+        ///////////////////////////////////////////////////////////////// CHART 19 - master gravity chart /////////////////////////////////////////////////////////////////
+
+        function drawChart19() {
+          var data = google.visualization.arrayToDataTable(
+            masterGravityArray
+          );
+
+          var options = {
+            title: 'Average perceived stress vs Character Gravity Strength (n= ' + numResults * 3 + ')',
+            'width': 500,
+            'height': 400,
+            curveType: 'function',
+            vAxis: { title: 'Gravity Strength', minValue: 0.4, maxValue: 0.65 },
+
+
+            // legend: 'none',
+
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div18'));
+
+          chart.draw(data, options);
+        }
+
+
+      });
+
+
+
+  </script>
+
+
+
+
+  <br><br>
+  <div id="example-table">
+
+
+
+  </div>
+
+  </main><!-- /.container -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+
+</body>
+
+</html>

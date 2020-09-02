@@ -1,0 +1,69 @@
+"HITId", x
+"AssignmentId", x
+"WorkerId", x 
+"AssignmentStatus",
+"AcceptTime",
+"SubmitTime",
+"AutoApprovalTime",
+"ApprovalTime",
+"RejectionTime",
+"RequesterFeedback",
+"WorkTimeInSeconds",
+"LifetimeApprovalRate",
+"Last30DaysApprovalRate",
+"Last7DaysApprovalRate",
+"Input_url1",
+"Input_url2",
+"Input_url3",
+"Answer_comments",
+"Answer_control1", x
+"Answer_control2", x
+"Answer_control3", x
+"Answer_difficulty1",
+"Answer_difficulty2",
+"Answer_difficulty3",
+"Answer_engagement1",
+"Answer_engagement2",
+"Answer_engagement3",
+"Answer_gameJSON1", x
+"Answer_gameJSON2", x
+"Answer_gameJSON3", x
+"Answer_gamebreak1_gravHigh",
+"Answer_gamebreak1_gravLow",
+"Answer_gamebreak1_jumpChamber",
+"Answer_gamebreak1_obSpeed",
+"Answer_gamebreak1_playerSize",
+"Answer_gamebreak1_speed",
+"Answer_gamebreak2_gravHigh",
+"Answer_gamebreak2_gravLow",
+"Answer_gamebreak2_jumpChamber",
+"Answer_gamebreak2_obSpeed",
+"Answer_gamebreak2_playerSize",
+"Answer_gamebreak2_speed",
+"Answer_gamebreak3_gravHigh",
+"Answer_gamebreak3_gravLow",
+"Answer_gamebreak3_jumpChamber",
+"Answer_gamebreak3_obSpeed",
+"Answer_gamebreak3_playerSize",
+"Answer_gamebreak3_speed",
+"Answer_gamebroken1_true",
+"Answer_gamebroken2_true",
+"Answer_gamebroken3_true",
+"Answer_genres_action", x
+"Answer_genres_adventure", x
+"Answer_genres_fps", x
+"Answer_genres_mmo", x
+"Answer_genres_moba", x
+"Answer_genres_mobile", x
+"Answer_genres_notGamer", x
+"Answer_genres_platformer",
+"Answer_genres_rpg", x
+"Answer_genres_sport", x
+"Answer_genres_strategy", x
+"Answer_personality", x
+"Answer_ranking",
+"Answer_stress1",
+"Answer_stress2",
+"Answer_stress3",
+"Approve", x
+"Reject" x
