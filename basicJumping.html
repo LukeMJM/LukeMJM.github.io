@@ -1271,19 +1271,7 @@
             ["Not Gamer", 0]
         ];
 
-        // Testing to check I can compare against a 3d array
-        // var gamePrefsData2 = [
-        //   ["Not Gamer", 0, []],
-        //   ["Adventure", 0, []]
-        // ];
-
-        // if (gamePrefsData[0][1] === gamePrefsData2[0][1]) {
-        //   console.log("match");
-        //   gamePrefsData2[0][2].push("ADASDADAA")
-        //   console.log(gamePrefsData2[0][2]);
-
-        // }
-
+        // var to increment each time a new tuple is read to allow us to record the total number of tuples we are analysing
         var total = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1545,13 +1533,6 @@
                 ///////////////////////////////////////////////////// PROCESSING DATA FOR CHARTS ////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                document.getElementById('gamers').innerHTML = ("Number of gamers: <strong>" + gamers + "<strong>");
-
-                averageTime = totalTime / 99;
-                document.getElementById('avTime').innerHTML = ("Average Time Taken: <strong>" + averageTime.toFixed(1) + "s<strong>");
-
-                document.getElementById('numResults').innerHTML = ("Number of results: <strong>" + numResults + "<strong>");
-
                 // creating a string full of all of our personality data
                 var personalityData = "";
                 // changing name of personalityTypesData[0][0] from "personalityUnknown" to a more readable "Respondent is unsure"
@@ -1600,8 +1581,7 @@
 
                 var swapTemp = 0;
 
-                // function for generating averages
-
+                // function for generating averages from arrays made previously
                 function generateAverages(array) {
                     for (let index = 1; index < array.length; index++) {
                         array[index][1] = +(array[index][1] / array[index][2]).toFixed(2);
@@ -1757,10 +1737,6 @@
                         masterGravityArray[index].push(stressXGravity[index][1]);
                     }
                 }
-
-                console.log(masterGravityArray);
-
-
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////// DRAWING CHARTS /////////////////////////////////////////////////////////////////
