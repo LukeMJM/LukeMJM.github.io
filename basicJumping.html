@@ -146,6 +146,7 @@
                     var outOfLivesTimerLength = 5;
                     var outOfLivesTextValue = 255;
                     var bgValue = 220 // tone value for background
+                    var obstacleValue = 200;
 
                     // keypressed booleans
                     var a = false;
@@ -321,7 +322,7 @@
                     };
 
                     Obstacle.prototype.draw = function () {
-                        processing.fill(220, 220, 220);
+                        processing.fill(obstacleValue, obstacleValue, obstacleValue);
                         processing.rect(this.x, this.y - this.height, this.width, this.height);
                     };
 
@@ -603,6 +604,7 @@
                                 obstacleArray[i].draw();
                             }
 
+                            // moving obstacles each frame
                             for (i = 0; i < obstacleArray.length; i++) {
                                 obstacleArray[i].move();
                             }
@@ -1581,7 +1583,7 @@
                     gamePrefsChartData[index].splice(2, 1);
                 }
 
-                var swapTemp = 0;
+                // var swapTemp = 0;
 
                 // function for generating averages from arrays made previously
                 function generateAverages(array) {
