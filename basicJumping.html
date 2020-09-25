@@ -38,12 +38,8 @@
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
 
     <script>
-
         // Load the Visualization API and the corechart package.
         google.charts.load('current', { 'packages': ['corechart'] });
-
-
-
     </script>
 
 
@@ -52,44 +48,48 @@
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="index.html">LukeMJM</a>
+        <a class="navbar-brand" href="index.html">Game Mechanic Nexus</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
-            aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
         </button>
-
+    
         <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="mechanicDB.html">Mechanic Database <span
-                            class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">Mechanics</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        <a class="dropdown-item" href="basicJumping.html">Basic Jumping</a>
-                        <a class="dropdown-item" href="#">Another Mechanic</a>
-                        <a class="dropdown-item" href="#">Another Mechanic</a>
-                    </div>
-                </li>
-            </ul>
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="mechanicDB.html">Mechanic Database <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">Mechanics</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown01">
+                <a class="dropdown-item" href="basicJumping.html">Basic Jumping</a>
+                <a class="dropdown-item" href="#">Another Mechanic</a>
+                <a class="dropdown-item" href="#">Another Mechanic</a>
+              </div>
+            </li>
+          </ul>
         </div>
-    </nav>
+      </nav>
 
     <div class="container-fluid">
 
         <div class="text-center">
             <br><br>
             <h1>Basic Jumping Mechanic</h1>
-            <p class="lead">Below is a basic jumping platformer game with many of its parameters exposed.<br> Feel free
-                to adjust them to get a feel for what works best, or just to experiment!<br><br> At the bottom of the page can be found 
-                a series of graphs displaying data we have <br> gathered from testers. Support to add to this data yourself will be coming in the future!
+            <p class="lead">Below is a basic jumping platformer game with many of its parameters exposed.<br> 
+                Feel free to adjust them to get a feel for what works best!<br><br> 
+                At the bottom of the page can be found a series of graphs displaying data we have <br> 
+                gathered from testers. Support to add to this data yourself will be coming in the future!<br><br>
+                <a href="https://www.notion.so/4ad0207ea7204ed58f108cebb26f14b2?v=743538960ef641029c53510ecc978c0d">Additional sales related data and more can be found here!</a>
             </p>
+           
         </div>
+
+        <br>
 
         <div class="d-flex justify-content-center">
 
@@ -1321,10 +1321,10 @@
                     // finding average time spent on task - could eliminate any data significantly outside of this
                     totalTime += d.WorkTimeInSeconds;
 
-                    // allowing us to check that no HITS have a time spent which would imply they are invalid results
-                    // if (d.WorkTimeInSeconds < 200) {
-                    //   console.log(d.WorkerId + " - time spent: " + d.WorkTimeInSeconds);
-                    // }
+                    // allowing us to check that no HITS have a time spent below a threshhold which would imply they are invalid results
+                    if (d.WorkTimeInSeconds < 200) {
+                      console.log(d.WorkerId + " - time spent: " + d.WorkTimeInSeconds);
+                    }
 
                     // Parsing JSON into objects so we can access their properties
                     JSON1 = JSON.parse(d.Answer_gameJSON1);
@@ -1583,18 +1583,10 @@
                     gamePrefsChartData[index].splice(2, 1);
                 }
 
-                // var swapTemp = 0;
-
                 // function for generating averages from arrays made previously
                 function generateAverages(array) {
                     for (let index = 1; index < array.length; index++) {
                         array[index][1] = +(array[index][1] / array[index][2]).toFixed(2);
-                        // console.log("Average " + array[0][1] + " for control of " + array[index][0] + ": " + array[index][1]);
-
-                        // swapping array position to have control on y axis of chart
-                        // swapTemp = controlXSpeed[index][1];
-                        // controlXSpeed[index][1] = controlXSpeed[index][0];
-                        // controlXSpeed[index][0] = swapTemp;
                     }
 
                 }

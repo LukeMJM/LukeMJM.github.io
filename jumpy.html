@@ -70,7 +70,7 @@
         function sketchProc(processing) {
        
             // *****************************************************
-            //                  GLOBAL VARIABLdES
+            //                  GLOBAL VARIABLES
             // *****************************************************
             var windowH, windowW;
             var centerY = 300, centerX = 200;
@@ -781,13 +781,15 @@
             e.preventDefault();
             e.stopPropagation();
 
-            // Send the user's age and height to the parent window--sending the
-            // data as an object that the parent can receive and parse.
+            // sending the game JSON to 
             // console.log("Sending data to https://requester.mturk.com/create/projects/1621254.");
             parent.postMessage(
                 {
                     gameJSON:    $("input[name='gameJSON']").val(),
                 },
+                // the * wildcard symbol indicates that this data can be retrieved by any document which is also active and listening for it
+                // replace with the URL of a specfic page for extra security. For use with mechanical turk however, it prevents issues with
+                // HIT urls varying and invalidating the parent.postMessage() method.
                 "*");
 
 
