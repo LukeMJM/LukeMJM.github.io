@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>2D Jumping</title>
+    <script src="processing.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+    <link href="https://unpkg.com/tabulator-tables@4.7.2/dist/css/tabulator.min.css" rel="stylesheet">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/docs/4.5/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/docs/4.5/assets/img/favicons/manifest.json">
+    <link rel="mask-icon" href="/docs/4.5/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
+    <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon.ico">
+    <meta name="msapplication-config" content="/docs/4.5/assets/img/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#563d7c">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
+
+    <script>
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', { 'packages': ['corechart'] });
+    </script>
+
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="index.html">GM Nexus</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto">
+
+            <li class="nav-item active">
+              <a class="nav-link" href="https://www.notion.so/4ad0207ea7204ed58f108cebb26f14b2?v=743538960ef641029c53510ecc978c0d">External Mechanic Database <span class="sr-only">(current)</span></a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+    <div class="container-fluid">
+
+        <div class="text-center">
+            <br><br>
+            <h1>Mechanic Name</h1>
+            <p class="lead">Description of mechanic<br> 
+                Instructions for use of tabulator table<br><br> 
+                At the bottom of the page can be found a series of graphs displaying data we have <br> 
+                gathered from testers. Support to add to this data yourself will be coming in the future!<br><br>
+                <a href="https://www.notion.so/4ad0207ea7204ed58f108cebb26f14b2?v=743538960ef641029c53510ecc978c0d">Additional sales related data and more can be found here!</a>
+            </p>
+           
+        </div>
+
+        <br>
+
+        <div class="d-flex justify-content-center">
+
+
+            <canvas id="canvas"></canvas>
+            <script type="application/javascript">
+
+
+                function sketchProc(processing) {
+
+                    // *******************************************************
+                    //                       SETUP
+                    // *******************************************************
+
+                    processing.setup = function () {
+                        processing.frameRate(60);
+                        processing.size(800, 400);
+                        windowH = processing.height;
+                        windowW = processing.width;
+                        processing.background(220, 220, 220);
+                    }
+
+                    // *******************************************************
+                    //                      GAME LOOP
+                    // *******************************************************
+                    processing.draw = function () {
+
+                    }
+
+                }
+
+                var canvas = document.getElementById("canvas");
+                // attaching the sketchProc function to the canvas
+                var processingInstance = new Processing(canvas, sketchProc);
+
+                    // #endregion
+            </script>
+
+        </div>
+
+        <br><br>
+        <div id="example-table" class="mx-5"></div>
+        <br><br>
+        <div class="text-center">
+            <h2>Data gathered about the mechanic </h2> <br><br>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Speed Master Chart </h5>
+                            <div id="chart_div16"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Jump Impulse Master Chart </h5>
+                            <div id="chart_div17"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Gravity Master Chart</h5>
+                            <div id="chart_div18"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Control </h5>
+                            <div id="chart_div4"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Control </h5>
+                            <div id="chart_div5"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Control </h5>
+                            <div id="chart_div6"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Difficulty </h5>
+                            <div id="chart_div7"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Difficulty </h5>
+                            <div id="chart_div8"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Difficulty </h5>
+                            <div id="chart_div9"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Engagement </h5>
+                            <div id="chart_div10"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Engagement </h5>
+                            <div id="chart_div11"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Engagement </h5>
+                            <div id="chart_div12"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Stress </h5>
+                            <div id="chart_div13"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Stress </h5>
+                            <div id="chart_div14"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Perceived Stress </h5>
+                            <div id="chart_div15"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Personality Type Distribution</h5>
+                            <div id="chart_div2"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Personality Type Distribution</h5>
+                            <div id="chart_div1"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Personality Type Distribution</h5>
+                            <div id="chart_div3"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row of 3 cards to hold chart data -->
+        <div class="row mx-2 py-3">
+            <div class="col">
+                <div class="card-deck mx-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Respondents who identify as a "Gamer"</h5>
+                            <div id="chart_div19"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Game Genre Preferences</h5>
+                            <div id="chart_div20"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted">data last updated (update date)</small>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center"></h5>
+                            <div id="chart_div21"></div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <small class="text-muted"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/docs/4.5/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+    <script src="/docs/4.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd"
+        crossorigin="anonymous"></script>
+</body>
+
+<script>
+
+    //defining data for tabulator table
+    var tabledata = [
+        { id: 1, height: 1, width: 1, speed: 1, gravity: 1, impulseY: 1, lives: 1 }
+
+    ];
+
+    // TABULATOR
+    var table = new Tabulator("#example-table", {
+        height: 61, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        data: tabledata, //assign data to table
+        layout: "fitColumns", //fit columns to width of table (optional)
+        columns: [ //Define Table Columns
+            {
+                title: "Parameter 1", field: "height", editor: "number", editorParams: {
+                    min: 5, max: 200, step: 5
+                }
+            },
+            {
+                title: "Parameter 2", field: "width", editor: "number", editorParams: {
+                    min: 5, max: 200, step: 5
+                }
+            },
+            {
+                title: "Parameter 3", field: "speed", editor: "number", editorParams: {
+                    min: 1, max: 20, step: 1
+                }
+            },
+            {
+                title: "Parameter 4", field: "gravity", editor: "number", editorParams: {
+                    min: 0.05, max: 5, step: 0.05
+                }
+            },
+            {
+                title: "Parameter 5", field: "impulseY", editor: "number", editorParams: {
+                    min: 1, max: 50, step: 1
+                }
+            },
+            {
+                title: "Parameter 6", field: "lives", editor: "number", editorParams: {
+                    min: 1, max: 10, step: 1
+                }
+            },
+            
+        ],
+
+    });
+
+
+</script>
+
+
+
+</html>
