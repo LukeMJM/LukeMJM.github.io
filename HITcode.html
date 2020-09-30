@@ -3,37 +3,23 @@
 
     <script type="text/javascript">
     
-		// Determine how the browser should listen for messages from other
-		// windows. If `addEventListener` exists, then use that. Otherwise, use
-		// `attachEvent` because an older browser is probably being used. Also,
-		// use a callback to handle messages so that both methods of "message
-		// listening" can be routed to the same function. The callback in this
-		// example is `handleMessage` and it will take one argument (the
-		// `MessageEvent` object).
+        // listening for a message to be sent from within the iframe window
 		if (window.addEventListener) {
 			window.addEventListener("message", handleMessage);
 		} else {
 			window.attachEvent("onmessage", handleMessage);
 		}
 
-		/**
-		 * Handle a message that was sent from some window.
-		 *
-		 * @param {MessageEvent} event The MessageEvent object holding the message/data.
-		 */
+        // this function is called upon receiving a message from within the iframe window
 		function handleMessage(event) {
-			console.log("Received a message from " + event.origin + ".");
-
-			// When one window sends a message, or data, to another window via
-			// `parent.postMessage()`, the message (the first argument) in the
-			// `parent.postMessage()` call is accessible via `event.data` here.
+			
+			// storing the received JSON in a temporary variable and then converting into a JSON object
+			// to allow the id attribute to be checked. The JSON is then attached to the corresponding
+			// hidden <crowd-input> element to be included in the HIT results. The related survey is also
+			// revealed to the turker
 			var dataFromGame = event.data;
             var JSONobj = JSON.parse(dataFromGame.gameJSON);
-			// Log the data to the console.
-			console.log(JSONobj);
-			console.log(JSONobj.id);
-			
-			
+		
 			if (JSONobj.id == 1) {
 			    document.getElementById("JSON1").value = dataFromGame.gameJSON;
 			    hideAndUnhide("survey1");
@@ -43,13 +29,9 @@
 			} else if (JSONobj.id == 3) {
 			    document.getElementById("JSON3").value = dataFromGame.gameJSON;
 			    hideAndUnhide("survey3");
-
 			}
 		}
 	</script>
-
-<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
-      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
 
 <!-- You must include crowd-form so that your task submits answers to MTurk -->
 <crowd-form answer-format="flatten-objects">
@@ -69,8 +51,11 @@
   </crowd-instructions>
     
     <div id="version1">
-        <h1>Version 1</h1>
-            <iframe name="iframe1" id="iframe_id1" src=${url1} height="550" width = "410" >
+        <h1>Game Version 1</h1>
+        <p>Play version 1 for 1 minute and then click the yellow button which will appear to unlock questions related to it.</p>
+            <!--<iframe name="iframe1" id="iframe_id1" src=${url1} height="550" width = "410" >-->
+            <iframe name="iframe1" id="iframe_id1" src=http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60 height="550" width = "410" >
+
             </iframe>
         <crowd-input name="gameJSON1" type="hidden" id="JSON1" required></crowd-input>
     </div>
@@ -102,9 +87,12 @@
       </div>
       
     </div>
+    
+    <br>
      
     <div id="version2">
-        <h1>Version 2</h1>
+        <h1>Game Version 2</h1>
+        <p>Play version 2 for 1 minute and then click the yellow button which will appear to unlock questions related to it.</p>
             <iframe name="iframe2" id="iframe_id2" src=${url2} height="550" width = "410" >
             </iframe>
         <crowd-input name="gameJSON2" type="hidden" id="JSON2" required></crowd-input>
@@ -138,8 +126,11 @@
       
     </div>
     
+    <br>
+    
     <div id="version3">
-        <h1>Version 3</h1>
+        <h1>Game Version 3</h1>
+        <p>Play version 3 for 1 minute and then click the yellow button which will appear to unlock questions related to it.</p>
             <iframe name="iframe3" id="iframe_id3" src=${url3} height="550" width = "410" >
             </iframe>
         <crowd-input name="gameJSON3" type="hidden" id="JSON3" required></crowd-input>
@@ -173,6 +164,8 @@
       
     </div>
     
+    <br>
+
     <div id="finalQuestions">
     <br>
     <h3>Final Questions</h3>
@@ -199,26 +192,28 @@
     
     <br><br>
 
-      <p>Do you know your Myer-Briggs personality type? If so, what is it?</p>
-        <crowd-radio-group>
-            <crowd-radio-button name="personalityUnknown">Don't know</crowd-radio-button>
-            <crowd-radio-button name="INTJ">INTJ</crowd-radio-button>
-            <crowd-radio-button name="INTP">INTP</crowd-radio-button>
-            <crowd-radio-button name="ENTJ">ENTJ</crowd-radio-button>
-            <crowd-radio-button name="ENTP">ENTP</crowd-radio-button>
-            <crowd-radio-button name="INFJ">INFJ</crowd-radio-button>
-            <crowd-radio-button name="INFP">INFP</crowd-radio-button>
-            <crowd-radio-button name="ENFJ">ENFJ</crowd-radio-button><br>
-            <crowd-radio-button name="ENFP">ENFP</crowd-radio-button>
-            <crowd-radio-button name="ISTJ">ISTJ</crowd-radio-button>
-            <crowd-radio-button name="ISFJ">ISFJ</crowd-radio-button>
-            <crowd-radio-button name="ESTJ">ESTJ</crowd-radio-button>
-            <crowd-radio-button name="ESFJ">ESFJ</crowd-radio-button>
-            <crowd-radio-button name="ISTP">ISTP</crowd-radio-button>
-            <crowd-radio-button name="ISFP">ISFP</crowd-radio-button>
-            <crowd-radio-button name="ESTP">ESTP</crowd-radio-button>
-            <crowd-radio-button name="ESFP">ESFP</crowd-radio-button>
-        </crowd-radio-group>
+      <p>Do you know your Myers-Briggs personality type? If so, what is it?</p>
+
+        <select name="personality" required>
+            <option value="">Please select</option>
+            <option value="personalityUnknown">Don't know</option>
+            <option value="INTJ">INTJ</option>
+            <option value="INTP">INTP</option>
+            <option value="INTJ">INTJ</option>
+            <option value="ENTP">ENTP</option>
+            <option value="INFJ">INFJ</option>
+            <option value="INFP">INFP</option>
+            <option value="ENFJ">ENFJ</option>
+            <option value="ENFP">ENFP</option>
+            <option value="ISTJ">ISTJ</option>
+            <option value="ISFJ">ISFJ</option>
+            <option value="ESTJ">ESTJ</option>
+            <option value="ESFJ">ESFJ</option>
+            <option value="ISTP">ISTP</option>
+            <option value="ISFP">ISFP</option>
+            <option value="ESTP">ESTP</option>
+            <option value="ESFP">ESFP</option>
+        </select>
 
       <p>Finally, do you have any comments or suggestions as to how we could improve your experience with this HIT?</p>
       <crowd-input name="comments"></crowd-input>

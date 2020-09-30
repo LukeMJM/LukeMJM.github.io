@@ -117,6 +117,8 @@
                     //                  GLOBAL VARIABLdES
                     // *****************************************************
                     var windowH, windowW;
+                    var processingWidth = 800;
+                    var processingHeight = 400;
                     var centerY = 200, centerX = 200;
                     var accFactor = 1.0
                     var heightOfWindow = processing.height;
@@ -144,7 +146,7 @@
 
 
                     // *****************************************************
-                    //                     GAME OBJECTSa
+                    //                     GAME OBJECTS
 
                     // *****************************************************
                     //                  PLAYER CHARACTER
@@ -339,7 +341,7 @@
 
                     processing.setup = function () {
                         processing.frameRate(frameRate);
-                        processing.size(800, 400);
+                        processing.size(processingWidth, processingHeight);
                         windowH = processing.height;
                         windowW = processing.width;
                         processing.background(bgValue, bgValue, bgValue);

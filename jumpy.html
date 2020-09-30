@@ -1,35 +1,41 @@
 <html>
+
 <head>
-	<title>Jumpy</title>
+    <title>Jumpy</title>
     <script src="processing.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
 
 </head>
+
 <body style="padding: 2rem 0.25rem; background: #efefef;">
-	<canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas>
     <script type="application/javascript">
 
-    // Global variables which interact with parent page when using an IFrame
-    var playerJSON;
-    var scene = 0;    
-    var buttonPressed = false;
+        // Declaring global variables which interact with parent page when using an IFrame
+        var playerJSON;
+        var scene = 0;
+        var buttonPressed = false;
 
-    function findGetParameter(parameterName) {
-        var result = null,
-            temp = [];
-        location.search
-            .substr(1)
-            .split("&")
-            .forEach(function (item) {
-            temp = item.split("=");
-            if (temp[0] === parameterName) result = decodeURIComponent(temp[1]);
-            });
-        // uncomment line below to debug parameter setting
-        // console.log(parameterName + ": " + result);
-        return(result);
-    }        
+        // *****************************************************
+        //                  GET PARAMETERS
+        // *****************************************************
+        // function retrieved from https://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript
+        function findGetParameter(parameterName) {
+            var result = null,
+                temp = [];
+            location.search
+                .substr(1)
+                .split("&")
+                .forEach(function (item) {
+                    temp = item.split("=");
+                    if (temp[0] === parameterName) result = decodeURIComponent(temp[1]);
+                });
+            // uncomment line below to debug parameter setting
+            // console.log(parameterName + ": " + result);
+            return (result);
+        }
 
         // checking if player is me using a GET parameter
         var admin = findGetParameter("admin");
@@ -56,66 +62,61 @@
             cJE = false;
         }
 
-            // redirecting to allow easier editing of parameters if defaults are being used
-    
+        // redirecting to allow easier editing of parameters if defaults are being used. Uncomment either online or offline
         if (h == null) {
+            // url using GET parameters for online mode
             // window.location = 'https://lukemjm.github.io/jumpy?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
-            
+
             // url using GET parameters for offline mode
             window.location = 'http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60';
-
         }
 
-
+        // processing.js code can be used within this function
         function sketchProc(processing) {
-       
+
             // *****************************************************
             //                  GLOBAL VARIABLES
             // *****************************************************
-            var windowH, windowW;
-            var centerY = 300, centerX = 200;
-            var accFactor = 1.0
-            var heightOfWindow = processing.height;
-            var keyBeingPressed;
-            var frameRate = 60;
-            var framesElapsed = 0;
-            var timeElapsed = 0;
-            var timeRemaining;
-            var groundLevel = 300; 
-            var randA = processing.random(0.5, 2);
-            var randB = processing.random(0.5, 2);
-            var debuggingOn = false;
-            var jsonFlag = true;
-            var defaultObjectSpeed = 2;
-            var outOfLivesTimer = 0;
-            var outOfLivesTimerLength = 5;
-            var outOfLivesTextValue = 255;
+            var processingWidth = 400; // the width of the window processing runs in
+            var processingHeight = 400; // the height of the window processing runs in
+            var groundLevel = processingHeight / 2 + processingHeight / 4; // sets ground level to 3/4 of the window height
+            var centreX = processingWidth / 2; // stores the coordinate of the centre X of the window
+            var centreY = processingHeight / 2; // stores the coordinate of the centre Y of the window
+            var keyBeingPressed; // stores the currently pressed key as an integer
+            var frameRate = 60; // framerate processing runs at
+            var framesElapsed = 0; // stores frames elapsed, used to calculate length of a second
+            var timeRemaining;  // stores time remaining to play
+            var randA = processing.random(0.5, 2); // initial random a value
+            var randB = processing.random(0.5, 2); // inital random b value
+            var debuggingOn = false; // enables debugging text if true
+            var jsonFlag = true; // if true, JSON has not yet been created and sent
+            var initialObstacleSpeed = 2; // initial move speed of obstacles
+            var initialObstacleX = centreX * 2 - centreX / 3 // initial location of the obstacle on game start
+            var outOfLivesTimer = 0;  // stores current time left in out of lives timer
+            var outOfLivesTimerLength = 5; // time in seconds out of lives text is displayed
+            var outOfLivesTextValue = 255; // tone value for out of lives text
+            var bgValue = 220 // tone value for background
+            var groundValue = 245; // tone value for the ground
+            var obstacleValue = 200; // tone value for obstacles
+            var HUDValue = 10; // tone value for HUD text
 
             // keypressed booleans
             var a = false;
             var d = false;
             var spacebar = false;
 
-
             // *****************************************************
             //                     GAME OBJECTS
-
+            //
             // *****************************************************
             //                  PLAYER CHARACTER
             // *****************************************************
 
-            var Player = function() {
-
-                // default settings to use if no GET parameters are used
-                // this.height = 40; //findGetParameter("h");
-                // this.width = 10; //findGetParameter("w");
-                // this.moveSpeed = 5; //findGetParameter("s");
-                // this.gravity = 0.5; //findGetParameter("g");
-                // this.impulseY = -12; //findGetParameter("iY");
-                // this.lives = 5; //findGetParameter("l");
+            // this function is the constructor for the player object
+            var Player = function () {
 
                 // changing input variables from strings to ints if they exist and overwriting defaults
-                if (h != null){
+                if (h != null) {
                     this.height = parseInt(h); // lower 10 - upper 120
                     this.width = parseInt(w); // lower 3 - upper 60
                     this.moveSpeed = parseInt(s); // lower 2 - upper 10
@@ -126,18 +127,23 @@
                     timeRemaining = t;
                 }
 
-                // functional variables - not necessarily relevant in JSON but some are
+                // id value to be passed back into JSON to determine if this is game 1, 2 or 3 in the HIT interface
+                this.id = id;
+                // obstacle speed increase value added so it can be included in JSON output
+                this.obstacleSpeedIncrement = obstacleSpeedIncrement; // lower 0.1 - upper 1
+
+                // non-parameter variables - not necessarily relevant in JSON but some are
                 this.score = 0;
                 this.highestScore = 0;
                 this.currentLives = this.lives;
                 this.immunity = 0;
-                this.velocityX = 0; 
+                this.velocityX = 0;
                 this.velocityY = 0;
                 this.damgageTimer = 0;
                 this.isColliding = false;
                 this.damaged = false;
-                this.positionX = centerX;
-                this.positionY = centerY;
+                this.positionX = centreX;
+                this.positionY = groundLevel;
                 this.movingLeft = false;
                 this.movingRight = false;
                 this.onGround = true;
@@ -146,42 +152,36 @@
                 this.goingUp = true;
                 this.attempts = 1;
                 this.keyPresses = 0;
-                
-
-                // id value to be passed back into JSON
-                this.id = id;
-                // obstacle speed increase value to be included in JSON
-                this.obstacleSpeedIncrement = obstacleSpeedIncrement; // lower 0.1 - upper 1
 
             };
 
-            Player.prototype.draw = function() {
-                
-                if (this.damaged && ((this.damgageTimer >= 20 && this.damgageTimer <= 30) || (this.damgageTimer > 0 && this.damgageTimer < 11)) ) {
-                    processing.fill(255, 100, 100);
+            // this function is responsible for drawing the player character each frame. It also makes them flash red after a collision
+            Player.prototype.draw = function () {
 
+                // makes the player flash red several times if they collide with an obstacle
+                if (this.damaged && ((this.damgageTimer >= 20 && this.damgageTimer <= 30) || (this.damgageTimer > 0 && this.damgageTimer < 11))) {
+                    processing.fill(255, 100, 100); // this is the value for the colour the player character flashes upon collision
                 } else {
-                    processing.fill(245, 245, 245);
+                    processing.fill(245, 245, 245); // this is the default colour value of the player character
                 }
-                processing.rect(this.positionX, this.positionY - this.height, this.width, this.height)
 
+                // drawing the player character
+                processing.rect(this.positionX, this.positionY - this.height, this.width, this.height)
             };
 
-            Player.prototype.beginJump = function() {
-                
+            // this function begins the jumping process by giving the player character an impulse of force upwards and 
+            //recording that they are no longer on the ground
+            Player.prototype.beginJump = function () {
+
                 this.velocityY = this.impulseY;
                 this.onGround = false;
-                    
             }
 
-            Player.prototype.limitJump = function() {
-                if (this.velocityY < -12) {
-                    this.velocityY = -12;
-                } 
-            }
+            // this function updates the position of the player character each frame whilst they are jumping and calculates
+            // the new force acting upon the player character as gravity takes effect. It also stops the player character from 
+            // passing outside the processing window.
+            Player.prototype.updatePosition = function () {
 
-            Player.prototype.updatePosition = function() {
-                
                 if (jumpy.onGround == false) {
                     this.velocityY += this.gravity;
                     this.positionY += this.velocityY;
@@ -193,6 +193,7 @@
                         this.onGround = true;
                         this.isJumping = false;
 
+                        // if another jump is chambered, a new jump cycle is begun upon landing
                         if (this.chamberedJump) {
 
                             check = true;
@@ -201,50 +202,55 @@
                             this.chamberedJump = false;
                             this.isJumping = true;
                         }
-                    // stopping character from going outside game bounds - will abruptly stop and fall as would be expected
-                    } else if (this.positionY <= this.height){
+
+                        // stopping character from going outside game bounds - will abruptly stop and fall as would be expected
+                    } else if (this.positionY <= this.height) {
                         this.velocityY = 0;
                     }
                 }
             }
 
-            Player.prototype.checkCollision = function(obstacleArray) {
+            // this function checks for collision between obstacles and the player character each frame, taking into account
+            // whether or not the player is currently immune to collision
+            Player.prototype.checkCollision = function (obstacleArray) {
 
+                // checking for collision if the player is not immune
                 if (this.immunity == 0) {
+
+                    // establising the boundary coordinates for each corner of the player character
                     left = this.positionX;
                     right = this.positionX + this.width;
                     bottom = this.positionY;
                     top = this.positionY - this.height;
 
-                    for (i =0; i < obstacleArray.length; i++) {
+                    // iterating through each obstacle in the obstacle array
+                    for (i = 0; i < obstacleArray.length; i++) {
+
                         // checking if x coordintes are intersecting
                         if (right >= obstacleArray[i].x && left <= obstacleArray[i].x + obstacleArray[i].width) {
-                        
+
+                            // creating a collision event if collision is detected
                             if (bottom >= obstacleArray[i].y - obstacleArray[i].height) {
-                                this.isColliding = true;
-                                this.currentLives--;
-                                this.damaged = true;
-                                this.damgageTimer = 30;
-                                this.immunity = 1;
+                                this.isColliding = true; // recording a collision is occurring for debugging purposes
+                                this.currentLives--; // decrementing lives 
+                                this.damaged = true; // recording collision to allow Player.prototype.draw to flash player character red
+                                this.damgageTimer = 30; // beginning timer for post collision character flash
+                                this.immunity = 1; // granting the player immunity after collision
                             }
 
                         } else {
-                            this.isColliding = false;
+                            this.isColliding = false; // recording no collision is occuring for debugging purposes
                         }
                     }
                 }
             };
 
-            // Creating an instance of the player object
-
-            var jumpy = new Player();
-
             // *****************************************************
             //                       OBSTACLES
             // *****************************************************
 
-
-            var Obstacle = function(x, y, width, height, speed) {
+            // this is the constructor for the obstacle object
+            var Obstacle = function (x, y, width, height, speed) {
 
                 this.x = x;
                 this.y = y;
@@ -255,33 +261,42 @@
                 this.speed = speed;
             };
 
-            Obstacle.prototype.setX = function(x) {
+            // setter for obstacle x position
+            Obstacle.prototype.setX = function (x) {
                 this.x = x;
             };
 
-            Obstacle.prototype.setSpeed = function(speed) {
+            // setter for obstacle movement speed
+            Obstacle.prototype.setSpeed = function (speed) {
                 this.speed = speed;
             };
 
-            Obstacle.prototype.draw = function() {
-                processing.fill(220, 220, 220);
+            // this function is responsible for drawing the obstacle each frame
+            Obstacle.prototype.draw = function () {
+                processing.fill(obstacleValue, obstacleValue, obstacleValue);
                 processing.rect(this.x, this.y - this.height, this.width, this.height);
             };
 
-            Obstacle.prototype.move = function() {
-                this.x -= this.speed * accFactor;
+            // this function is responsible for moving the obstacle each frame, increasing the player score if it clears 
+            // the left side of the processing window fully, then resetting it to the right side and also removing player
+            // immunity if the obstacle clears the window and immunity is present
+            Obstacle.prototype.move = function () {
+                // changing the x coordinate of the obstacle negatively to move from right to left
+                this.x -= this.speed;
 
-                // reseting the obstacle if it clears the screen 
+                // reseting the obstacle if it clears the window 
                 // also adding to score as obstacle has been cleared by player
                 if (this.x + this.width <= 0) {
-                    this.x = 400;
+                    this.x = processingWidth + this.width;
+                    // randomising size of new obstacle to make it appear different
                     this.speed += obstacleSpeedIncrement;
                     this.width = this.initialWidth * randA;
                     this.height = this.initialHeight * randB;
+                    // preventing score from increasing if the player collided with the obstacle this pass
                     if (jumpy.immunity == 0) {
-                        jumpy.score++;
+                        jumpy.score++; // incrementing score
                     } else if (jumpy.immunity == 1) {
-                        jumpy.immunity = 0;
+                        jumpy.immunity = 0; // removing player immunity as a new obstacle is now on the screen
                     }
                 }
             };
@@ -290,84 +305,78 @@
             //                       SETUP
             // *******************************************************
 
-            processing.setup = function(){
-                processing.frameRate (frameRate);
-                processing.size(400,400);
-                windowH = processing.height;
-                windowW = processing.width;
-                processing.background(200,200,200);
+            // creating the processing window
+            processing.setup = function () {
+                processing.frameRate(frameRate);
+                processing.size(processingWidth, processingHeight);
+                processing.background(bgValue, bgValue, bgValue);
             }
 
-            // Creating obstacles and putting into an array to keep them 
-            
-            var ob1 = new Obstacle(340, centerY, 20, 40, defaultObjectSpeed);
+            // Instantiating obstacles and putting into an array 
+            var ob1 = new Obstacle(initialObstacleX, groundLevel, 20, 40, initialObstacleSpeed);
             var obstacleArray = [ob1];
 
-            var heightestPoint = 200;
+            // Instantiating an instance of the player object
+            var jumpy = new Player();
 
             // *******************************************************
             //                      GAME LOOP
             // *******************************************************
-            processing.draw = function() {
+            // this function runs every frame
+            processing.draw = function () {
 
+                // creating new random values
                 randA = processing.random(0.5, 1.5);
                 randB = processing.random(0.5, 2);
-                
-                var centerX = windowW/2;
-                var centerY = windowH/2;
-                
-                
+
                 // getting the coordinates of the current mouse position
                 var currentY = processing.mouseY;
-                var currentX = processing.mouseX;           
+                var currentX = processing.mouseX;
 
-                function drawGround(){
-                    processing.rect(-1, groundLevel, windowW + 2, windowH);
+                // this function draws the ground every frame
+                function drawGround() {
+                    processing.rect(-1, groundLevel, processingWidth + 2, processingWidth);
                 }
 
-                function drawWall(height, width){ 
-                    var xPosWall = 300;
-                    processing.fill(245,245,245);
-                    processing.rect(xPosWall, centerY-height, width, height);
-                }
-
-                // clear background
-                processing.background(220,220,220);
+                // clearing the background before each new frame is drawn
+                processing.background(bgValue, bgValue, bgValue);
 
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-                //                       START SCENE
+                //                       START SCENE - 0
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
                 if (scene === 0) {
-                    processing.fill(81, 166, 31);
+
                     // drawing start button
-                    processing.rect(centerX - 40, centerY - 20, 80, 40);
+                    processing.fill(81, 166, 31);
+                    processing.rect(centreX - 40, centreY - 20, 80, 40);
                     processing.fill(10, 10, 10);
                     processing.textSize(18);
-                    processing.text("START",centerX -28, centerY + 7);
+                    processing.text("START", centreX - 28, centreY + 7);
 
                     // drawing controls text
-                    processing.text("Controls",centerX -35, 50);
+                    processing.text("Controls", centreX - 35, 50);
                     processing.textSize(16);
-                    processing.text("Jump - click / spacebar",centerX -85, 75);
-                    processing.text("Move left - a",centerX -47, 90);
-                    processing.text("Move right - d",centerX -50, 105);
+
+                    processing.text("Jump - click / spacebar", centreX - 85, 75);
+                    processing.text("Move left - a", centreX - 47, 90);
+                    processing.text("Move right - d", centreX - 50, 105);
 
                     processing.textSize(16);
-                    processing.text("Jump over obstacles to increase your score",centerX -150, 145);
+                    processing.text("Jump over obstacles to increase your score", centreX - 150, 145);
 
                     // checking if start button is clicked
-                    processing.mouseClicked = function() {
-                        if (scene === 0 && currentX >= 160 && currentX <= 240 &&
-                            currentY >= 180 && currentY <= 220) {
-                            
+                    processing.mouseClicked = function () {
+                        if (scene === 0 && currentX >= centreX - 40 && currentX <= centreX + 40 &&
+                            currentY >= centreY - 20 && currentY <= centreY + 20) {
+
                             scene = 1;
                         }
                     };
                 }
 
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-                //                      MAIN GAME SCENE
+                //                      MAIN GAME SCENE - 1
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
                 // ****************************************************
@@ -375,7 +384,10 @@
                 // ****************************************************
 
                 if (scene === 1) {
-                    processing.mousePressed = function() {
+
+                    // this process allows the player to jump by clocking, provided they are not already jumping. It also allows a new jump to be chambered if
+                    // they have almost landed after a jump
+                    processing.mousePressed = function () {
                         if (scene === 1) {
                             jumpy.isJumping = true;
                             jumpy.keyPresses++;
@@ -390,36 +402,34 @@
                     }
 
                     // Checks if a key is pressed and turns on its boolean if it is
-                    processing.keyPressed = function() {
+                    processing.keyPressed = function () {
                         // a = 97 - moving left
                         if (processing.key == 97) {
                             a = true;
                             jumpy.keyPresses++;
-                            
-                        // d = 100 - moving right
+
+                            // d = 100 - moving right
                         } else if (processing.key == 100) {
                             d = true;
                             jumpy.keyPresses++;
-                        // spacebar = 32
+                            // spacebar = 32
                         } else if (processing.key == 32) {
                             spacebar = true;
                             jumpy.keyPresses++;
-
                         }
-
                     }
 
                     // turning off all key booleans if one is released - others will be immediately reactived if they are pressed
-                    processing.keyReleased = function() {
+                    processing.keyReleased = function () {
                         // a = 97
                         if (processing.key == 97) {
                             a = false;
-                            
-                        // d = 100 
+
+                            // d = 100 
                         } else if (processing.key == 100) {
                             d = false;
 
-                        // spacebar = 32
+                            // spacebar = 32
                         } else if (processing.key == 32) {
                             spacebar = false;
                         }
@@ -428,40 +438,45 @@
                     // ****************************************************
                     //                     MOVEMENT
                     // ****************************************************    
-                    
-                    // a is pressed - player moving left
+
+                    // a is pressed - prepare to move the player left
                     if (a) {
                         jumpy.velocityX += -jumpy.moveSpeed;
-                    } 
-                    
-                    // d is pressed - player moving right
+                    }
+
+                    // d is pressed - prepare to move the player right
                     if (d) {
                         jumpy.velocityX += jumpy.moveSpeed;
 
-                    } 
-                    
-                    // neither movement key is pressed, so X velocity can be set to 0
+                    }
+
+                    // neither movement key is pressed, so X velocity can be set to 0 to stop any movement
                     if (d == false && a == false) {
                         jumpy.velocityX = 0;
 
                     }
 
-                    // capping move speed
-                    if (jumpy.velocityX > jumpy.moveSpeed){
+                    // capping move speed to stop it increasing beyond its intended max speed
+                    if (jumpy.velocityX > jumpy.moveSpeed) {
                         jumpy.velocityX = jumpy.moveSpeed;
                     } else if (jumpy.velocityX < -jumpy.moveSpeed) {
                         jumpy.velocityX = -jumpy.moveSpeed;
                     }
 
-                    // stops player moving off screen - probably a better way to write this
+                    // stops player moving off screen - probably a better way to write this than empty if statements
                     if (jumpy.positionX <= 0 && jumpy.velocityX < 0) {
-                    
-                    } else if (jumpy.positionX >= (400 - jumpy.width) && jumpy.velocityX > 0) {
-                    
+                        // nothing happens if position is outside of processing window
+                    } else if (jumpy.positionX >= (processingWidth - jumpy.width) && jumpy.velocityX > 0) {
+                        // nothing happens if position is outside of processing window
                     } else {
+                        // if inside window, allow movement to occur
                         jumpy.positionX += jumpy.velocityX;
                     }
-                    
+
+                    // Moving obstacles
+                    for (i = 0; i < obstacleArray.length; i++) {
+                        obstacleArray[i].move();
+                    }
 
                     // ****************************************************
                     //                     JUMPING
@@ -473,74 +488,27 @@
                         // allows player to chamber a jump if they are almost on the ground
                         // since impulse force is negative, we multiply by -1 to flip it to positve, then divide by 2 to give a number which represents
                         // the velocity the player will be at when moving downwards, but closer to the ground than the apex of the jump
-                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY*-1)/2))) {
+                        if (jumpy.isJumping && (jumpy.velocityY > 0 + ((jumpy.impulseY * -1) / 2))) {
                             jumpy.chamberedJump = true;
                         }
                     }
 
-                    // checks that the player is on the ground and allows a new jump to begin if they are
-                    if (jumpy.onGround && jumpy.isJumping){
+                    // checks that the player is on the ground and allows a new jump to begin if they are and have attempted to begin one
+                    if (jumpy.onGround && jumpy.isJumping) {
                         jumpy.beginJump();
                     }
 
-                    
+                    // updates the players position whilst jumping is underway
                     if (jumpy.isJumping) {
                         jumpy.updatePosition();
-                        // jumpy.limitJump();
                     }
-                    
-                    // ****************************************************
-                    //                     DRAW GAME
-                    // ****************************************************
-                    
-                    // Drawing the ground
-                    processing.fill(245,245,245);
-                    drawGround();
-
-                    if (admin == "y") {
-
-                        // drawing debugging button
-                        processing.rect(40, 360, 55, 20);
-                        processing.fill(10, 10, 10);
-                        processing.textSize(10);
-                        processing.text("Debugging", 43, 373);
-
-                        // checking if debugging button is clicked
-                        processing.mouseClicked = function() {
-                            if (currentX >= 40 && currentX <= 95 &&
-                                currentY >= 360 && currentY <= 380) {
-                                
-                                if (debuggingOn) {
-                                    debuggingOn = false;
-                                } else if (debuggingOn == false) {
-                                    debuggingOn = true;
-                                }
-                            }
-                        };
-
-                    }
-
-
-                    // Drawing obstacles
-                    for (i =0; i < obstacleArray.length; i++) {
-                        obstacleArray[i].draw();
-                    }
-
-                    for (i =0; i < obstacleArray.length; i++) {
-                        obstacleArray[i].move();
-                    }
-
-                    // Drawing player
-                    jumpy.draw();
-
 
                     // *******************************************************
-                    //                   CHECK COLLISIONS
+                    //                   CHECKING COLLISIONS
                     // *******************************************************
 
                     jumpy.checkCollision(obstacleArray);
 
-                    
                     // *******************************************************
                     //                CHECK PLAYER's LIVES
                     // *******************************************************
@@ -550,134 +518,177 @@
                         if (jumpy.score > jumpy.highestScore) {
                             jumpy.highestScore = jumpy.score;
                         }
-                        
+
                         // resetting player position, lives and score to default to simulate a fresh game
                         jumpy.score = 0;
                         jumpy.currentLives = jumpy.lives
-                        jumpy.positionX = centerX;
+                        jumpy.positionX = centreX;
                         jumpy.positionY = groundLevel;
                         jumpy.immunity = 0;
 
                         // resetting obstacle speed to default and x position off screen to give some respite
                         obstacleArray[0].setX(800);
-                        obstacleArray[0].setSpeed(defaultObjectSpeed);
+                        obstacleArray[0].setSpeed(initialObstacleSpeed);
 
                         // turning on out of lives message
                         outOfLivesTimer = outOfLivesTimerLength;
 
                         // incrementing attempts by 1
-                        jumpy.attempts ++;
-                        
+                        jumpy.attempts++;
                     }
 
                     // Displaying out of lives message
                     if (outOfLivesTimer != 0) {
                         processing.textSize(20)
                         processing.fill(outOfLivesTextValue, outOfLivesTextValue, outOfLivesTextValue);
-                        processing.text("You ran out of lives, try again!", 70, 100);
+                        processing.text("You ran out of lives, try again!", centreX - 130, 100);
                         processing.textSize(12);
                         processing.fill(10, 10, 10);
 
                         // after 2 seconds, decrement the tone value of the outOfLives text by 1, to give a fadeout effect
-                        if (outOfLivesTimer < (outOfLivesTimerLength - 2) && outOfLivesTextValue > 200){
+                        if (outOfLivesTimer < (outOfLivesTimerLength - 2) && outOfLivesTextValue > bgValue) {
                             outOfLivesTextValue--;
                         }
 
                         // every second the outOfLivesTimer will be decremented by 1
-                        if (framesElapsed % frameRate == 1){
+                        if (framesElapsed % frameRate == 0) {
                             outOfLivesTimer--;
 
                             // if the outOfLivesTimer reaches 0, reset the text colour of the text
-                            if (outOfLivesTimer == 0){
+                            if (outOfLivesTimer == 0) {
                                 outOfLivesTextValue = 255;
                             }
-                        } 
-
+                        }
                     }
 
                     // decrementing the damgeTimer every frame after jumpy is damaged
                     if (jumpy.damaged && jumpy.damgageTimer > 0) {
-                        jumpy.damgageTimer --
-                        
+                        jumpy.damgageTimer--
+
                         // removing the damaged flag from jumpy if the timer reaches 0
                     } else if (jumpy.damaged && jumpy.damgageTimer == 0) {
                         jumpy.damaged = false;
                     }
 
+                    // ****************************************************
+                    //                     DRAW GAME
+                    // ****************************************************
+
+                    // Drawing the ground
+                    processing.fill(groundValue, groundValue, groundValue);
+                    drawGround();
+
+                    // enables a debugging overlay
+                    if (admin == "y") {
+
+                        // drawing debugging button
+                        processing.rect(40, 360, 55, 20);
+                        processing.fill(10, 10, 10);
+                        processing.textSize(10);
+                        processing.text("Debugging", 43, 373);
+
+                        // checking if debugging button is clicked
+                        processing.mouseClicked = function () {
+                            if (currentX >= 40 && currentX <= 95 &&
+                                currentY >= 360 && currentY <= 380) {
+
+                                // toggling debugging overlay
+                                if (debuggingOn) {
+                                    debuggingOn = false;
+                                } else if (debuggingOn == false) {
+                                    debuggingOn = true;
+                                }
+                            }
+                        };
+                    }
+
+                    // Drawing obstacles
+                    for (i = 0; i < obstacleArray.length; i++) {
+                        obstacleArray[i].draw();
+                    }
+
+                    // Drawing the player character 
+                    jumpy.draw();
+
+
+
                     // *******************************************************
                     //                         TIMER
                     // *******************************************************
 
-                        // creating timer
-                        framesElapsed++;
-                        if (framesElapsed % frameRate == 1){
-                            timeRemaining--;
-                        } 
+                    // creating timer
+                    framesElapsed++;
+                    if (framesElapsed % frameRate == 0) {
+                        timeRemaining--;
+                    }
 
-                        // if timeRemaining gets to 0, go to end scene
-                        if (timeRemaining === 0) {
+                    // if timeRemaining gets to 0, go to end scene
+                    if (timeRemaining === 0) {
 
-                            // go to end scene
-                            scene = 2;
-                        }
-
+                        // go to end scene
+                        scene = 2;
+                    }
 
                     // ********************************************************
                     //               DISPLAY SCORE, TIME AND LIVES
                     //*********************************************************
-                        
+
                     // update highestScore if necessary
                     if (jumpy.score > jumpy.highestScore) {
                         jumpy.highestScore = jumpy.score;
                     }
 
-                    processing.fill(10,10,10);
-                    processing.text("Lives   " + jumpy.currentLives, 10,20);
-                    processing.text("Time remaining   " + timeRemaining, 140, 20);
-                    processing.text("Current Score   " + jumpy.score, 280, 20);
-                    processing.text("Highest Score   " + jumpy.highestScore, 280, 40);
+                    // Drawing HUD elements
+                    processing.fill(HUDValue, HUDValue, HUDValue);
+                    processing.text("Lives   " + jumpy.currentLives, 10, 20);
+                    processing.text("Time remaining   " + timeRemaining, centreX - 60, 20);
+                    processing.text("Current Score   " + jumpy.score, processingWidth - 120, 20);
+                    processing.text("Highest Score   " + jumpy.highestScore, processingWidth - 120, 40);
 
                     // ********************************************************
                     //                      DEBUGGING
                     //*********************************************************
-                    processing.key
-                    
+
                     if (debuggingOn) {
-                        
-                        processing.fill(245,245,245);
+
+                        processing.fill(HUDValue, HUDValue, HUDValue);
                         processing.textSize(10);
-                        processing.text("KeyPressed   " + processing.key, 15,30);
-                        
-                        processing.text("Jump   " + spacebar, 15,50);
-                        processing.text("Left   " + a, 15,60);
-                        processing.text("Right   " + d, 15,70);
+                        processing.text("KeyPressed   " + processing.key, 15, 30);
+                        processing.text("frame no:   " + framesElapsed, 165, 40);
+
+                        processing.text("Jump   " + spacebar, 15, 50);
+                        processing.text("Left   " + a, 15, 60);
+                        processing.text("Right   " + d, 15, 70);
 
 
-                        processing.text("Player X   " +jumpy.positionX, 15,80);
-                        processing.text("Player Y   " +jumpy.positionY, 15,90);
+                        processing.text("Player X   " + jumpy.positionX, 15, 80);
+                        processing.text("Player Y   " + jumpy.positionY, 15, 90);
                         processing.text("X Velocity   " + jumpy.velocityX, 15, 100);
                         processing.text("Y Velocity   " + jumpy.velocityY, 15, 110);
-                        processing.text("isJumping   " + jumpy.isJumping, 15,130);
-                        processing.text("chambered jump   " + jumpy.chamberedJump, 15,140);
+                        processing.text("isJumping   " + jumpy.isJumping, 15, 130);
+                        processing.text("chambered jump   " + jumpy.chamberedJump, 15, 140);
 
-                        processing.text("Gravity   " + jumpy.gravity, 15,150);
-                        processing.text("Move Speed   " + (jumpy.moveSpeed), 15,160);
-                        processing.text("colliding   " + jumpy.isColliding, 15,170);
-                        processing.text("immunity   " + jumpy.immunity, 15,180);
+                        processing.text("Gravity   " + jumpy.gravity, 15, 150);
+                        processing.text("Move Speed   " + (jumpy.moveSpeed), 15, 160);
+                        processing.text("colliding   " + jumpy.isColliding, 15, 170);
+                        processing.text("immunity   " + jumpy.immunity, 15, 180);
                     }
 
                 };
 
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
-                //                         END SCENE
+                //                         END SCENE - 2
                 // *~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
 
                 if (scene === 2) {
+                    // Displaying highscore to player
                     processing.textSize(22);
-                    processing.text("Highest Score:   " + jumpy.highestScore, 110, centerY/2);
-                    
+                    processing.text("Highest Score:   " + jumpy.highestScore, centreX - 100, centreY / 2);
+
+                    // if JSON hasn't yet been created and sent
                     if (jsonFlag) {
 
+                        // prunning unnecessary parameters from the player object
                         delete jumpy.immunity;
                         delete jumpy.velocityX;
                         delete jumpy.velocityY;
@@ -696,59 +707,67 @@
                         delete jumpy.isJumping;
                         delete jumpy.score;
 
+                        // creating the JSON string
                         playerJSON = JSON.stringify(jumpy, null, 2);
-                    
-                        // uncomment line below to debug JSON output
-                        console.log(playerJSON);
 
+                        // uncomment line below to debug JSON output
+                        // console.log(playerJSON);
+
+                        // storing that JSON has been created
                         jsonFlag = false;
                     }
 
+                    // if the data transfer button has not been clicked, display this text
                     if (buttonPressed === false) {
                         processing.textSize(20);
-                        processing.text("Please click the yellow button below to", 20, centerY);
-                        processing.text("reveal a short survey about this game.",20, centerY + 30);
+                        processing.text("Please click the yellow button below to", centreX - 180, centreY);
+                        processing.text("reveal a short survey about this game.", centreX - 180, centreY + 30);
                         document.getElementById("gameJSON").value = playerJSON;
 
+                        // once the data transfer buttton has been clicked, advise turker how to continue
                     } else {
                         processing.textSize(20);
-                        processing.text("Thanks for playing!", 110, centerY - 20);
+                        processing.text("Thanks for playing!", 110, centreY - 20);
                         processing.textSize(16);
-                        processing.text("Please answer the short survey below", 70, centerY + 20);
+                        processing.text("Please answer the short survey below", 70, centreY + 20);
 
                         if (jumpy.id == 1) {
-                            processing.text(" and then continue to version 2.", 80, centerY + 40);
+                            processing.text(" and then continue to version 2.", 80, centreY + 40);
                         } else if (jumpy.id == 2) {
-                            processing.text(" and then continue to version 3.", 80, centerY + 40);
+                            processing.text(" and then continue to version 3.", 80, centreY + 40);
                         } else if (jumpy.id == 3) {
-                            processing.text(" and the summary survey at the bottom of the page.", 20, centerY + 40);
+                            processing.text(" and the summary survey at the bottom of the page.", 20, centreY + 40);
                         }
-                        
                     }
-                    
-                    hideAndUnhideFinishButton();
+
+                    if (jsonFlag == false) {
+                        // reveals the data transfer button after assuring that JSON is prepared and ready
+                        hideAndUnhideFinishButton();
+                    }
 
                 }
             }
-            
-        } 
+        }
 
+        // this must be called at the end of the game
         var canvas = document.getElementById("canvas");
         // attaching the sketchProc function to the canvas
         var processingInstance = new Processing(canvas, sketchProc);
 
     </script>
 
-    <div id="myDIV">
+    <div id="dataTransferButton">
         <div class="container">
             <div class="row">
                 <div class="col"></div>
                 <div class="col">
                     <form name="user_data">
                         <div class="form-group">
-                            <input type="hidden" name="gameJSON" class="form-control" id="gameJSON" aria-describedby="gameJSON" required>
+                            <input type="hidden" name="gameJSON" class="form-control" id="gameJSON"
+                                aria-describedby="gameJSON" required>
                         </div>
-                        <button onclick="buttonPressed = true;" class="btn btn-lg btn-warning float-left" type="submit">CLICK HERE</button>
+                        <button onclick="buttonPressed = true;" class="btn btn-lg btn-warning float-left"
+                            type="submit">CLICK HERE</button>
                     </form>
                 </div>
                 <div class="col"></div>
@@ -757,18 +776,18 @@
     </div>
 
     <script>
-    
-    // small function to hide the finish button on page load and show it once game is finished
-    function hideAndUnhideFinishButton() {
-        var x = document.getElementById("myDIV");
-        if (scene === 2 && buttonPressed === false) {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none"; 
-        }
-    }
 
-    hideAndUnhideFinishButton();
+        // small function to hide the finish button on page load and show it once game is finished
+        function hideAndUnhideFinishButton() {
+            var x = document.getElementById("dataTransferButton");
+            if (scene === 2 && buttonPressed === false) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        hideAndUnhideFinishButton();
 
     </script>
 
@@ -776,7 +795,7 @@
 
         // Using the form's submit button, let's submit the form using
         // JavaScript and jQuery.
-        $("form[name='user_data']").submit(function(e) {
+        $("form[name='user_data']").submit(function (e) {
             // Prevent the form from submitting via its default manner.
             e.preventDefault();
             e.stopPropagation();
@@ -785,19 +804,16 @@
             // console.log("Sending data to https://requester.mturk.com/create/projects/1621254.");
             parent.postMessage(
                 {
-                    gameJSON:    $("input[name='gameJSON']").val(),
+                    gameJSON: $("input[name='gameJSON']").val(),
                 },
                 // the * wildcard symbol indicates that this data can be retrieved by any document which is also active and listening for it
                 // replace with the URL of a specfic page for extra security. For use with mechanical turk however, it prevents issues with
                 // HIT urls varying and invalidating the parent.postMessage() method.
                 "*");
 
-
         });
 
-        
-
-	</script>
+    </script>
 
 </body>
 
