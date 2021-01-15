@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MapGen</title>
+    <script src="processing.js"></script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script type="application/javascript">
+
+        function sketchProc(processing) {
+
+            // NOTES
+            // cell adjacencies - 
+            // the cell above a given cell has a id of (cellsOnX) less than the given cell, below is (cellsOnX) more
+            // the cell to the left of a given cell has an id of 1 less than the given cell, and to the right is 1 more
+
+            // ie. if cellsOnX = 50
+            //
+            //                          [300][301][302]
+            //                          [350][351][352]
+            //                          [400][401][402]
+
+
+
+
+            // *****************************************************
+            //                  GLOBAL VARIABLES
+            // *****************************************************
+
+            var cellWidth = 10;
+            var cellHeight = 10;
+            var parentCellArray = [];
+            var seedCellArray = [];
+            var mountainCellArray = [];
+            var cellsOnX;
+            var cellsOnY;
+            var windowW;
+            var windowH;
+            var flag = false;
+            var targetCell;
+            var currentCell;
+            var cellID = 0;
+            var seedRandY;
+            var seedRandX;
+            var cursorCurrentX;
+            var cursorCurrentY;
+            var cursorLastX;
+            var cursorLastY;
+            var tickLength = 200; // this is in ms
+            var tickState = false;
+            var milliseconds;
+            var cellsDrawn = false;
+            var mountainChance = 0.5
+            var seedDesignated = false;
+
+
+            // *******************************************************
+            //                       OBJECTS
+            // *******************************************************
+
+            // TYPES:
+            // 1 - water
+
+            class cell {
+                constructor(x, y, row, column, type) {
+                    this.id = cellID;
+                    this.x = x;
+                    this.y = y;
+                    this.row = row;
+                    this.column = column;
+                    this.width = cellWidth;
+                    this.height = cellHeight;
+                    this.type = type;
+                    this.weight = 50;
+                }
+
+                drawCell() {
+                    var red, green, blue;
+
+                    if (this.type == 1) {
+                        red = 50;
+                        green = 160;
+                        blue = 200;
+                    }
+
+                    if (this.type == 2) {
+                        red = 100;
+                        green = 100;
+                        blue = 100;
+                    }
+                    processing.fill(red, green, blue);
+                    processing.rect(this.x, this.y, this.width, this.height);
+
+                }
+
+                mutate() {
+
+                    if (this.weight > 60) {
+                        this.type = 2;
+                    }
+                }
+
+                designateSeed() {
+
+                    if (this.row == seedRandX && this.column == seedRandY) {
+                        this.weight += 10 ;
+
+                        // adding seed cell to seed cell array to in case of multiple seeds
+                        seedCellArray.push(this);
+                        mountainCellArray.push(this);
+                    }
+
+                }
+
+                increaseWeight(array) {
+
+                    for (let i = 0; i < array.length; i++) {
+                        const seedElement = array[i];
+
+                        if (this.id == seedElement.id + 50 ||
+                            this.id == seedElement.id - 50 ||
+                            this.id == seedElement.id + 1 ||
+                            this.id == seedElement.id - 1) {
+
+                            this.weight += 10;
+
+                            // for (let i = 0; i < mountainCellArray.length; i++) {
+                            //     const element = mountainCellArray[i];
+                            //     let alreadyContained = false;
+
+                            //     if (element.id == this.id) {
+                            //         console.log("already contained");
+                            //         alreadyContained = true;
+                            //     }
+
+                            //     if (!alreadyContained) {
+                            //         console.log("adding");
+                            //         mountainCellArray.push(this);
+
+                            //     }
+
+                            // }
+
+                        }
+                    }
+                }
+            }
+
+            //const cell1x1 = new cell(0, 0, 0, 0, 2);
+
+            // *******************************************************
+            //                   OTHER FUNCTIONS
+            // *******************************************************
+
+            currentCellInfo = function (parentCellArray) {
+                parentCellArray.forEach(element => {
+                    if ((cursorCurrentX >= element.x && cursorCurrentX < (element.x + cellWidth)) && (cursorCurrentY >= element.y && cursorCurrentY < (element.y + cellHeight))) {
+
+                        currentCell = element.id;
+
+                    }
+                });
+            }
+
+            displayCurrentCell = function () {
+
+                // determining current cursor coordinates
+                cursorCurrentX = processing.mouseX;
+                cursorCurrentY = processing.mouseY;
+
+                // if cursor coordinates have changed, display info on the current cell
+                if (cursorCurrentX != cursorLastX || cursorCurrentY != cursorLastY) {
+
+                    currentCellInfo(parentCellArray);
+
+                    cursorLastX = cursorCurrentX;
+                    cursorLastY = cursorCurrentY;
+
+                }
+            }
+
+            gameTick = function () {
+
+                // creating game timer based on a tick of 200ms
+                var date = new Date();
+                var ms = date.getMilliseconds();
+
+                // rounding to nearest 100 to avoid missing tick length due to inconsistent framerate
+                milliseconds = Math.ceil(ms / 100) * 100;
+
+                if (milliseconds % tickLength == 0) {
+
+                    // creating an alternating on/off tick, to time animations events
+                    if (tickState == true) {
+                        tickState = false;
+                    } else {
+                        tickState = true;
+                    }
+                }
+            }
+
+            // *******************************************************
+            //                       SETUP
+            // *******************************************************
+
+            processing.setup = function () {
+                processing.frameRate();
+                processing.size(500, 500);
+                windowH = processing.height;
+                windowW = processing.width;
+                cellsOnX = windowW / cellWidth;
+                cellsOnY = windowH / cellHeight;
+                processing.background(200, 200, 200);
+                processing.noStroke()
+                seedRandX = processing.random(0, cellsOnX).toFixed(0);
+                seedRandY = processing.random(0, cellsOnY).toFixed(0);
+
+            }
+
+            // *******************************************************
+            //                       GAME LOOP
+            // *******************************************************
+
+            processing.draw = function () {
+
+                gameTick();
+
+                // ******************* CREATING CELL GRID **********************
+
+                if (parentCellArray.length < cellsOnX * cellsOnY) {
+
+                    for (var column = 0; column < cellsOnX; column++) {
+
+                        for (var row = 0; row < cellsOnY; row++) {
+
+                            var x = row * cellWidth;
+
+                            var y = column * cellHeight;
+
+                            const newCell = new cell(x, y, row, column, 1);
+
+                            parentCellArray.push(newCell);
+                            cellID++;
+
+                        }
+
+                    }
+                }
+
+                // ******************* GENERATE TERRAIN ON CELL GRID **********************
+
+
+
+                // ******************* DRAWING CELL GRID **********************
+
+                // making sure cells are drawn only once rather than every frame
+
+                parentCellArray.forEach(element => {
+
+                    // designating seed to start generating from
+                    if (seedDesignated == false) {
+                        element.designateSeed(element);
+                        console.log("seeded");
+                        seedDesignated = true;
+                    }
+
+                    // draws every cell object in the cell array
+                    element.drawCell(parentCellArray);
+
+                    // mutates any cells matching the requirements to type 2
+                    element.mutate();
+
+                    element.increaseWeight(seedCellArray);
+
+                    // element.increaseWeight(seedCellArray);
+
+
+
+                });
+
+                // *****************************************************
+                //                     DEBUGGING
+                // *****************************************************
+
+                // displaying current cell info for debugging
+                displayCurrentCell();
+
+                processing.fill(255, 255, 255);
+                processing.text("window height: " + windowH, 350, 20);
+                processing.text("window width: " + windowW, 350, 30);
+                processing.text("X Cells: " + cellsOnX, 350, 40);
+                processing.text("Y Cells: " + cellsOnY, 350, 50);
+                processing.text("X rand: " + seedRandX, 350, 60);
+                processing.text("Y rand: " + seedRandY, 350, 70);
+                processing.text("seed cell ID: " + targetCell, 350, 80);
+                processing.text("current cell ID: " + currentCell, 350, 90);
+                // processing.text("tick state: " + tickState, 350, 100);
+                // processing.text("Current ms: " + milliseconds, 350, 110);
+                processing.text("Array length: " + parentCellArray.length, 350, 120);
+
+
+
+
+
+
+
+            }
+
+
+        }
+
+        var canvas = document.getElementById("canvas");
+        // attaching the sketchProc function to the canvas
+        var processingInstance = new Processing(canvas, sketchProc);
+
+    </script>
+</body>
+
+</html>

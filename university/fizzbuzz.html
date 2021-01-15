@@ -1,0 +1,29 @@
+<head>
+    <title>FizzBuzz</title>
+</head>
+
+<script>
+
+var fizzInterval = 3;
+var buzzInterval = 5;
+
+
+for (i=1; i<= 100; i++) {
+
+    let output = "";
+
+    if (i % fizzInterval == 0) {
+        output = "fizz";
+    } 
+
+    if (i % buzzInterval == 0) {
+        output += "buzz";
+    } else if (i % fizzInterval != 0) {
+        output = i;
+    }
+
+    console.log (output);
+    
+}
+
+</script>

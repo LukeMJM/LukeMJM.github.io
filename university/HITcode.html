@@ -53,10 +53,7 @@
     <div id="version1">
         <h1>Game Version 1</h1>
         <p>Play version 1 for 1 minute and then click the yellow button which will appear to unlock questions related to it.</p>
-            <!--<iframe name="iframe1" id="iframe_id1" src=${url1} height="550" width = "410" >-->
-            <iframe name="iframe1" id="iframe_id1" src=http://127.0.0.1:5500/jumpy.html?h=40&w=10&s=5&g=0.5&iY=-12&l=2&cJE=true&oSI=0.25&id=1&t=60 height="550" width = "410" >
-
-            </iframe>
+            <iframe name="iframe1" id="iframe_id1" src=h${url1} height="550" width = "410" ></iframe>
         <crowd-input name="gameJSON1" type="hidden" id="JSON1" required></crowd-input>
     </div>
     
@@ -131,8 +128,7 @@
     <div id="version3">
         <h1>Game Version 3</h1>
         <p>Play version 3 for 1 minute and then click the yellow button which will appear to unlock questions related to it.</p>
-            <iframe name="iframe3" id="iframe_id3" src=${url3} height="550" width = "410" >
-            </iframe>
+            <iframe name="iframe3" id="iframe_id3" src=${url3} height="550" width = "410" ></iframe>
         <crowd-input name="gameJSON3" type="hidden" id="JSON3" required></crowd-input>
     </div>
     
@@ -233,6 +229,7 @@
         }
     }
     
+    // hiding surveys on page load until they are required
     hideAndUnhide("survey1");
 	hideAndUnhide("survey2");
 	hideAndUnhide("survey3");
