@@ -62,7 +62,7 @@ function apiRequestConstructor(idArray) {
     }
 
     // Url components
-    const urlBase = "http://api.openweathermap.org/data/2.5/group?id=";
+    const urlBase = "https://api.openweathermap.org/data/2.5/group?id=";
     const units = "&units=metric";
     const api_key = "81ba539f1128347b30ab1dcd555bc9d4";
 
