@@ -1,4 +1,4 @@
-let map;
+let map; 
 
 // using setTimeout to wait for OpenWeatherMap API data for map coordinates
 setTimeout(function (){
