@@ -1,14 +1,56 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <title>Coldest City In Germany</title>
-    <script src="script.js"></script>
+    <title>Lowest Temperature In Germany</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Luke Mitchell">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script src="weather_script.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=&libraries=&v=weekly"></script>
+    <script src="map_script.js"></script>
 </head>
 
 <body>
+    <section class="section is-family-secondary pt-0 pb-0 mobile-white">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-desktop has-background-white pl-0 pr-0 pb-0">
+                    <div class="mobile-no-card">
+
+                        <div class="container pb-4 pt-6">
+                            <div class="content has-text-centered">
+                                <p class="is-size-3 is-size-5-mobile mb-1">The lowest temperature in Germany right now can be found in:</p>
+                                <div class="coldest-city">
+                                    <progress class="progress is-small is-dark" max="100"></progress>
+                                </div>
+                            </div>
+
+                            <hr style="margin: 0 0 1.5rem;">
+
+                            <div class="map-container">
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="footer pb-2 pt-2">
+                        <div class="content has-text-centered is-size-6 is-size-7-mobile">
+                          <p>
+                            <em>Lowest Temperature in Germany</em> by <a href="https://www.linkedin.com/in/luke-mitchell-58b82513b/">Luke Mitchell</a>. Source code can be found
+                            <a href="https://github.com/LukeMJM/LukeMJM.github.io/tree/master/coding_assignment">here</a>. Uses <a href="https://openweathermap.org/">OpenWeatherMap API</a>
+                            and <a href="https://developers.google.com/maps/documentation/javascript/overview?hl=en_US">Google Maps JavaScript API </a>
+                          </p>
+                        </div>
+                      </footer>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </body>
-
-
-
 
 </html>

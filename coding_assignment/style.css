@@ -1,0 +1,39 @@
+
+#map {
+  height: 100%;
+}
+
+.map-container {
+  height: 700px;
+  padding: 0rem;
+  margin: 1.5rem;
+}
+
+.mobile-white {
+  background-color: hex(252, 252, 252);
+}
+
+.mobile-no-card{
+  box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.1), 0 4px 22px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* mobile specifc css */
+@media only screen and (max-width: 600px) {
+  .map-container {
+    height: 350px;
+    padding: 0rem;
+    margin: 0rem;
+
+  }
+
+  .mobile-white {
+    background-color: white;
+  }
+
+  .mobile-no-card{
+    box-shadow: 0 0px 00px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0,0);
+  }
+
+}
+
+    
