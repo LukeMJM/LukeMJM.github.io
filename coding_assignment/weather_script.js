@@ -62,9 +62,9 @@ function apiRequestConstructor(idArray) {
     }
 
     // Url components
-    const urlBase = "https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/group?id=";
+    const urlBase = "http://api.openweathermap.org/data/2.5/group?id=";
     const units = "&units=metric";
-    const api_key = "81ba539f1128347b30ab1dcd555bc9d4";
+    const api_key = ""; // api key is free so don't need to hide
 
     // Assembling final request url and returning.
     let finalUrl = urlBase + ids + units + "&appid=" + api_key;
