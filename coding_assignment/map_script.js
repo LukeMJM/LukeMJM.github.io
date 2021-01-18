@@ -10,4 +10,4 @@ setTimeout(function (){
     center: { lat: lat, lng: lon },
     zoom: 10,
   });
-}, 350); 
+}, 500); 
